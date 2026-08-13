@@ -1,0 +1,24 @@
+import Link from "next/link";
+
+export default function Home() {
+  return (
+    <main className="landing-shell">
+      <div className="moon" aria-hidden="true" />
+      <section className="landing-card">
+        <p className="eyebrow">TEMPLATE UNDANGAN PERSONAL</p>
+        <p className="script">A celebration under the moon</p>
+        <h1>Aruna <span>&amp;</span> Bima</h1>
+        <p className="intro">Satu fondasi untuk undangan indah, daftar tamu yang tertata, dan RSVP yang mudah dipantau.</p>
+        <div className="landing-actions">
+          <Link className="button button-solid" href="/admin">Buka admin</Link>
+          <a className="button button-quiet" href="#cara-kerja">Lihat struktur</a>
+        </div>
+      </section>
+      <section className="how" id="cara-kerja">
+        <article><b>01</b><h2>Link personal</h2><p>Setiap tamu menerima token undangan sendiri.</p></article>
+        <article><b>02</b><h2>Akses perangkat</h2><p>Perangkat pertama dapat diikat sebagai pengaman tambahan.</p></article>
+        <article><b>03</b><h2>RSVP tersimpan</h2><p>Konfirmasi dan ucapan masuk ke PostgreSQL.</p></article>
+      </section>
+    </main>
+  );
+}
