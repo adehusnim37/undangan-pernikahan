@@ -3,8 +3,8 @@ import "./globals.css";
 import { InvitationThumbmarkProvider } from "@/components/thumbmark-provider";
 
 export const metadata: Metadata = {
-  title: "Aruna & Bima — Undangan Pernikahan",
-  description: "Undangan pernikahan pribadi Aruna dan Bima.",
+  title: "Ade & Alvita — Undangan Pernikahan",
+  description: "Undangan pernikahan pribadi Ade dan Alvita.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
