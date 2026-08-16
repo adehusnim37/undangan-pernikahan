@@ -13,7 +13,7 @@ export async function PATCH(
   const action = body?.action;
   if (action === "reset-device") {
     await query(
-      "UPDATE invitations SET device_hash = NULL, device_metadata = NULL, first_opened_at = NULL, updated_at = NOW() WHERE id = $1",
+      "UPDATE invitations SET device_id = NULL, first_opened_at = NULL, updated_at = NOW() WHERE id = $1",
       [id],
     );
   } else if (action === "toggle-status") {
