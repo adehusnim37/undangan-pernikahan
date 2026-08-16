@@ -12,9 +12,9 @@ services:
     environment:
       NODE_ENV: production
       HOSTNAME: 0.0.0.0
-      PORT: 3000
+      PORT: ${PORT:-3000}
     ports:
-      - "${APP_PORT:-3000}:3000"
+      - "${PORT:-3000}:${PORT:-3000}"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:
@@ -22,7 +22,7 @@ services:
         - CMD
         - node
         - -e
-        - "fetch('http://127.0.0.1:3000').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"
+        - "fetch('http://127.0.0.1:' + process.env.PORT).then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"
       interval: 30s
       timeout: 5s
       retries: 3

@@ -43,14 +43,18 @@ Compose hanya menjalankan aplikasi Next.js; tidak ada service PostgreSQL di dala
    docker compose up -d --build
    ```
 
-3. Aplikasi tersedia di `http://localhost:3000`. Port host dapat diubah, misalnya:
+3. Aplikasi tersedia di `http://localhost:3000`. Port aplikasi dan host dapat diubah langsung melalui `PORT` di file environment, misalnya `PORT=8080`, lalu jalankan ulang Compose:
 
    ```powershell
-   $env:APP_PORT=8080
    docker compose up -d
    ```
 
-Untuk memakai file environment lain, set `ENV_FILE`, misalnya `$env:ENV_FILE='.env.production'`.
+Untuk memakai `.env.production`, jalankan Compose dengan file tersebut sebagai sumber environment:
+
+```powershell
+$env:ENV_FILE='.env.production'
+docker compose --env-file .env.production up -d --build
+```
 
 ## Titik kustomisasi
 
