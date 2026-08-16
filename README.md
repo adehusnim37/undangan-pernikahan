@@ -15,10 +15,10 @@ Template full-stack untuk undangan web dengan link personal per tamu, dashboard 
 1. Buat konfigurasi lokal:
 
    ```powershell
-   Copy-Item .env.example .env.local
+   Copy-Item .env.example .env
    ```
 
-2. Ubah `ADMIN_PASSWORD` dan `SESSION_SECRET` di `.env.local`.
+2. Ubah `ADMIN_PASSWORD` dan `SESSION_SECRET` di `.env`.
 
 3. Pastikan PostgreSQL yang sudah tersedia dapat diakses melalui `DATABASE_URL`.
 
@@ -29,7 +29,7 @@ Template full-stack untuk undangan web dengan link personal per tamu, dashboard 
    npm run dev
    ```
 
-5. Buka `http://localhost:3000/admin`, masuk memakai `ADMIN_EMAIL` dan `ADMIN_PASSWORD`, lalu buat link tamu pertama.
+5. Buka `http://localhost:<PORT>/admin`, masuk memakai `ADMIN_EMAIL` dan `ADMIN_PASSWORD`, lalu buat link tamu pertama.
 
 ## Menjalankan dengan Docker Compose
 
@@ -43,18 +43,13 @@ Compose hanya menjalankan aplikasi Next.js; tidak ada service PostgreSQL di dala
    docker compose up -d --build
    ```
 
-3. Aplikasi tersedia di `http://localhost:3000`. Port aplikasi dan host dapat diubah langsung melalui `PORT` di file environment, misalnya `PORT=8080`, lalu jalankan ulang Compose:
+3. Aplikasi tersedia di `http://localhost:<PORT>`, sesuai nilai `PORT` di file environment (saat ini `3020`). Port aplikasi dan host dapat diubah langsung melalui `PORT`, misalnya `PORT=8080`, lalu jalankan ulang Compose:
 
    ```powershell
    docker compose up -d
    ```
 
-Untuk memakai `.env.production`, jalankan Compose dengan file tersebut sebagai sumber environment:
-
-```powershell
-$env:ENV_FILE='.env.production'
-docker compose --env-file .env.production up -d --build
-```
+Gunakan file `.env` yang sama untuk lokal dan production. Di server production, isi `.env` dengan kredensial production lalu jalankan perintah Compose yang sama.
 
 ## Titik kustomisasi
 

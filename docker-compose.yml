@@ -8,11 +8,10 @@ services:
     restart: unless-stopped
     init: true
     env_file:
-      - ${ENV_FILE:-.env}
+      - .env
     environment:
       NODE_ENV: production
       HOSTNAME: 0.0.0.0
-      PORT: ${PORT:-3000}
     ports:
       - "${PORT:-3000}:${PORT:-3000}"
     extra_hosts:
