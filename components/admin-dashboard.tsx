@@ -4,7 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { getApiErrorMessage } from "@/lib/client-api";
 import { guestFormSchema, validateWithToast } from "@/lib/client-validation";
-import { Search, Plus, Copy, RotateCcw, Edit2, Trash2, ShieldBan, ShieldCheck, LogOut } from "lucide-react";
+import { Search, Plus, Copy, RotateCcw, Edit2, Trash2, ShieldBan, ShieldCheck, LogOut, Images } from "lucide-react";
+import { MediaManagerDialog } from "@/components/media-manager-dialog";
 
 type Guest = {
   id: string;
@@ -333,6 +334,7 @@ export function AdminDashboard() {
   const [showAddGuest, setShowAddGuest] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [notice, setNotice] = useState("");
+  const [showMediaManager, setShowMediaManager] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -416,9 +418,14 @@ export function AdminDashboard() {
           <p className="eyebrow">ARUNA &amp; BIMA · ADMIN</p>
           <h1>Daftar yang hadir.</h1>
         </div>
-        <button className="text-button icon-text-button" onClick={logout}>
-          <LogOut size={14} /> Keluar
-        </button>
+        <div className="admin-header-actions">
+          <button className="button button-quiet" onClick={() => setShowMediaManager(true)}>
+            <Images size={16} /> Kelola foto undangan
+          </button>
+          <button className="text-button icon-text-button" onClick={logout}>
+            <LogOut size={14} /> Keluar
+          </button>
+        </div>
       </header>
       <section className="stat-grid">
         <div>
@@ -538,6 +545,8 @@ export function AdminDashboard() {
         />
       )}
 
+      {showMediaManager && <MediaManagerDialog onClose={() => setShowMediaManager(false)} />}
+
       {editGuest && (
         <EditDialog
           guest={editGuest}
@@ -564,4 +573,3 @@ export function AdminDashboard() {
     </main>
   );
 }
-

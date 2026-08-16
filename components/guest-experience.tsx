@@ -10,6 +10,7 @@ import { useThumbmark } from "@thumbmarkjs/react";
 import { toast } from "react-toastify";
 import { getApiErrorMessage } from "@/lib/client-api";
 import { rsvpFormSchema, validateWithToast } from "@/lib/client-validation";
+import { heroMediaSlots, invitationMediaBySlot, type InvitationMediaSlot } from "@/lib/invitation-media";
 
 type AccessState = "checking" | "allowed" | "denied";
 type Rsvp = {
@@ -20,16 +21,6 @@ type Rsvp = {
   current_editable_rsvps: number;
   max_editable_rsvps: number;
 };
-
-const galleryPhotos = [
-  ["https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=88", "A quiet beginning"],
-  ["https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=88", "The one who stayed"],
-  ["https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1500&q=90", "A day to remember"],
-  ["https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=88", "Soft light"],
-  ["https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=900&q=88", "A familiar face"],
-  ["https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=900&q=88", "Before the music"],
-  ["https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=900&q=88", "The afterglow"],
-] as const;
 
 export function GuestExperience({ invitation }: { invitation: Invitation }) {
   const invitationRef = useRef<HTMLElement>(null);
@@ -43,6 +34,16 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
   const [message, setMessage] = useState("");
   const [rsvpState, setRsvpState] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [existingRsvp, setExistingRsvp] = useState<Rsvp | null>(null);
+  const photo = (slot: InvitationMediaSlot) => invitation.media?.[slot]?.url ?? invitationMediaBySlot[slot].defaultUrl;
+  const photoStyle = (slot: InvitationMediaSlot) => {
+    const display = invitation.media?.[slot];
+    return display ? {
+      objectFit: display.fit,
+      objectPosition: `${display.positionX}% ${display.positionY}%`,
+      transform: `scale(${display.scale})`,
+      transformOrigin: `${display.positionX}% ${display.positionY}%`,
+    } : undefined;
+  };
 
   useEffect(() => {
     if (access !== "allowed") return;
@@ -384,7 +385,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
       <header className="folio-hero">
         <div className="folio-bar"><span>ALVITA + ADE</span><span>JKT · 17.09.26</span></div>
         <div className="folio-gallery" aria-hidden="true">
-          {galleryPhotos.map(([src, label], index) => <figure className={`folio-photo folio-photo-${index + 1} ${index === 2 ? "folio-photo--focus" : ""}`} key={src}><img src={src} alt="" /><figcaption>{label}</figcaption></figure>)}
+          {heroMediaSlots.map((item, index) => <figure className={`folio-photo folio-photo-${index + 1} ${index === 2 ? "folio-photo--focus" : ""}`} key={item.slot}><img src={photo(item.slot)} style={photoStyle(item.slot)} alt="" /><figcaption>{item.caption}</figcaption></figure>)}
         </div>
         <div className="folio-title"><p className="folio-kicker">SEBUAH PERAYAAN KECIL</p><h1>Alvita <em>&amp;</em> Ade</h1><p className="folio-guest"><span>UNDANGAN UNTUK</span><strong>{invitation.guest_name}</strong></p></div>
         <div className="folio-scroll"><span>SCROLL TO ENTER</span><i>↓</i></div>
@@ -425,15 +426,15 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             </div>
             <div className="journey-bento journey-bento--school">
               <figure className="journey-photo journey-photo--portrait">
-                <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1000&q=88" alt="Foto Alvita dan Ade semasa sekolah" />
+                <img src={photo("journey_school_portrait")} style={photoStyle("journey_school_portrait")} alt="Foto Alvita dan Ade semasa sekolah" />
                 <figcaption>Surabaya · 2016</figcaption>
               </figure>
-              <div className="journey-school-mark">
-                <img src="https://sman19sby.sch.id/wp-content/uploads/2021/06/logo-sekolah2.png" alt="Logo SMAN 19 Surabaya" />
-                <span>XI MIPA 4</span>
-              </div>
+              <figure className="journey-school-mark">
+                <img src={photo("journey_school_mark")} style={photoStyle("journey_school_mark")} alt="Foto tambahan Alvita dan Ade semasa sekolah" />
+                <figcaption>XI MIPA 4</figcaption>
+              </figure>
               <figure className="journey-photo journey-photo--detail">
-                <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=900&q=86" alt="Suasana sekolah" />
+                <img src={photo("journey_school_detail")} style={photoStyle("journey_school_detail")} alt="Suasana sekolah" />
               </figure>
             </div>
           </article>
@@ -451,11 +452,11 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             </div>
             <div className="journey-bento journey-bento--campus">
               <figure className="journey-photo journey-photo--wide">
-                <img src="https://images.unsplash.com/photo-1564981797816-1043664bf78d?auto=format&fit=crop&w=1200&q=88" alt="Masa kuliah Alvita dan Ade di Surabaya" />
+                <img src={photo("journey_campus_wide")} style={photoStyle("journey_campus_wide")} alt="Masa kuliah Alvita dan Ade di Surabaya" />
                 <figcaption>Still in Surabaya</figcaption>
               </figure>
-              <figure className="journey-photo journey-photo--small-a"><img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=86" alt="Kelulusan kuliah" /></figure>
-              <figure className="journey-photo journey-photo--small-b"><img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=86" alt="Perjalanan selama kuliah" /></figure>
+              <figure className="journey-photo journey-photo--small-a"><img src={photo("journey_campus_small_a")} style={photoStyle("journey_campus_small_a")} alt="Kelulusan kuliah" /></figure>
+              <figure className="journey-photo journey-photo--small-b"><img src={photo("journey_campus_small_b")} style={photoStyle("journey_campus_small_b")} alt="Perjalanan selama kuliah" /></figure>
             </div>
           </article>
 
@@ -475,8 +476,8 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
               <span className="journey-city journey-city--east">YOGYAKARTA<small>ALVITA · S2</small></span>
             </div>
             <div className="journey-bento journey-bento--distance">
-              <figure className="journey-photo journey-photo--city"><img src="https://images.unsplash.com/photo-1522083165195-3424ed129620?auto=format&fit=crop&w=900&q=86" alt="Ade bekerja di Jakarta" /><figcaption>Jakarta</figcaption></figure>
-              <figure className="journey-photo journey-photo--graduate"><img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=900&q=86" alt="Alvita menyelesaikan studi S2 di Yogyakarta" /><figcaption>Yogyakarta</figcaption></figure>
+              <figure className="journey-photo journey-photo--city"><img src={photo("journey_distance_city")} style={photoStyle("journey_distance_city")} alt="Ade bekerja di Jakarta" /><figcaption>Jakarta</figcaption></figure>
+              <figure className="journey-photo journey-photo--graduate"><img src={photo("journey_distance_graduate")} style={photoStyle("journey_distance_graduate")} alt="Alvita menyelesaikan studi S2 di Yogyakarta" /><figcaption>Yogyakarta</figcaption></figure>
             </div>
           </article>
 
@@ -488,14 +489,14 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
               <p className="journey-body">Setelah Alvita menyelesaikan studi S2, kami memutuskan melangkah ke jenjang yang lebih serius. Lamaran kami berlangsung pada 30 Mei 2026.</p>
             </div>
             <div className="journey-bento journey-bento--engagement">
-              <figure className="journey-photo journey-photo--engagement-main"><img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=1200&q=90" alt="Lamaran Alvita dan Ade" /><figcaption>30 · 05 · 2026</figcaption></figure>
-              <figure className="journey-photo journey-photo--ring"><img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=800&q=88" alt="Cincin lamaran" /></figure>
+              <figure className="journey-photo journey-photo--engagement-main"><img src={photo("journey_engagement_main")} style={photoStyle("journey_engagement_main")} alt="Lamaran Alvita dan Ade" /><figcaption>30 · 05 · 2026</figcaption></figure>
+              <figure className="journey-photo journey-photo--ring"><img src={photo("journey_engagement_ring")} style={photoStyle("journey_engagement_ring")} alt="Cincin lamaran" /></figure>
             </div>
           </article>
 
           <article className="journey-panel journey-panel--wedding">
             <div className="journey-wedding-photo journey-photo">
-              <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1600&q=90" alt="Hari pernikahan Alvita dan Ade" />
+              <img src={photo("journey_wedding")} style={photoStyle("journey_wedding")} alt="Hari pernikahan Alvita dan Ade" />
             </div>
             <div className="journey-wedding-card">
               <p className="eyebrow">SEPULUH TAHUN KEMUDIAN</p>

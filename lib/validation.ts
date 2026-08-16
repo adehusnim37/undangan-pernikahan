@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { invitationMediaSlotValues } from "@/lib/invitation-media";
 
 // Tokens are generated with crypto.randomBytes(24).toString("base64url").
 // Accept legacy tokens too, while keeping the URL segment to safe base64url chars.
@@ -53,6 +54,19 @@ export const rsvpBodySchema = z
     guestCount: z.number().int().min(1),
     message: z.string().trim().max(500, "Ucapan maksimal 500 karakter."),
     hash: z.string().regex(thumbmark, "Fingerprint perangkat tidak valid."),
+  })
+  .strict();
+
+export const invitationMediaSlotSchema = z.enum(invitationMediaSlotValues);
+export const imageUploadMetadataSchema = z.object({ slot: invitationMediaSlotSchema }).strict();
+export const imageContentTypeSchema = z.enum(["image/jpeg", "image/png", "image/webp", "image/gif"]);
+export const imageDisplaySettingsSchema = z
+  .object({
+    slot: invitationMediaSlotSchema,
+    fit: z.enum(["cover", "contain"]),
+    scale: z.number().finite().min(0.5).max(2.5).transform((value) => Math.round(value * 20) / 20),
+    positionX: z.number().finite().min(0).max(100).transform((value) => Math.round(value * 10) / 10),
+    positionY: z.number().finite().min(0).max(100).transform((value) => Math.round(value * 10) / 10),
   })
   .strict();
 
