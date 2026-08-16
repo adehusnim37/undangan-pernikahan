@@ -2,9 +2,10 @@
 
 Konfigurasi ini dipakai jika Nginx dan Certbot dipasang langsung pada server Ubuntu, sedangkan aplikasi Next.js berjalan melalui Docker di `127.0.0.1:3020`.
 
-## 1. Salin konfigurasi Nginx
+## 1. Siapkan webroot challenge dan salin konfigurasi HTTP
 
 ```bash
+sudo mkdir -p /var/www/certbot/.well-known/acme-challenge
 sudo cp deploy/nginx/host/nikah.mas-a.de.conf /etc/nginx/sites-available/nikah.mas-a.de
 sudo ln -s /etc/nginx/sites-available/nikah.mas-a.de /etc/nginx/sites-enabled/nikah.mas-a.de
 sudo nginx -t
@@ -13,13 +14,14 @@ sudo systemctl reload nginx
 
 Jika symbolic link sudah ada, tidak perlu menjalankan `ln -s` lagi.
 
-## 2. Pastikan HTTP sudah menuju aplikasi
+## 2. Pastikan challenge dapat diakses dari internet
 
 ```bash
-curl -I http://nikah.mas-a.de/admin/login
+printf 'acme-ok' | sudo tee /var/www/certbot/.well-known/acme-challenge/test
+curl http://nikah.mas-a.de/.well-known/acme-challenge/test
 ```
 
-Respons yang diharapkan adalah `HTTP/1.1 200 OK`.
+Respons wajib berisi `acme-ok`. Jangan lanjut ke Certbot jika request ini gagal. Pastikan port TCP 80 dibuka pada firewall server dan firewall provider.
 
 ## 3. Pasang Certbot
 
@@ -28,19 +30,25 @@ sudo apt update
 sudo apt install -y certbot python3-certbot-nginx
 ```
 
-## 4. Terbitkan sertifikat dan aktifkan redirect HTTPS
+## 4. Terbitkan sertifikat dengan mode webroot
 
 ```bash
-sudo certbot --nginx -d nikah.mas-a.de --redirect
+sudo certbot certonly --webroot -w /var/www/certbot -d nikah.mas-a.de
 ```
 
-Certbot akan meminta alamat email dan persetujuan Terms of Service, kemudian memperbarui konfigurasi Nginx dengan blok HTTPS.
+Mode ini tidak meminta Certbot membaca atau mengubah konfigurasi Nginx, sehingga tidak terganggu oleh konfigurasi CrowdSec.
 
-## 5. Verifikasi
+## 5. Aktifkan konfigurasi HTTPS
 
 ```bash
+sudo cp deploy/nginx/host/nikah.mas-a.de.ssl.conf /etc/nginx/sites-available/nikah.mas-a.de
 sudo nginx -t
 sudo systemctl reload nginx
+```
+
+## 6. Verifikasi
+
+```bash
 curl -I https://nikah.mas-a.de/admin/login
 sudo certbot renew --dry-run
 ```
