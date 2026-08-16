@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ImageIcon, Minus, Plus, RefreshCw, Upload, X } from "lucide-react";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { getApiErrorMessage } from "@/lib/client-api";
 import { invitationMediaSlots, type InvitationMediaFit, type InvitationMediaSlot } from "@/lib/invitation-media";
 
@@ -30,6 +30,8 @@ type DragState = {
   original: UploadedMedia;
 };
 
+const mediaToastOptions = { containerId: "media-manager", position: "top-center" as const };
+
 function clampPosition(value: number) {
   return Math.min(100, Math.max(0, Math.round(value * 10) / 10));
 }
@@ -51,13 +53,13 @@ export function MediaManagerDialog({ onClose }: { onClose: () => void }) {
         return response.json() as Promise<{ media?: UploadedMedia[] }>;
       })
       .then((data) => setMedia(Object.fromEntries((data.media ?? []).map((item) => [item.slot, item]))))
-      .catch((error) => toast.error(error instanceof Error ? error.message : "Daftar foto tidak dapat dimuat."))
+      .catch((error) => toast.error(error instanceof Error ? error.message : "Daftar foto tidak dapat dimuat.", mediaToastOptions))
       .finally(() => setLoading(false));
   }, []);
 
   async function upload(slot: InvitationMediaSlot, file: File) {
     if (file.size > 8 * 1024 * 1024) {
-      toast.error("Ukuran gambar maksimal 8 MB.", { position: "top-center" });
+      toast.error("Ukuran gambar maksimal 8 MB.", mediaToastOptions);
       return;
     }
     const formData = new FormData();
@@ -70,9 +72,9 @@ export function MediaManagerDialog({ onClose }: { onClose: () => void }) {
       const data = (await response.json()) as { media: UploadedMedia };
       setMedia((current) => ({ ...current, [slot]: data.media }));
       const label = invitationMediaSlots.find((item) => item.slot === slot)?.label ?? "Foto";
-      toast.success(`${label} berhasil diperbarui untuk semua tamu.`, { position: "top-center" });
+      toast.success(`${label} berhasil diperbarui untuk semua tamu.`, mediaToastOptions);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Upload gambar gagal.", { position: "top-center" });
+      toast.error(error instanceof Error ? error.message : "Upload gambar gagal.", mediaToastOptions);
     } finally {
       setUploadingSlot(null);
     }
@@ -115,7 +117,7 @@ export function MediaManagerDialog({ onClose }: { onClose: () => void }) {
       setMedia((current) => ({ ...current, [slot]: data.media }));
     } catch (error) {
       setMedia((current) => ({ ...current, [slot]: previous }));
-      toast.error(error instanceof Error ? error.message : "Pengaturan foto gagal disimpan.", { position: "top-center" });
+      toast.error(error instanceof Error ? error.message : "Pengaturan foto gagal disimpan.", mediaToastOptions);
     } finally {
       setSavingSlot(null);
     }
@@ -195,6 +197,15 @@ export function MediaManagerDialog({ onClose }: { onClose: () => void }) {
       onClick={(event) => { if (event.target === dialogRef.current) onClose(); }}
     >
       <div className="edit-dialog-inner media-manager-inner">
+        <ToastContainer
+          containerId="media-manager"
+          className="media-manager-toast-container"
+          position="top-center"
+          autoClose={3500}
+          closeOnClick
+          pauseOnFocusLoss
+          theme="colored"
+        />
         <button className="dialog-close" onClick={onClose} aria-label="Tutup pengelola foto"><X size={18} /></button>
         <div className="media-manager-heading">
           <div><p className="eyebrow">FOTO UNDANGAN</p><h2>Ganti foto di tempatnya.</h2></div>

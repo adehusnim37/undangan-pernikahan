@@ -1154,6 +1154,7 @@ a { color: inherit; }
 .admin-header-actions { display: flex; align-items: center; gap: 22px; }
 .media-manager-dialog { width: min(1120px, 96vw); max-width: none; }
 .media-manager-inner { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; max-height: 90vh; padding: 34px; overflow: hidden; }
+.media-manager-toast-container { z-index: 1000; }
 .media-manager-heading { display: grid; grid-template-columns: minmax(280px, .9fr) minmax(300px, 1.1fr); gap: 42px; align-items: end; padding: 0 42px 25px 0; border-bottom: 1px solid var(--line); }
 .media-manager-heading h2 { margin-bottom: 0; }
 .media-manager-heading > p { max-width: 480px; margin: 0; color: #5e766d; font-size: 13px; line-height: 1.65; }
