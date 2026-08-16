@@ -392,8 +392,13 @@ export function AdminDashboard() {
 
   async function copy(token: string) {
     try {
+      const publicAppUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/+$/, "");
+      if (!publicAppUrl) {
+        toast.error("NEXT_PUBLIC_APP_URL belum diatur.", { position: "top-center" });
+        return;
+      }
       await navigator.clipboard.writeText(
-        `${window.location.origin}/invite/${token}`,
+        `${publicAppUrl}/invite/${token}`,
       );
       toast.info("Link personal sudah disalin.", { position: "top-center" });
     } catch {

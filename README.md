@@ -20,7 +20,7 @@ Template full-stack untuk undangan web dengan link personal per tamu, dashboard 
 
 2. Ubah `ADMIN_PASSWORD` dan `SESSION_SECRET` di `.env`.
 
-   Gunakan `APP_ENV=development` saat aplikasi diakses melalui HTTP. Untuk deployment production, ubah menjadi `APP_ENV=production` dan akses aplikasi hanya melalui HTTPS karena cookie admin akan memakai atribut `Secure`. `NODE_ENV` tetap dikelola oleh Next.js dan tidak dipakai untuk memilih protokol deployment.
+   Gunakan `APP_ENV=development` saat aplikasi diakses melalui HTTP. Untuk deployment production, ubah menjadi `APP_ENV=production` dan akses aplikasi hanya melalui HTTPS karena cookie admin akan memakai atribut `Secure`. `NODE_ENV` tetap dikelola oleh Next.js dan tidak dipakai untuk memilih protokol deployment. Isi `NEXT_PUBLIC_APP_URL` dengan URL yang akan dibagikan ke tamu, misalnya `http://localhost:3020` atau `https://nikah.mas-a.de`.
 
 3. Pastikan PostgreSQL yang sudah tersedia dapat diakses melalui `DATABASE_URL`.
 
@@ -50,6 +50,8 @@ Compose hanya menjalankan aplikasi Next.js; tidak ada service PostgreSQL di dala
    ```powershell
    docker compose up -d
    ```
+
+   Karena `NEXT_PUBLIC_APP_URL` dibundel saat build browser, jalankan `docker compose up -d --build` setiap kali URL tersebut diubah.
 
 Gunakan file `.env` yang sama untuk lokal dan production. Di server production, isi `.env` dengan kredensial production lalu jalankan perintah Compose yang sama.
 
