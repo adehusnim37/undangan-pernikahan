@@ -20,6 +20,8 @@ Template full-stack untuk undangan web dengan link personal per tamu, dashboard 
 
 2. Ubah `ADMIN_PASSWORD` dan `SESSION_SECRET` di `.env`.
 
+   Gunakan `APP_ENV=development` saat aplikasi diakses melalui HTTP. Untuk deployment production, ubah menjadi `APP_ENV=production` dan akses aplikasi hanya melalui HTTPS karena cookie admin akan memakai atribut `Secure`. `NODE_ENV` tetap dikelola oleh Next.js dan tidak dipakai untuk memilih protokol deployment.
+
 3. Pastikan PostgreSQL yang sudah tersedia dapat diakses melalui `DATABASE_URL`.
 
 4. Pasang dependensi dan jalankan aplikasi secara lokal:
