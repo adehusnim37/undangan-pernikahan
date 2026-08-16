@@ -7,7 +7,7 @@ Template full-stack untuk undangan web dengan link personal per tamu, dashboard 
 - Halaman undangan responsif di `/invite/[token]`.
 - Dashboard admin di `/admin` untuk membuat tamu, menyalin link, mencabut akses, dan me-reset perangkat.
 - API route Next.js untuk login admin, tamu, pemeriksaan akses, dan RSVP.
-- PostgreSQL melalui Docker Compose dengan tiga tabel: `invitations`, `access_logs`, dan `rsvps`.
+- PostgreSQL eksternal untuk data undangan, akses, RSVP, dan pengaturan media.
 - Pengikatan perangkat pada kunjungan pertama memakai ThumbmarkJS di browser. Admin dapat me-reset ikatan perangkat kapan pun.
 
 ## Menjalankan lokal
@@ -20,13 +20,9 @@ Template full-stack untuk undangan web dengan link personal per tamu, dashboard 
 
 2. Ubah `ADMIN_PASSWORD` dan `SESSION_SECRET` di `.env.local`.
 
-3. Jalankan PostgreSQL:
+3. Pastikan PostgreSQL yang sudah tersedia dapat diakses melalui `DATABASE_URL`.
 
-   ```powershell
-   docker compose up -d db
-   ```
-
-4. Pasang dependensi dan jalankan aplikasi:
+4. Pasang dependensi dan jalankan aplikasi secara lokal:
 
    ```powershell
    npm install
@@ -34,6 +30,27 @@ Template full-stack untuk undangan web dengan link personal per tamu, dashboard 
    ```
 
 5. Buka `http://localhost:3000/admin`, masuk memakai `ADMIN_EMAIL` dan `ADMIN_PASSWORD`, lalu buat link tamu pertama.
+
+## Menjalankan dengan Docker Compose
+
+Compose hanya menjalankan aplikasi Next.js; tidak ada service PostgreSQL di dalamnya.
+
+1. Siapkan `.env` dan arahkan `DATABASE_URL` ke PostgreSQL yang sudah tersedia. Jika PostgreSQL berjalan langsung pada host mesin, gunakan `host.docker.internal` sebagai hostname, bukan `localhost`.
+
+2. Build dan jalankan aplikasi:
+
+   ```powershell
+   docker compose up -d --build
+   ```
+
+3. Aplikasi tersedia di `http://localhost:3000`. Port host dapat diubah, misalnya:
+
+   ```powershell
+   $env:APP_PORT=8080
+   docker compose up -d
+   ```
+
+Untuk memakai file environment lain, set `ENV_FILE`, misalnya `$env:ENV_FILE='.env.production'`.
 
 ## Titik kustomisasi
 
