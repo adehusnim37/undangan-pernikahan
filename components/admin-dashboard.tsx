@@ -122,7 +122,7 @@ function AddDialog({
           <div className="edit-dialog-actions">
             <button
               type="button"
-              className="text-button"
+              className="button button"
               onClick={onClose}
               disabled={saving}
             >
@@ -238,7 +238,7 @@ function EditDialog({
           <div className="edit-dialog-actions">
             <button
               type="button"
-              className="text-button"
+              className="button button"
               onClick={onClose}
               disabled={saving}
             >
@@ -307,7 +307,7 @@ function DeleteDialog({
         <div className="edit-dialog-actions">
           <button
             type="button"
-            className="text-button"
+            className="button button"
             onClick={onClose}
             disabled={deleting}
           >

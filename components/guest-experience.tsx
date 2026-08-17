@@ -52,6 +52,10 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
 
     gsap.registerPlugin(ScrollTrigger, Flip);
     const responsiveMotion = gsap.matchMedia();
+    const refreshScrollTriggers = () => ScrollTrigger.refresh();
+    const invitationImages = root.querySelectorAll<HTMLImageElement>("img");
+    invitationImages.forEach((image) => image.addEventListener("load", refreshScrollTriggers));
+    const refreshTimer = window.setTimeout(refreshScrollTriggers, 150);
     const context = gsap.context(() => {
       const hero = root.querySelector<HTMLElement>(".folio-hero");
       const focusPhoto = root.querySelector<HTMLElement>(".folio-photo--focus");
@@ -62,11 +66,11 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
       const bar = root.querySelector<HTMLElement>(".folio-bar");
       const cue = root.querySelector<HTMLElement>(".folio-scroll");
       const storySection = root.querySelector<HTMLElement>(".folio-story");
-      const story = root.querySelector<HTMLElement>(".folio-story-copy");
-      const storyGhost = root.querySelector<HTMLElement>(".folio-story-ghost");
-      const storyRule = root.querySelector<HTMLElement>(".folio-story-rule");
+      const storyIntro = root.querySelector<HTMLElement>(".couple-intro");
+      const storyWord = root.querySelector<HTMLElement>(".couple-word");
       const storyMeta = root.querySelector<HTMLElement>(".folio-story-meta");
-      const storySide = root.querySelector<HTMLElement>(".folio-story-side");
+      const storyProfiles = root.querySelectorAll<HTMLElement>(".couple-profile");
+      const storyAmpersand = root.querySelector<HTMLElement>(".couple-ampersand");
       const journey = root.querySelector<HTMLElement>(".journey-section");
       const journeyTrack = root.querySelector<HTMLElement>(".journey-track");
       const journeyPanels = root.querySelectorAll<HTMLElement>(".journey-panel");
@@ -81,8 +85,18 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
       const footerCopy = root.querySelectorAll<HTMLElement>(".folio-footer-kicker, .folio-footer-note, .folio-footer-date");
 
       if (hero && focusPhoto && title && kicker && accent && guest && bar && cue) {
+        const focusPhotoTarget = window.matchMedia("(max-width: 700px)").matches
+          ? { left: "0%", top: "0%", width: "100%", height: "100%", xPercent: 0, yPercent: 0 }
+          : {
+              left: "50%",
+              top: "58%",
+              width: () => Math.min(window.innerWidth * 0.3, 420),
+              height: () => Math.min(window.innerHeight * 0.72, 540),
+              xPercent: -50,
+              yPercent: -50,
+            };
         const timeline = gsap.timeline({
-          scrollTrigger: { trigger: hero, start: "top top", end: "+=180%", scrub: 1, pin: true, anticipatePin: 1 },
+          scrollTrigger: { trigger: hero, start: "top top", end: "+=180%", scrub: 1, pin: true, anticipatePin: 1, invalidateOnRefresh: true },
         });
         timeline
           .to(bar, { opacity: 0, y: -18, duration: 0.18 }, 0)
@@ -97,7 +111,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             duration: 0.48,
           }, 0.18)
           .to(focusPhoto, {
-            left: "0%", top: "0%", width: "100%", height: "100%", borderRadius: 0,
+            ...focusPhotoTarget, borderRadius: 0,
             rotation: 0, scale: 1.08, duration: 0.7, ease: "power2.inOut",
           }, 0.35)
           .to(title, { color: "#f5f1e8", scale: 1.04, yPercent: 8, duration: 0.38 }, 0.72)
@@ -106,27 +120,78 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
           .to(guest, { color: "#f5f1e8", scale: 1.08, duration: 0.28 }, 0.72);
       }
 
-      if (storySection && story && storyGhost && storyRule && storyMeta && storySide) {
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-          gsap.set([storyMeta, storySide, story, storyRule, storyGhost], { clearProps: "all" });
-        } else {
-          const storyTimeline = gsap.timeline({
-            scrollTrigger: {
-              trigger: storySection,
-              start: "top top",
-              end: () => `+=${window.innerWidth <= 700 ? window.innerHeight * 0.72 : window.innerHeight * 0.62}`,
-              pin: true,
-              scrub: 0.8,
-              anticipatePin: 1,
-              invalidateOnRefresh: true,
-            },
+      if (storySection && storyIntro && storyMeta && storyProfiles.length) {
+        const storyIsMobile = window.matchMedia("(max-width: 700px)").matches;
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: storySection,
+            start: "top 84%",
+            end: "top 28%",
+            scrub: 0.8,
+            invalidateOnRefresh: true,
+          },
+        })
+          .fromTo(storyMeta, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.28, ease: "none" }, 0)
+          .fromTo(storyIntro, { y: 56, opacity: 0 }, { y: 0, opacity: 1, duration: 0.68, ease: "none" }, 0.08)
+          .fromTo(storyWord, { xPercent: 12, opacity: 0 }, { xPercent: 0, opacity: 1, duration: 0.72, ease: "none" }, 0.12);
+
+        storyProfiles.forEach((profile, index) => {
+          const portrait = profile.querySelector<HTMLElement>(".couple-portrait");
+          const portraitImage = profile.querySelector<HTMLElement>(".couple-portrait-media");
+          const copy = profile.querySelector<HTMLElement>(".couple-profile-copy");
+          const copyItems = profile.querySelectorAll<HTMLElement>(".couple-index, .couple-role, .couple-parents > *");
+          if (!portrait || !portraitImage || !copy) return;
+
+          const profileTimeline = gsap.timeline({ paused: true })
+            .fromTo(
+              portrait,
+              {
+                clipPath: storyIsMobile
+                  ? "inset(100% 0% 0% 0%)"
+                  : index === 0
+                    ? "inset(0% 100% 0% 0%)"
+                    : "inset(0% 0% 0% 100%)",
+              },
+              { clipPath: "inset(0% 0% 0% 0%)", duration: 0.82, ease: "power3.inOut" },
+              0,
+            )
+            .fromTo(portraitImage, { scale: 1.18 }, { scale: 1, duration: 1.05, ease: "power2.out" }, 0)
+            .fromTo(
+              copy,
+              { x: storyIsMobile ? 0 : index === 0 ? 54 : -54, y: storyIsMobile ? 38 : 0, opacity: 0 },
+              { x: 0, y: 0, opacity: 1, duration: 0.68, ease: "power3.out" },
+              0.16,
+            )
+            .fromTo(copyItems, { y: 18, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.055, duration: 0.42, ease: "power2.out" }, 0.34);
+
+          ScrollTrigger.create({
+            trigger: profile,
+            start: "top 84%",
+            end: "bottom 16%",
+            invalidateOnRefresh: true,
+            onEnter: () => profileTimeline.play(),
+            onEnterBack: () => profileTimeline.play(),
+            onLeaveBack: () => profileTimeline.reverse(),
           });
-          storyTimeline
-            .fromTo(storyMeta, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.22, ease: "none" }, 0)
-            .fromTo(storySide, { x: -22, opacity: 0 }, { x: 0, opacity: 1, duration: 0.32, ease: "none" }, 0.04)
-            .fromTo(story, { y: 64, opacity: 0 }, { y: 0, opacity: 1, duration: 0.64, ease: "none" }, 0.08)
-            .fromTo(storyRule, { scaleX: 0 }, { scaleX: 1, duration: 0.34, ease: "none" }, 0.18)
-            .fromTo(storyGhost, { xPercent: 12, opacity: 0 }, { xPercent: 0, opacity: 1, duration: 0.58, ease: "none" }, 0.12);
+        });
+
+        if (storyAmpersand) {
+          gsap.fromTo(
+            storyAmpersand,
+            { scale: 0.72, rotate: -12, opacity: 0 },
+            {
+              scale: 1,
+              rotate: 0,
+              opacity: 1,
+              ease: "none",
+              scrollTrigger: {
+                trigger: storyAmpersand,
+                start: "top 82%",
+                end: "center 55%",
+                scrub: 0.7,
+              },
+            },
+          );
         }
       }
 
@@ -265,6 +330,8 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
     return () => {
       responsiveMotion.revert();
       context.revert();
+      window.clearTimeout(refreshTimer);
+      invitationImages.forEach((image) => image.removeEventListener("load", refreshScrollTriggers));
     };
   }, [access]);
 
@@ -385,32 +452,77 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
       <header className="folio-hero">
         <div className="folio-bar"><span>ALVITA + ADE</span><span>JKT · 17.09.26</span></div>
         <div className="folio-gallery" aria-hidden="true">
-          {heroMediaSlots.map((item, index) => <figure className={`folio-photo folio-photo-${index + 1} ${index === 2 ? "folio-photo--focus" : ""}`} key={item.slot}><img src={photo(item.slot)} style={photoStyle(item.slot)} alt="" /><figcaption>{item.caption}</figcaption></figure>)}
+          {heroMediaSlots.map((item, index) => <figure className={`folio-photo folio-photo-${index + 1} ${index === 2 ? "folio-photo--focus" : ""}`} key={item.slot}><img src={photo(item.slot)} style={photoStyle(item.slot)} alt="" /><figcaption></figcaption></figure>)}
         </div>
-        <div className="folio-title"><p className="folio-kicker">SEBUAH PERAYAAN KECIL</p><h1>Alvita <em>&amp;</em> Ade</h1><p className="folio-guest"><span>UNDANGAN UNTUK</span><strong>{invitation.guest_name}</strong></p></div>
+        <div className="folio-title">
+          <p className="folio-kicker">You’re invited to the wedding of</p>
+          <h1>
+            <span className="folio-name">Alvita</span>
+            <em>&amp;</em>
+            <span className="folio-name">Ade</span>
+          </h1>
+          <p className="folio-guest">
+            <span>Undangan khusus untuk</span>
+            <strong>{invitation.guest_name}</strong>
+          </p>
+        </div>
         <div className="folio-scroll"><span>SCROLL TO ENTER</span><i>↓</i></div>
       </header>
 
-      <section className="folio-story" aria-labelledby="story-title">
-        <div className="folio-story-ghost" aria-hidden="true">pulang</div>
+      <section className="folio-story" aria-labelledby="couple-title">
+        <div className="couple-word" aria-hidden="true">restu</div>
         <div className="folio-story-meta">
-          <span>SURAT KECIL DARI KAMI</span>
-          <span>ALVITA + ADE / 2016—2026</span>
+          <span>DUA KELUARGA · SATU RUMAH</span>
+          <span>ALVITA + ADE / 2026</span>
         </div>
-        <div className="folio-story-layout">
-          <div className="folio-story-side" aria-hidden="true">
-            <span>UNTUKMU</span>
-            <i />
-            <span>SEBELUM CERITA DIMULAI</span>
-          </div>
-          <div className="folio-story-copy">
-            <p className="eyebrow">DENGAN SUKACITA</p>
-            <div className="folio-story-rule" aria-hidden="true" />
-            <h2 id="story-title"><span>Dalam teduh</span><span>malam,</span><em>kami memilih pulang.</em></h2>
-            <p>Kehadiran dan doa baikmu akan menjadi bagian yang kami kenang saat memulai hidup bersama.</p>
-            <p className="folio-story-signature">Dengan hangat,<strong>Alvita <i>&amp;</i> Ade</strong></p>
-          </div>
+        <header className="couple-intro">
+          <p className="eyebrow">DENGAN RESTU DAN SUKACITA</p>
+          <h2 id="couple-title"><span>Putri</span><i>&amp;</i><span>Putra</span></h2>
+          <p>Dua keluarga mempertemukan kami, lalu mengiringi langkah kami menuju satu rumah.</p>
+        </header>
+
+        <div className="couple-list">
+          <article className="couple-profile couple-profile--bride">
+            <figure className="couple-portrait">
+              <div className="couple-portrait-media">
+                <img src={photo("couple_bride_portrait")} style={photoStyle("couple_bride_portrait")} alt="Potret Alvita" />
+              </div>
+              <figcaption>ALVITA · PUTRI</figcaption>
+            </figure>
+            <div className="couple-profile-copy">
+              <span className="couple-index">01 / PUTRI</span>
+              <h3>Alvita</h3>
+              <p className="couple-role">Putri dari</p>
+              <div className="couple-parents">
+                <strong>Bapak [Nama Ayah Alvita]</strong>
+                <i>&amp;</i>
+                <strong>Ibu [Nama Ibu Alvita]</strong>
+              </div>
+            </div>
+          </article>
+
+          <div className="couple-ampersand" aria-hidden="true"><span>&amp;</span><i /></div>
+
+          <article className="couple-profile couple-profile--groom">
+            <figure className="couple-portrait">
+              <div className="couple-portrait-media">
+                <img src={photo("couple_groom_portrait")} style={photoStyle("couple_groom_portrait")} alt="Potret Ade" />
+              </div>
+              <figcaption>ADE · PUTRA</figcaption>
+            </figure>
+            <div className="couple-profile-copy">
+              <span className="couple-index">02 / PUTRA</span>
+              <h3>Ade</h3>
+              <p className="couple-role">Putra dari</p>
+              <div className="couple-parents">
+                <strong>Bapak [Nama Ayah Ade]</strong>
+                <i>&amp;</i>
+                <strong>Ibu [Nama Ibu Ade]</strong>
+              </div>
+            </div>
+          </article>
         </div>
+
         <div className="folio-story-bottom" aria-hidden="true"><span>LANJUTKAN KE CERITA KAMI</span><span>↓</span></div>
       </section>
 

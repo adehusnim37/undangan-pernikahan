@@ -208,8 +208,18 @@ export function MediaManagerDialog({ onClose }: { onClose: () => void }) {
         />
         <button className="dialog-close" onClick={onClose} aria-label="Tutup pengelola foto"><X size={18} /></button>
         <div className="media-manager-heading">
-          <div><p className="eyebrow">FOTO UNDANGAN</p><h2>Ganti foto di tempatnya.</h2></div>
-          <p>Drag foto untuk memilih area yang terlihat, lalu gunakan fit dan zoom. Perubahan berlaku untuk seluruh link tamu.</p>
+          <div>
+            <p className="eyebrow">GALERI UNDANGAN</p>
+            <h2>Setiap foto, tepat di tempatnya.</h2>
+          </div>
+          <div className="media-manager-intro">
+            <p>Pilih foto berdasarkan bagian undangan. Setelah upload, geser foto untuk menentukan fokus lalu sesuaikan ukuran tampilannya.</p>
+            <div className="media-manager-summary" aria-label="Ringkasan pengelola foto">
+              <span><strong>{invitationMediaSlots.length}</strong><small>slot foto</small></span>
+              <i />
+              <span><strong>1×</strong><small>untuk semua tamu</small></span>
+            </div>
+          </div>
         </div>
 
         {loading ? (
@@ -218,7 +228,11 @@ export function MediaManagerDialog({ onClose }: { onClose: () => void }) {
           <div className="media-manager-content">
             {groups.map((group) => (
               <section className="media-slot-group" key={group}>
-                <div className="media-slot-group-title"><span>{group}</span><i /></div>
+                <div className="media-slot-group-title">
+                  <span>{group}</span>
+                  <small>{invitationMediaSlots.filter((item) => item.group === group).length} foto</small>
+                  <i />
+                </div>
                 <div className="media-slot-grid">
                   {invitationMediaSlots.filter((item) => item.group === group).map((item) => {
                     const uploaded = media[item.slot];
@@ -259,11 +273,11 @@ export function MediaManagerDialog({ onClose }: { onClose: () => void }) {
                               transformOrigin: `${uploaded.position_x}% ${uploaded.position_y}%`,
                             } : undefined}
                           />
-                          <span className={uploaded ? "is-uploaded" : ""}>{uploaded ? "R2" : "Default"}</span>
+                          <span className={uploaded ? "is-uploaded" : ""}>{uploaded ? "Aktif · R2" : "Foto bawaan"}</span>
                           {uploaded && <><i className="media-focus-point" style={{ left: `${uploaded.position_x}%`, top: `${uploaded.position_y}%` }} /><em>Geser untuk pilih area</em></>}
                         </div>
                         <div className="media-slot-copy">
-                          <div><b>{item.label}</b><small>{uploaded?.original_name ?? "Belum diganti"}</small></div>
+                          <div><b>{item.label}</b><small title={uploaded?.original_name}>{uploaded?.original_name ?? "Belum ada foto yang diupload"}</small></div>
                           <label className={uploading ? "is-uploading" : ""}>
                             {uploading ? <RefreshCw size={14} /> : uploaded ? <ImageIcon size={14} /> : <Upload size={14} />}
                             {uploading ? "Mengunggah…" : uploaded ? "Ganti" : "Upload"}
@@ -281,28 +295,35 @@ export function MediaManagerDialog({ onClose }: { onClose: () => void }) {
                         </div>
                         {uploaded ? (
                           <div className={`media-slot-controls ${saving ? "is-saving" : ""}`}>
-                            <div className="media-fit-options" aria-label={`Mode tampilan ${item.label}`}>
-                              <button
-                                type="button"
-                                className={uploaded.object_fit === "contain" ? "is-active" : ""}
-                                disabled={savingSlot !== null || uploadingSlot !== null}
-                                onClick={() => void saveDisplay(item.slot, "contain", 1)}
-                              >Auto fit</button>
-                              <button
-                                type="button"
-                                className={uploaded.object_fit === "cover" ? "is-active" : ""}
-                                disabled={savingSlot !== null || uploadingSlot !== null}
-                                onClick={() => void saveDisplay(item.slot, "cover", 1)}
-                              >Fill frame</button>
+                            <div className="media-control-field">
+                              <span>Ukuran foto</span>
+                              <div className="media-fit-options" aria-label={`Mode tampilan ${item.label}`}>
+                                <button
+                                  type="button"
+                                  className={uploaded.object_fit === "contain" ? "is-active" : ""}
+                                  disabled={savingSlot !== null || uploadingSlot !== null}
+                                  onClick={() => void saveDisplay(item.slot, "contain", 1)}
+                                >Auto fit</button>
+                                <button
+                                  type="button"
+                                  className={uploaded.object_fit === "cover" ? "is-active" : ""}
+                                  disabled={savingSlot !== null || uploadingSlot !== null}
+                                  onClick={() => void saveDisplay(item.slot, "cover", 1)}
+                                >Penuhi</button>
+                              </div>
                             </div>
-                            <div className="media-zoom-control" aria-label={`Zoom ${item.label}`}>
-                              <button type="button" aria-label="Zoom out" disabled={savingSlot !== null || uploaded.scale <= 0.5} onClick={() => adjustZoom(item.slot, -1)}><Minus size={13} /></button>
-                              <output aria-live="polite">{Math.round(uploaded.scale * 100)}%</output>
-                              <button type="button" aria-label="Zoom in" disabled={savingSlot !== null || uploaded.scale >= 2.5} onClick={() => adjustZoom(item.slot, 1)}><Plus size={13} /></button>
+                            <div className="media-control-field">
+                              <span>Zoom</span>
+                              <div className="media-zoom-control" aria-label={`Zoom ${item.label}`}>
+                                <button type="button" aria-label="Zoom out" disabled={savingSlot !== null || uploaded.scale <= 0.5} onClick={() => adjustZoom(item.slot, -1)}><Minus size={13} /></button>
+                                <output aria-live="polite">{Math.round(uploaded.scale * 100)}%</output>
+                                <button type="button" aria-label="Zoom in" disabled={savingSlot !== null || uploaded.scale >= 2.5} onClick={() => adjustZoom(item.slot, 1)}><Plus size={13} /></button>
+                              </div>
                             </div>
+                            {saving && <span className="media-saving-label"><RefreshCw size={11} /> Menyimpan</span>}
                           </div>
                         ) : (
-                          <p className="media-slot-hint">Upload foto untuk mengatur fit dan zoom.</p>
+                          <p className="media-slot-hint"><ImageIcon size={13} /> Upload foto untuk membuka pengaturan fokus dan zoom.</p>
                         )}
                       </article>
                     );
@@ -312,7 +333,10 @@ export function MediaManagerDialog({ onClose }: { onClose: () => void }) {
             ))}
           </div>
         )}
-        <p className="media-manager-footnote">Format JPG, PNG, WebP, atau GIF. Maksimal 8 MB per foto.</p>
+        <div className="media-manager-footnote">
+          <span>JPG, PNG, WebP, atau GIF · maksimal 8 MB</span>
+          <strong>Perubahan tersimpan otomatis</strong>
+        </div>
       </div>
     </dialog>
   );
