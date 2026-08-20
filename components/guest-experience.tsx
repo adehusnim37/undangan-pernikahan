@@ -10,7 +10,7 @@ import { useThumbmark } from "@thumbmarkjs/react";
 import { toast } from "react-toastify";
 import { getApiErrorMessage } from "@/lib/client-api";
 import { rsvpFormSchema, validateWithToast } from "@/lib/client-validation";
-import { heroMediaSlots, invitationMediaBySlot, type InvitationMediaSlot } from "@/lib/invitation-media";
+import { heroMediaSlots, invitationMediaBySlot, preweddingMediaSlots, type InvitationMediaSlot } from "@/lib/invitation-media";
 
 type AccessState = "checking" | "allowed" | "denied";
 type Rsvp = {
@@ -34,6 +34,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
   const [message, setMessage] = useState("");
   const [rsvpState, setRsvpState] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [existingRsvp, setExistingRsvp] = useState<Rsvp | null>(null);
+  const [activePreweddingPhoto, setActivePreweddingPhoto] = useState<number | null>(null);
   const photo = (slot: InvitationMediaSlot) => invitation.media?.[slot]?.url ?? invitationMediaBySlot[slot].defaultUrl;
   const photoStyle = (slot: InvitationMediaSlot) => {
     const display = invitation.media?.[slot];
@@ -73,10 +74,11 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
       const storyAmpersand = root.querySelector<HTMLElement>(".couple-ampersand");
       const journey = root.querySelector<HTMLElement>(".journey-section");
       const journeyTrack = root.querySelector<HTMLElement>(".journey-track");
-      const journeyPanels = root.querySelectorAll<HTMLElement>(".journey-panel");
+      const journeyPanels = journey?.querySelectorAll<HTMLElement>(".journey-panel") ?? [];
       const journeyProgress = root.querySelector<HTMLElement>(".journey-progress span");
       const routePath = root.querySelector<SVGPathElement>(".journey-route-path");
-      const rsvp = root.querySelector<HTMLElement>(".rsvp-section");
+      const overscrollPanels = root.querySelectorAll<HTMLElement>(".overscroll-panel");
+      const prewedding = root.querySelector<HTMLElement>(".prewedding-section");
       const footer = root.querySelector<HTMLElement>(".folio-footer");
       const footerName = root.querySelector<HTMLElement>(".folio-footer-name");
       const footerCurtainLeft = root.querySelector<HTMLElement>(".folio-footer-curtain--left");
@@ -85,39 +87,44 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
       const footerCopy = root.querySelectorAll<HTMLElement>(".folio-footer-kicker, .folio-footer-note, .folio-footer-date");
 
       if (hero && focusPhoto && title && kicker && accent && guest && bar && cue) {
-        const focusPhotoTarget = window.matchMedia("(max-width: 700px)").matches
-          ? { left: "0%", top: "0%", width: "100%", height: "100%", xPercent: 0, yPercent: 0 }
-          : {
-              left: "50%",
-              top: "58%",
-              width: () => Math.min(window.innerWidth * 0.3, 420),
-              height: () => Math.min(window.innerHeight * 0.72, 540),
-              xPercent: -50,
-              yPercent: -50,
-            };
-        const timeline = gsap.timeline({
-          scrollTrigger: { trigger: hero, start: "top top", end: "+=180%", scrub: 1, pin: true, anticipatePin: 1, invalidateOnRefresh: true },
-        });
-        timeline
-          .to(bar, { opacity: 0, y: -18, duration: 0.18 }, 0)
-          .to(cue, { opacity: 0, y: 16, duration: 0.18 }, 0.08)
-          .to(".folio-photo:not(.folio-photo--focus)", {
-            x: (index) => `${index % 2 === 0 ? -1 : 1}${8 + index * 1.6}vw`,
-            y: (index) => `${index % 2 === 0 ? 9 : -9}vh`,
-            opacity: 0,
-            scale: 0.72,
-            rotate: (index) => (index % 2 === 0 ? -8 : 8),
-            stagger: 0.035,
-            duration: 0.48,
-          }, 0.18)
-          .to(focusPhoto, {
-            ...focusPhotoTarget, borderRadius: 0,
-            rotation: 0, scale: 1.08, duration: 0.7, ease: "power2.inOut",
-          }, 0.35)
-          .to(title, { color: "#f5f1e8", scale: 1.04, yPercent: 8, duration: 0.38 }, 0.72)
-          .to(kicker, { color: "#d9c8a5", duration: 0.28 }, 0.72)
-          .to(accent, { color: "#d9c8a5", duration: 0.28 }, 0.72)
-          .to(guest, { color: "#f5f1e8", scale: 1.08, duration: 0.28 }, 0.72);
+        const createHeroTimeline = (mobileHero: boolean) => {
+          const focusPhotoTarget = mobileHero
+            ? { left: "0%", top: "0%", width: "100%", height: "100%", xPercent: 0, yPercent: 0 }
+            : {
+                left: "50%",
+                top: "58%",
+                width: () => Math.min(window.innerWidth * 0.3, 420),
+                height: () => Math.min(window.innerHeight * 0.72, 540),
+                xPercent: -50,
+                yPercent: -50,
+              };
+          const timeline = gsap.timeline({
+            scrollTrigger: { trigger: hero, start: "top top", end: "+=180%", scrub: 1, pin: true, anticipatePin: 1, invalidateOnRefresh: true },
+          });
+          timeline
+            .to(bar, { opacity: 0, y: -18, duration: 0.18 }, 0)
+            .to(cue, { opacity: 0, y: 16, duration: 0.18 }, 0.08)
+            .to(".folio-photo:not(.folio-photo--focus)", {
+              x: (index) => `${index % 2 === 0 ? -1 : 1}${8 + index * 1.6}vw`,
+              y: (index) => `${index % 2 === 0 ? 9 : -9}vh`,
+              opacity: 0,
+              scale: 0.72,
+              rotate: (index) => (index % 2 === 0 ? -8 : 8),
+              stagger: 0.035,
+              duration: 0.48,
+            }, 0.18)
+            .to(focusPhoto, {
+              ...focusPhotoTarget, borderRadius: 0,
+              rotation: 0, scale: 1.08, duration: 0.7, ease: "power2.inOut",
+            }, 0.35)
+            .to(title, { color: "#fff9ed", scale: 1.04, yPercent: 8, duration: 0.38 }, 0.72)
+            .to(kicker, { color: "#d7b77a", duration: 0.28 }, 0.72)
+            .to(accent, { color: "#d7b77a", duration: 0.28 }, 0.72)
+            .to(guest, { color: "#fff9ed", scale: 1.08, duration: 0.28 }, 0.72);
+        };
+
+        responsiveMotion.add("(min-width: 701px)", () => createHeroTimeline(false));
+        responsiveMotion.add("(max-width: 700px)", () => createHeroTimeline(true));
       }
 
       if (storySection && storyIntro && storyMeta && storyProfiles.length) {
@@ -302,13 +309,113 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
         });
       }
 
-      if (rsvp) gsap.fromTo(rsvp, { y: 50, opacity: 0 }, { y: 0, opacity: 1, ease: "power2.out", scrollTrigger: { trigger: rsvp, start: "top 84%" } });
+      if (overscrollPanels.length > 1) {
+        const createOverscrollSequence = (mobileOverscroll: boolean) => {
+          const pinnedPanels = Array.from(overscrollPanels).slice(0, -1);
+          const resizeObservers: ResizeObserver[] = [];
+          const mutationObservers: MutationObserver[] = [];
+
+          pinnedPanels.forEach((panel) => {
+            const innerPanel = panel.querySelector<HTMLElement>(".overscroll-panel-inner");
+            if (!innerPanel) return;
+
+            const panelState = { progress: 0 };
+            const targetScale = mobileOverscroll ? 0.84 : 0.9;
+            const getMetrics = () => {
+              const innerHeight = innerPanel.scrollHeight;
+              const contentOverflow = Math.max(0, innerHeight - window.innerHeight);
+              return { innerHeight, contentOverflow, fakeScrollRatio: contentOverflow / innerHeight };
+            };
+            const renderPanel = () => {
+              const { contentOverflow, fakeScrollRatio } = getMetrics();
+              if (fakeScrollRatio > 0 && panelState.progress < fakeScrollRatio) {
+                gsap.set(innerPanel, { y: -contentOverflow * (panelState.progress / fakeScrollRatio) });
+                gsap.set(panel, { scale: 1, opacity: 1 });
+                return;
+              }
+
+              const exitProgress = fakeScrollRatio < 1
+                ? Math.max(0, Math.min(1, (panelState.progress - fakeScrollRatio) / (1 - fakeScrollRatio)))
+                : 0;
+              const scaleProgress = Math.min(1, exitProgress / 0.9);
+              const fadeProgress = exitProgress <= 0.9 ? 0 : Math.min(1, (exitProgress - 0.9) / 0.1);
+              const opacity = exitProgress <= 0.9
+                ? 1 - (0.52 * scaleProgress)
+                : 0.48 * (1 - fadeProgress);
+
+              gsap.set(innerPanel, { y: -contentOverflow });
+              gsap.set(panel, { scale: 1 - ((1 - targetScale) * scaleProgress), opacity });
+            };
+            const syncPanelMetrics = () => {
+              const { contentOverflow } = getMetrics();
+              panel.style.marginBottom = `${contentOverflow}px`;
+              if (panel.parentElement?.classList.contains("pin-spacer")) {
+                panel.parentElement.style.marginBottom = `${contentOverflow}px`;
+              }
+              renderPanel();
+            };
+
+            syncPanelMetrics();
+            gsap.to(panelState, {
+              progress: 1,
+              ease: "none",
+              onUpdate: renderPanel,
+              scrollTrigger: {
+                trigger: panel,
+                start: "bottom bottom",
+                end: () => `+=${innerPanel.scrollHeight}`,
+                pin: true,
+                pinSpacing: false,
+                scrub: true,
+                anticipatePin: 1,
+                invalidateOnRefresh: true,
+                onRefreshInit: syncPanelMetrics,
+              },
+            });
+
+            const resizeObserver = new ResizeObserver(() => {
+              ScrollTrigger.refresh();
+              window.requestAnimationFrame(syncPanelMetrics);
+            });
+            resizeObserver.observe(innerPanel);
+            resizeObservers.push(resizeObserver);
+
+            const mutationObserver = new MutationObserver(() => {
+              window.requestAnimationFrame(() => {
+                ScrollTrigger.refresh();
+                window.requestAnimationFrame(syncPanelMetrics);
+              });
+            });
+            mutationObserver.observe(innerPanel, { childList: true, subtree: true });
+            mutationObservers.push(mutationObserver);
+          });
+
+          return () => {
+            resizeObservers.forEach((observer) => observer.disconnect());
+            mutationObservers.forEach((observer) => observer.disconnect());
+            pinnedPanels.forEach((panel) => panel.style.removeProperty("margin-bottom"));
+          };
+        };
+
+        responsiveMotion.add("(max-width: 700px)", () => createOverscrollSequence(true));
+        responsiveMotion.add("(min-width: 701px)", () => createOverscrollSequence(false));
+      }
+      if (prewedding) {
+        const heading = prewedding.querySelectorAll<HTMLElement>(".prewedding-heading > *");
+        const photos = prewedding.querySelectorAll<HTMLElement>(".prewedding-photo");
+        gsap.fromTo(
+          heading,
+          { y: 34, opacity: 0 },
+          { y: 0, opacity: 1, stagger: 0.08, duration: 0.7, ease: "power3.out", scrollTrigger: { trigger: prewedding, start: "top 78%" } },
+        );
+        gsap.fromTo(
+          photos,
+          { y: 70, opacity: 0, scale: 0.94 },
+          { y: 0, opacity: 1, scale: 1, stagger: 0.09, duration: 0.9, ease: "power3.out", scrollTrigger: { trigger: ".prewedding-grid", start: "top 82%" } },
+        );
+      }
       if (footer && footerName && footerCurtainLeft && footerCurtainRight && footerRule) {
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-          gsap.set([footerCurtainLeft, footerCurtainRight], { xPercent: 0, yPercent: 0 });
-          gsap.set([footerName, footerRule, footerCopy], { clearProps: "all" });
-        } else {
-          const mobileClosing = window.matchMedia("(max-width: 700px)").matches;
+        const createClosingTimeline = (mobileClosing: boolean) => {
           const closingTimeline = gsap.timeline({
             scrollTrigger: {
               trigger: footer,
@@ -324,7 +431,10 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             .fromTo(footerRule, { scaleX: 0 }, { scaleX: 1, duration: 0.24, ease: "power2.out" }, 0.48)
             .fromTo(footerName, { yPercent: 68, scale: 0.9, opacity: 0 }, { yPercent: 0, scale: 1, opacity: 1, duration: 0.42, ease: "power3.out" }, 0.53)
             .fromTo(footerCopy, { y: 18, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.035, duration: 0.28, ease: "power2.out" }, 0.68);
-        }
+        };
+
+        responsiveMotion.add("(min-width: 701px)", () => createClosingTimeline(false));
+        responsiveMotion.add("(max-width: 700px)", () => createClosingTimeline(true));
       }
     }, root);
     return () => {
@@ -348,6 +458,28 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
       animation.revert();
     };
   }, [rsvpState]);
+
+  useEffect(() => {
+    if (activePreweddingPhoto === null) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setActivePreweddingPhoto(null);
+      if (event.key === "ArrowLeft") {
+        setActivePreweddingPhoto((current) => current === null ? null : (current - 1 + preweddingMediaSlots.length) % preweddingMediaSlots.length);
+      }
+      if (event.key === "ArrowRight") {
+        setActivePreweddingPhoto((current) => current === null ? null : (current + 1) % preweddingMediaSlots.length);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [activePreweddingPhoto]);
 
   useEffect(() => {
     if (isLoadingThumbmark) return;
@@ -605,35 +737,45 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
               <figure className="journey-photo journey-photo--ring"><img src={photo("journey_engagement_ring")} style={photoStyle("journey_engagement_ring")} alt="Cincin lamaran" /></figure>
             </div>
           </article>
-
-          <article className="journey-panel journey-panel--wedding">
-            <div className="journey-wedding-photo journey-photo">
-              <img src={photo("journey_wedding")} style={photoStyle("journey_wedding")} alt="Hari pernikahan Alvita dan Ade" />
-            </div>
-            <div className="journey-wedding-card">
-              <p className="eyebrow">SEPULUH TAHUN KEMUDIAN</p>
-              <h2>Insya Allah,<br />kami menikah.</h2>
-              <p>Kami akan meresmikan kisah cinta SMA ini tepat di hari jadi kami yang ke-10.</p>
-              <dl>
-                <div><dt>Hari & tanggal</dt><dd>Kamis, 17 September 2026</dd></div>
-                <div><dt>Resepsi</dt><dd>11.00—13.00 WIB</dd></div>
-                <div><dt>Lokasi</dt><dd>Masjid Istiqlal<br />Jakarta Pusat</dd></div>
-              </dl>
-              <a className="journey-location" href="https://maps.google.com/?q=Masjid+Istiqlal+Jakarta" target="_blank" rel="noreferrer">Buka lokasi <span>↗</span></a>
-            </div>
-          </article>
         </div>
       </section>
 
-      <section id="rsvp" className="rsvp-section">
-        <div className="rsvp-heading">
+      <div className="overscroll-sequence">
+        <article className="journey-panel journey-panel--wedding overscroll-panel">
+          <div className="overscroll-panel-inner">
+            <div className="journey-wedding-photo journey-photo">
+              <img src={photo("journey_wedding")} style={photoStyle("journey_wedding")} alt="Hari pernikahan Alvita dan Ade" />
+              <figcaption>ALVITA + ADE · JAKARTA</figcaption>
+            </div>
+            <div className="journey-wedding-card journey-copy">
+              <div className="journey-wedding-meta">
+                <span>SEPULUH TAHUN KEMUDIAN</span>
+                <span>17 · 09 · 2026</span>
+              </div>
+              <div className="journey-wedding-heading">
+                <h2>Insya Allah,<br /><em>kami menikah.</em></h2>
+              </div>
+              <p>Kami akan meresmikan kisah yang tumbuh sejak SMA—satu langkah pulang, untuk selamanya.</p>
+              <dl className="journey-wedding-details">
+                <div><dt>Hari & tanggal</dt><dd>Kamis, 17 September 2026</dd></div>
+                <div><dt>Resepsi</dt><dd>11.00—13.00 WIB</dd></div>
+                <div className="journey-wedding-place"><dt>Lokasi</dt><dd>Masjid Istiqlal — Jakarta Pusat</dd></div>
+              </dl>
+              <a className="journey-location" href="https://maps.google.com/?q=Masjid+Istiqlal+Jakarta" target="_blank" rel="noreferrer"><span>Lihat lokasi di peta</span><b aria-hidden="true">↗</b></a>
+            </div>
+          </div>
+        </article>
+
+        <section id="rsvp" className="rsvp-section overscroll-panel">
+          <div className="overscroll-panel-inner">
+            <div className="rsvp-heading">
           <p className="eyebrow">BALAS UNDANGAN</p>
           <h2>Kami ingin merayakannya bersamamu.</h2>
           <p>Mohon kirim kabar kehadiran sebelum hari acara.</p>
           <span className="rsvp-personal-note">KHUSUS UNTUK · {invitation.guest_name}</span>
-        </div>
+            </div>
 
-        {rsvpState === "done" ? (
+            {rsvpState === "done" ? (
           <div className="rsvp-success">
             <span className="rsvp-success-index">BALASAN TERSIMPAN</span>
             <b>Terima kasih,<br />{invitation.guest_name}.</b>
@@ -696,8 +838,64 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             </div>
             {rsvpState === "error" && <p className="form-error">Konfirmasi belum tersimpan. Coba ulangi.</p>}
           </form>
-        )}
-      </section>
+            )}
+          </div>
+        </section>
+
+        <section className="prewedding-section overscroll-panel overscroll-panel--final" aria-labelledby="prewedding-title">
+          <div className="overscroll-panel-inner">
+            <header className="prewedding-heading">
+          <div className="prewedding-heading-meta">
+            <span>05 / GALERI</span>
+            <span>ALVITA + ADE · 2026</span>
+          </div>
+          <p className="eyebrow">SEBELUM HARI BAHAGIA</p>
+          <h2 id="prewedding-title">Satu cerita,<br /><em>dalam bingkai.</em></h2>
+          <p>Sepenggal momen yang kami simpan sebelum melangkah menuju selamanya.</p>
+            </header>
+
+            <div className="prewedding-grid">
+          {preweddingMediaSlots.map((item, index) => (
+            <button
+              type="button"
+              className={`prewedding-photo prewedding-photo--${index + 1}`}
+              key={item.slot}
+              onClick={() => setActivePreweddingPhoto(index)}
+              aria-label={`Buka foto prewedding ${index + 1}: ${item.caption}`}
+            >
+              <span className="prewedding-photo-media">
+                <img src={photo(item.slot)} style={photoStyle(item.slot)} alt={`Foto prewedding Alvita dan Ade ${index + 1}`} loading="lazy" />
+              </span>
+              <span className="prewedding-photo-caption"><b>{String(index + 1).padStart(2, "0")}</b><span>{item.caption}</span><i aria-hidden="true">↗</i></span>
+            </button>
+          ))}
+            </div>
+
+            <div className="prewedding-endnote" aria-hidden="true"><span>ONE LOVE · ONE STORY</span><i /></div>
+          </div>
+        </section>
+      </div>
+
+      {activePreweddingPhoto !== null && (() => {
+        const activeItem = preweddingMediaSlots[activePreweddingPhoto];
+        return (
+          <div className="prewedding-lightbox" role="dialog" aria-modal="true" aria-label={`Foto prewedding ${activePreweddingPhoto + 1}`}>
+            <button className="prewedding-lightbox-backdrop" type="button" aria-label="Tutup galeri" onClick={() => setActivePreweddingPhoto(null)} />
+            <div className="prewedding-lightbox-toolbar">
+              <span>{String(activePreweddingPhoto + 1).padStart(2, "0")} / {String(preweddingMediaSlots.length).padStart(2, "0")}</span>
+              <button type="button" onClick={() => setActivePreweddingPhoto(null)} aria-label="Tutup galeri" autoFocus>TUTUP <i aria-hidden="true">×</i></button>
+            </div>
+            <figure className="prewedding-lightbox-figure">
+              <img src={photo(activeItem.slot)} style={photoStyle(activeItem.slot)} alt={`Foto prewedding Alvita dan Ade ${activePreweddingPhoto + 1}`} />
+              <figcaption>{activeItem.caption}</figcaption>
+            </figure>
+            <div className="prewedding-lightbox-navigation">
+              <button type="button" aria-label="Foto sebelumnya" onClick={() => setActivePreweddingPhoto((activePreweddingPhoto - 1 + preweddingMediaSlots.length) % preweddingMediaSlots.length)}>←</button>
+              <button type="button" aria-label="Foto berikutnya" onClick={() => setActivePreweddingPhoto((activePreweddingPhoto + 1) % preweddingMediaSlots.length)}>→</button>
+            </div>
+          </div>
+        );
+      })()}
 
       <footer className="folio-footer">
         <div className="folio-footer-curtains" aria-hidden="true">

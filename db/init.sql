@@ -41,7 +41,11 @@ CREATE TABLE IF NOT EXISTS invitation_media (
     'journey_school_portrait', 'journey_school_mark', 'journey_school_detail',
     'journey_campus_wide', 'journey_campus_small_a', 'journey_campus_small_b',
     'journey_distance_city', 'journey_distance_graduate',
-    'journey_engagement_main', 'journey_engagement_ring', 'journey_wedding'
+    'journey_engagement_main', 'journey_engagement_ring', 'journey_wedding',
+    'prewedding_1', 'prewedding_2', 'prewedding_3',
+    'prewedding_4', 'prewedding_5', 'prewedding_6',
+    'prewedding_7', 'prewedding_8', 'prewedding_9',
+    'prewedding_10', 'prewedding_11', 'prewedding_12'
   )),
   object_key TEXT UNIQUE NOT NULL,
   public_url TEXT NOT NULL,

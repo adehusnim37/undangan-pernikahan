@@ -19,6 +19,18 @@ export const invitationMediaSlots = [
   { slot: "journey_engagement_main", group: "Perjalanan · lamaran", label: "Foto utama lamaran", caption: "30 · 05 · 2026", defaultUrl: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=1200&q=90" },
   { slot: "journey_engagement_ring", group: "Perjalanan · lamaran", label: "Foto detail lamaran", caption: "Cincin lamaran", defaultUrl: "https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=800&q=88" },
   { slot: "journey_wedding", group: "Perjalanan · pernikahan", label: "Foto penutup perjalanan", caption: "Hari pernikahan", defaultUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1600&q=90" },
+  { slot: "prewedding_1", group: "Galeri prewedding", label: "Prewedding 1 · foto utama", caption: "Alvita & Ade", defaultUrl: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1600&q=90" },
+  { slot: "prewedding_2", group: "Galeri prewedding", label: "Prewedding 2 · potret", caption: "A quiet promise", defaultUrl: "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1100&q=88" },
+  { slot: "prewedding_3", group: "Galeri prewedding", label: "Prewedding 3 · lanskap", caption: "Side by side", defaultUrl: "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=1300&q=88" },
+  { slot: "prewedding_4", group: "Galeri prewedding", label: "Prewedding 4 · detail", caption: "The little things", defaultUrl: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1100&q=88" },
+  { slot: "prewedding_5", group: "Galeri prewedding", label: "Prewedding 5 · potret", caption: "Before forever", defaultUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1100&q=88" },
+  { slot: "prewedding_6", group: "Galeri prewedding", label: "Prewedding 6 · penutup", caption: "Ten years, one story", defaultUrl: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=1500&q=90" },
+  { slot: "prewedding_7", group: "Galeri prewedding", label: "Prewedding 7 · lanskap", caption: "Where we belong", defaultUrl: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1500&q=90" },
+  { slot: "prewedding_8", group: "Galeri prewedding", label: "Prewedding 8 · potret", caption: "Softly, together", defaultUrl: "https://images.unsplash.com/photo-1544078751-58fee2d8a03b?auto=format&fit=crop&w=1000&q=88" },
+  { slot: "prewedding_9", group: "Galeri prewedding", label: "Prewedding 9 · detail", caption: "A promise kept", defaultUrl: "https://images.unsplash.com/photo-1507504031003-b417219a0fde?auto=format&fit=crop&w=1000&q=88" },
+  { slot: "prewedding_10", group: "Galeri prewedding", label: "Prewedding 10 · foto utama", caption: "Always us", defaultUrl: "https://images.unsplash.com/photo-1529634597503-139d3726fed5?auto=format&fit=crop&w=1500&q=90" },
+  { slot: "prewedding_11", group: "Galeri prewedding", label: "Prewedding 11 · lanskap", caption: "The road home", defaultUrl: "https://images.unsplash.com/photo-1537907690979-ee8e01276184?auto=format&fit=crop&w=1300&q=88" },
+  { slot: "prewedding_12", group: "Galeri prewedding", label: "Prewedding 12 · penutup", caption: "To forever", defaultUrl: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1500&q=90" },
 ] as const;
 
 export type InvitationMediaSlot = (typeof invitationMediaSlots)[number]["slot"];
@@ -37,6 +49,8 @@ export const invitationMediaSlotValues = invitationMediaSlots.map((item) => item
 ];
 
 export const heroMediaSlots = invitationMediaSlots.slice(0, 7);
+
+export const preweddingMediaSlots = invitationMediaSlots.filter((item) => item.slot.startsWith("prewedding_"));
 
 export const invitationMediaBySlot = Object.fromEntries(
   invitationMediaSlots.map((item) => [item.slot, item]),
