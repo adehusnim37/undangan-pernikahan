@@ -8,6 +8,7 @@ Template full-stack untuk undangan web dengan link personal per tamu, dashboard 
 - Dashboard admin di `/admin` untuk membuat tamu, menyalin link, mencabut akses, dan me-reset perangkat.
 - API route Next.js untuk login admin, tamu, pemeriksaan akses, dan RSVP.
 - PostgreSQL eksternal untuk data undangan, akses, RSVP, dan pengaturan media.
+- Migrasi database otomatis saat backend mulai, lengkap dengan lock dan riwayat migrasi.
 - Pengikatan perangkat pada kunjungan pertama memakai ThumbmarkJS di browser. Admin dapat me-reset ikatan perangkat kapan pun.
 
 ## Menjalankan lokal
@@ -32,6 +33,14 @@ Template full-stack untuk undangan web dengan link personal per tamu, dashboard 
    ```
 
 5. Buka `http://localhost:<PORT>/admin`, masuk memakai `ADMIN_EMAIL` dan `ADMIN_PASSWORD`, lalu buat link tamu pertama.
+
+## Migrasi database otomatis
+
+Backend menjalankan seluruh file `db/migrations/*.sql` secara berurutan sebelum menerima request. Migration yang berhasil dicatat di tabel `schema_migrations`, sehingga tidak dijalankan ulang pada startup berikutnya. PostgreSQL advisory lock mencegah dua instance mengerjakan migration yang sama secara bersamaan.
+
+Untuk perubahan schema berikutnya, tambahkan file SQL baru dengan pola `NNN_nama_migration.sql`. Jangan mengubah file yang sudah pernah diterapkan karena backend memverifikasi checksum-nya.
+
+Migrasi otomatis aktif secara default. Jika perlu mematikannya sementara, set `AUTO_MIGRATE=false`.
 
 ## Menjalankan dengan Docker Compose
 
@@ -59,7 +68,7 @@ Gunakan file `.env` yang sama untuk lokal dan production. Di server production, 
 
 - Nama mempelai, tanggal, lokasi, dan narasi: `app/invite/[token]/page.tsx` serta `components/guest-experience.tsx`.
 - Palet dan tampilan: `app/globals.css`.
-- Struktur database: `db/init.sql`.
+- Struktur database: `db/migrations/*.sql`.
 - Integrasi Thumbmark: `app/layout.tsx` dan `components/guest-experience.tsx`.
 - Logika pengikatan perangkat: `app/api/public/invite/[token]/access/route.ts`.
 
