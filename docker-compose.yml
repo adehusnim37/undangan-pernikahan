@@ -5,6 +5,9 @@ services:
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:?NEXT_PUBLIC_APP_URL is required}
+        NEXT_PUBLIC_COUPLE_NAME: ${NEXT_PUBLIC_COUPLE_NAME:?NEXT_PUBLIC_COUPLE_NAME is required}
+        NEXT_PUBLIC_BRIDE_NAME: ${NEXT_PUBLIC_BRIDE_NAME:?NEXT_PUBLIC_BRIDE_NAME is required}
+        NEXT_PUBLIC_GROOM_NAME: ${NEXT_PUBLIC_GROOM_NAME:?NEXT_PUBLIC_GROOM_NAME is required}
     image: undangan-pernikahan:latest
     container_name: undangan-pernikahan
     restart: unless-stopped

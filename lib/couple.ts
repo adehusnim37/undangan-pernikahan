@@ -1,19 +1,22 @@
 /**
  * Nama mempelai, diambil dari environment.
  *
- * Variabel `NEXT_PUBLIC_*` di-inline pada waktu build oleh Next.js, jadi aman
- * dipakai dari server component maupun client component. Nilai fallback
- * dipakai bila env belum diisi (untuk development).
+ * Variabel `NEXT_PUBLIC_*` di-inline pada waktu build oleh Next.js, jadi akses
+ * propertinya harus ditulis secara statis. Dynamic lookup seperti
+ * `process.env[key]` tidak akan ikut masuk ke bundle client.
  */
-function read(key: string, fallback: string): string {
-  return (process.env[key] ?? fallback).trim();
+function read(value: string | undefined, fallback: string): string {
+  return (value ?? fallback).trim();
 }
 
+const bride = read(process.env.NEXT_PUBLIC_BRIDE_NAME, "Alvita");
+const groom = read(process.env.NEXT_PUBLIC_GROOM_NAME, "Ade");
+
 export const couple = {
-  bride: read("NEXT_PUBLIC_BRIDE_NAME", "Alvita"),
-  groom: read("NEXT_PUBLIC_GROOM_NAME", "Ade"),
+  bride,
+  groom,
   /** Gabungan untuk tampilan, mis. "Alvita & Ade". */
-  name: read("NEXT_PUBLIC_COUPLE_NAME", "Alvita & Ade"),
+  name: read(process.env.NEXT_PUBLIC_COUPLE_NAME, `${bride} & ${groom}`),
 };
 
 /** Varian huruf besar untuk teks dekoratif/teknis. */
