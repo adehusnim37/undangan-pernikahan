@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { isAdmin } from "@/lib/auth";
+import { assertSameOrigin } from "@/lib/csrf";
 import { query } from "@/lib/db";
 import { newToken } from "@/lib/invitations";
 import { createGuestBodySchema, parseJson, validationError } from "@/lib/validation";
@@ -16,6 +17,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (!assertSameOrigin(request)) {
+    return NextResponse.json({ message: "Request tidak valid." }, { status: 403 });
+  }
   if (!(await isAdmin()))
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   const body = await parseJson(request, createGuestBodySchema);

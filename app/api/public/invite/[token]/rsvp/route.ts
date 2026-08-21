@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { query } from "@/lib/db";
+import { db, query } from "@/lib/db";
 import { getInvitation } from "@/lib/invitations";
 import { invitationParamsSchema, parseJson, rsvpBodySchema, validationError } from "@/lib/validation";
 
@@ -47,16 +47,31 @@ export async function POST(
     );
   }
 
-  await query(
-    `INSERT INTO rsvps (invitation_id, attendance, guest_count, current_editable_rsvps, max_editable_rsvps, message)
-     VALUES ($1, $2, $3, 1, 2, $4)
-     ON CONFLICT (invitation_id) DO UPDATE SET
-       attendance = EXCLUDED.attendance,
-       guest_count = EXCLUDED.guest_count,
-       current_editable_rsvps = rsvps.current_editable_rsvps + 1,
-       message = EXCLUDED.message,
-       updated_at = NOW()`,
-    [invitation.id, attendance, guestCount, message || null],
-  );
+  // Atomik: simpan riwayat + perbarui RSVP dalam satu transaksi.
+  const client = await db.connect();
+  try {
+    await client.query("BEGIN");
+    await client.query(
+      "INSERT INTO rsvp_history (invitation_id, attendance, guest_count, message, changed_by) VALUES ($1, $2, $3, $4, 'guest')",
+      [invitation.id, attendance, guestCount, message || null],
+    );
+    await client.query(
+      `INSERT INTO rsvps (invitation_id, attendance, guest_count, current_editable_rsvps, max_editable_rsvps, message)
+       VALUES ($1, $2, $3, 1, 2, $4)
+       ON CONFLICT (invitation_id) DO UPDATE SET
+         attendance = EXCLUDED.attendance,
+         guest_count = EXCLUDED.guest_count,
+         current_editable_rsvps = rsvps.current_editable_rsvps + 1,
+         message = EXCLUDED.message,
+         updated_at = NOW()`,
+      [invitation.id, attendance, guestCount, message || null],
+    );
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK").catch(() => undefined);
+    throw error;
+  } finally {
+    client.release();
+  }
   return NextResponse.json({ ok: true });
 }

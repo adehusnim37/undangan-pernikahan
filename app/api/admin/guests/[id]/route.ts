@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { isAdmin } from "@/lib/auth";
+import { assertSameOrigin } from "@/lib/csrf";
 import { query } from "@/lib/db";
 import { guestIdParamsSchema, parseJson, updateGuestBodySchema, validationError } from "@/lib/validation";
 
@@ -7,6 +8,9 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  if (!assertSameOrigin(request)) {
+    return NextResponse.json({ message: "Request tidak valid." }, { status: 403 });
+  }
   if (!(await isAdmin()))
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   const parsedParams = guestIdParamsSchema.safeParse(await params);
@@ -28,8 +32,14 @@ export async function PATCH(
   } else if (action === "update-guest") {
     const { guestName, guestGroup, maxGuests } = body.data;
     await query(
-      "UPDATE invitations SET guest_name = $2, guest_group = $3, max_guests = $4, current_editable_rsvps = LEAST(current_editable_rsvps + 1, max_editable_rsvps), updated_at = NOW() WHERE id = $1",
+      "UPDATE invitations SET guest_name = $2, guest_group = $3, max_guests = $4, updated_at = NOW() WHERE id = $1",
       [id, guestName, guestGroup, maxGuests],
+    );
+    // Setelah data tamu diubah, beri kesempatan edit ulang dengan mereset
+    // penghitung perubahan RSVP (kolom ini ada di tabel rsvps, bukan invitations).
+    await query(
+      "UPDATE rsvps SET current_editable_rsvps = 1, updated_at = NOW() WHERE invitation_id = $1",
+      [id],
     );
   } else if (action === "delete") {
     const checkRsvp = await query("SELECT id FROM rsvps WHERE invitation_id = $1", [id]);

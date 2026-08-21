@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { isAdmin } from "@/lib/auth";
+import { assertSameOrigin } from "@/lib/csrf";
 import { query } from "@/lib/db";
 import type { InvitationMedia } from "@/lib/invitations";
 import { deleteImage, putImage } from "@/lib/r2";
@@ -42,6 +43,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (!assertSameOrigin(request)) {
+    return NextResponse.json({ message: "Request tidak valid." }, { status: 403 });
+  }
   if (!(await isAdmin())) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const formData = await request.formData().catch(() => null);
@@ -100,6 +104,9 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  if (!assertSameOrigin(request)) {
+    return NextResponse.json({ message: "Request tidak valid." }, { status: 403 });
+  }
   if (!(await isAdmin())) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   const body = await parseJson(request, imageDisplaySettingsSchema);
   if (!body.success) return validationError(body.error);
