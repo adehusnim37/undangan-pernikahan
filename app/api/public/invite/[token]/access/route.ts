@@ -1,12 +1,28 @@
 import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
 import { getInvitation, getrsvp } from "@/lib/invitations";
+import { assertSameOrigin } from "@/lib/csrf";
+import { clientInfoFrom } from "@/lib/admin-security";
+import { consumeRateLimit } from "@/lib/rate-limit";
 import { invitationAccessBodySchema, invitationParamsSchema, parseJson, validationError } from "@/lib/validation";
+
+const ACCESS_LIMIT_PER_IP = 30; // klaim/verifikasi per IP
+const ACCESS_WINDOW_SECONDS = 600; // dalam 10 menit
 
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ token: string }> },
 ) {
+  if (!assertSameOrigin(request)) {
+    return NextResponse.json({ message: "Request tidak valid." }, { status: 403 });
+  }
+  const { ipAddress } = clientInfoFrom(request);
+  if (!(await consumeRateLimit("invite-access", ipAddress, ACCESS_LIMIT_PER_IP, ACCESS_WINDOW_SECONDS))) {
+    return NextResponse.json(
+      { message: "Terlalu banyak percobaan. Coba lagi nanti." },
+      { status: 429 },
+    );
+  }
   const rawParams = await params;
   const parsedParams = invitationParamsSchema.safeParse(rawParams);
   if (!parsedParams.success) return validationError(parsedParams.error);

@@ -2,7 +2,15 @@ import crypto from "crypto";
 import { cookies } from "next/headers";
 import { getSessionSecret, useSecureCookies } from "@/lib/config";
 
-const COOKIE_NAME = "undangan_admin";
+const BASE_COOKIE_NAME = "undangan_admin";
+
+/**
+ * Prefix `__Host-` (hanya saat cookie Secure) mengikat cookie ke host dan
+ * mencegah cookie dengan nama sama di-set dari subdomain lain.
+ */
+function cookieName() {
+  return useSecureCookies() ? `__Host-${BASE_COOKIE_NAME}` : BASE_COOKIE_NAME;
+}
 
 function secret() {
   return getSessionSecret();
@@ -26,10 +34,10 @@ export function isValidAdminSession(value?: string) {
 }
 
 export async function isAdmin() {
-  return isValidAdminSession((await cookies()).get(COOKIE_NAME)?.value);
+  return isValidAdminSession((await cookies()).get(cookieName())?.value);
 }
 
 export const adminCookie = {
-  name: COOKIE_NAME,
+  name: cookieName(),
   options: { httpOnly: true, sameSite: "lax" as const, secure: useSecureCookies(), path: "/", maxAge: 60 * 60 * 12 },
 };

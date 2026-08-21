@@ -70,8 +70,17 @@ export const imageDisplaySettingsSchema = z
   })
   .strict();
 
+const MAX_BODY_BYTES = 128 * 1024; // 128 KB cukup untuk semua payload aplikasi ini.
+
 export async function parseJson<T extends z.ZodType>(request: Request, schema: T) {
-  const json: unknown = await request.json().catch(() => undefined);
+  const text = await request.text().catch(() => undefined);
+  if (text === undefined || text.length > MAX_BODY_BYTES) return schema.safeParse(undefined);
+  let json: unknown;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    json = undefined;
+  }
   return schema.safeParse(json);
 }
 

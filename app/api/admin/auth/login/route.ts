@@ -40,7 +40,11 @@ export async function POST(request: Request) {
   }
 
   const { email: adminEmail, password: adminPassword } = getAdminCredentials();
-  const valid = same(email, adminEmail) && same(password, adminPassword);
+  // Bandingkan keduanya tanpa short-circuit agar tidak bocor validitas email
+  // lewat perbedaan waktu respons.
+  const emailOk = same(email, adminEmail);
+  const passwordOk = same(password, adminPassword);
+  const valid = emailOk && passwordOk;
   await recordAdminLogin(email, ipAddress, userAgent, valid);
   if (!valid) return unauthorized();
 

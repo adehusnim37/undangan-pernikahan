@@ -1,12 +1,23 @@
 import { NextResponse } from "next/server";
 import { db, query } from "@/lib/db";
 import { getInvitation } from "@/lib/invitations";
+import { assertSameOrigin } from "@/lib/csrf";
+import { clientInfoFrom } from "@/lib/admin-security";
+import { consumeRateLimit } from "@/lib/rate-limit";
 import { invitationParamsSchema, parseJson, rsvpBodySchema, validationError } from "@/lib/validation";
+
+const RSVP_LIMIT_PER_TOKEN = 15;
+const RSVP_LIMIT_PER_IP = 60;
+const RSVP_WINDOW_SECONDS = 600;
 
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ token: string }> },
 ) {
+  if (!assertSameOrigin(request)) {
+    return NextResponse.json({ message: "Request tidak valid." }, { status: 403 });
+  }
+  const { ipAddress } = clientInfoFrom(request);
   const rawParams = await params;
   const parsedParams = invitationParamsSchema.safeParse(rawParams);
   if (!parsedParams.success) return validationError(parsedParams.error);
@@ -14,6 +25,17 @@ export async function POST(
   if (!body.success) return validationError(body.error);
   const { token } = parsedParams.data;
   const invitation = await getInvitation(token);
+
+  if (
+    !(await consumeRateLimit("invite-rsvp", token, RSVP_LIMIT_PER_TOKEN, RSVP_WINDOW_SECONDS)) ||
+    !(await consumeRateLimit("invite-rsvp", ipAddress, RSVP_LIMIT_PER_IP, RSVP_WINDOW_SECONDS))
+  ) {
+    return NextResponse.json(
+      { message: "Terlalu banyak percobaan. Coba lagi nanti." },
+      { status: 429 },
+    );
+  }
+
   const { attendance, guestCount, message, hash } = body.data;
 
   if (

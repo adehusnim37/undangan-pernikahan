@@ -83,3 +83,13 @@ export function getAllowedOrigin(): string {
   return configured.replace(/\/+$/, "");
 }
 
+/**
+ * Apakah header proxy (X-Forwarded-For / X-Real-IP) dipercaya.
+ * WAJIB hanya true ketika aplikasi hanya bisa diakses lewat proxy tepercaya
+ * (mis. nginx). Jika false, IP klien dilaporkan "unknown" sehingga
+ * rate-limit berbasis IP tidak aktif (rate-limit per-email tetap berjalan).
+ */
+export function trustProxy(): boolean {
+  return process.env.TRUST_PROXY === "true";
+}
+

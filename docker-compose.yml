@@ -14,7 +14,9 @@ services:
     environment:
       HOSTNAME: 0.0.0.0
     ports:
-      - "${PORT:-3000}:${PORT:-3000}"
+      # Hanya bind ke loopback: nginx di host yang melayani publik.
+      # Jika tidak ada nginx, ubah menjadi "${PORT:-3000}:${PORT:-3000}".
+      - "127.0.0.1:${PORT:-3000}:${PORT:-3000}"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:

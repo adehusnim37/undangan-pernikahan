@@ -1,8 +1,10 @@
-import { query } from "@/lib/db";
+import { db, query } from "@/lib/db";
+import { trustProxy } from "@/lib/config";
 
 const MAX_FAILED_ATTEMPTS = 5;
 const WINDOW_MS = 10 * 60 * 1000; // 10 menit
 const LOCKOUT_MS = 15 * 60 * 1000; // 15 menit
+const RETENTION_DAYS = 90;
 
 type RateLimitState = {
   failed: number;
@@ -10,13 +12,28 @@ type RateLimitState = {
   lockoutUntil: string | null;
 };
 
+/**
+ * Ekstrak IP klien dengan aman.
+ * Hanya percaya header proxy bila TRUST_PROXY=true; jika tidak, semua
+ * header bisa dipalsukan klien sehingga dilaporkan "unknown".
+ * Saat mempercayai proxy, ambil entri TERAKHIR dari X-Forwarded-For karena
+ * itulah yang ditambahkan oleh nginx (bukan yang bisa dipalsukan klien).
+ */
 export function clientInfoFrom(request: Request) {
-  const ipAddress =
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    request.headers.get("x-real-ip") ||
-    "unknown";
   const userAgent = request.headers.get("user-agent")?.slice(0, 300) ?? null;
-  return { ipAddress, userAgent };
+  if (!trustProxy()) return { ipAddress: "unknown", userAgent };
+
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const entries = forwarded
+      .split(",")
+      .map((entry) => entry.trim())
+      .filter(Boolean);
+    const last = entries[entries.length - 1];
+    if (last) return { ipAddress: last, userAgent };
+  }
+  const realIp = request.headers.get("x-real-ip");
+  return { ipAddress: realIp ?? "unknown", userAgent };
 }
 
 /**
@@ -24,23 +41,15 @@ export function clientInfoFrom(request: Request) {
  * Disimpan di DB sehingga lintas instance/restart tetap konsisten.
  */
 export async function getAdminRateLimit(email: string, ipAddress: string): Promise<RateLimitState> {
-  const result = await query<{ failed: string; locked: string | null }>(
-    `SELECT
-       (SELECT COUNT(*) FROM admin_login_attempts
-         WHERE success = FALSE
-           AND (email = $1 OR ip_address = $2)
-           AND created_at > NOW() - make_interval(secs => $3))::text AS failed,
-       (SELECT MAX(created_at)::text FROM admin_login_attempts
-         WHERE success = TRUE AND email = $1
-           AND created_at > NOW() - make_interval(secs => $3))::text AS locked`,
+  const result = await query<{ failed: string }>(
+    `SELECT COUNT(*)::text AS failed FROM admin_login_attempts
+     WHERE success = FALSE
+       AND (email = $1 OR ip_address = $2)
+       AND created_at > NOW() - make_interval(secs => $3)`,
     [email.toLowerCase(), ipAddress, WINDOW_MS / 1000],
   );
-  const row = result.rows[0];
-  const failed = Number(row?.failed ?? 0);
-  const lastSuccess = row?.locked ? new Date(row.locked) : null;
-  const locked =
-    failed >= MAX_FAILED_ATTEMPTS ||
-    (lastSuccess !== null && Date.now() - lastSuccess.getTime() < LOCKOUT_MS);
+  const failed = Number(result.rows[0]?.failed ?? 0);
+  const locked = failed >= MAX_FAILED_ATTEMPTS;
   return {
     failed,
     locked,
@@ -48,17 +57,42 @@ export async function getAdminRateLimit(email: string, ipAddress: string): Promi
   };
 }
 
-/** Catat percobaan login (sukses/gagal) untuk audit & rate-limit. */
+/**
+ * Catat percobaan login (sukses/gagal) untuk audit & rate-limit.
+ * Saat login sukses: reset penghitung kegagalan email tsb agar admin
+ * tidak terkunci oleh percobaan orang lain. Sekaligus bersihkan baris lama.
+ */
 export async function recordAdminLogin(
   email: string,
   ipAddress: string,
   userAgent: string | null,
   success: boolean,
 ) {
-  await query(
-    "INSERT INTO admin_login_attempts (email, ip_address, user_agent, success) VALUES ($1, $2, $3, $4)",
-    [email.toLowerCase(), ipAddress, userAgent, success],
-  );
+  const client = await db.connect();
+  try {
+    await client.query("BEGIN");
+    if (success) {
+      await client.query(
+        "DELETE FROM admin_login_attempts WHERE email = $1 AND success = FALSE",
+        [email.toLowerCase()],
+      );
+    }
+    await client.query(
+      "INSERT INTO admin_login_attempts (email, ip_address, user_agent, success) VALUES ($1, $2, $3, $4)",
+      [email.toLowerCase(), ipAddress, userAgent, success],
+    );
+    await client
+      .query(
+        `DELETE FROM admin_login_attempts WHERE created_at < NOW() - make_interval(days => ${RETENTION_DAYS})`,
+      )
+      .catch(() => undefined);
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK").catch(() => undefined);
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
 export const adminRateLimitConstants = {
