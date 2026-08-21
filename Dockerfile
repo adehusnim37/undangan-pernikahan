@@ -1,10 +1,11 @@
-FROM node:22-alpine AS dependencies
+# --- Install dependencies dengan bun (lebih cepat dari npm) ---
+FROM oven/bun:1-alpine AS dependencies
 
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 
-FROM node:22-alpine AS builder
+FROM oven/bun:1-alpine AS builder
 
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -12,8 +13,9 @@ ARG NEXT_PUBLIC_APP_URL
 ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
-RUN npm run build
+RUN bun run build
 
+# --- Runner: Next.js standalone server berjalan paling stabil di Node ---
 FROM node:22-alpine AS runner
 
 WORKDIR /app

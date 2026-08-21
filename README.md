@@ -25,11 +25,11 @@ Template full-stack untuk undangan web dengan link personal per tamu, dashboard 
 
 3. Pastikan PostgreSQL yang sudah tersedia dapat diakses melalui `DATABASE_URL`.
 
-4. Pasang dependensi dan jalankan aplikasi secara lokal:
+4. Pasang dependensi dan jalankan aplikasi secara lokal (menggunakan [Bun](https://bun.sh)):
 
    ```powershell
-   npm install
-   npm run dev
+   bun install
+   bun run dev
    ```
 
 5. Buka `http://localhost:<PORT>/admin`, masuk memakai `ADMIN_EMAIL` dan `ADMIN_PASSWORD`, lalu buat link tamu pertama.
