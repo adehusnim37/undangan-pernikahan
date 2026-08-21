@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { couple } from "@/lib/couple";
 
 export default function Home() {
   return (
@@ -7,7 +8,7 @@ export default function Home() {
       <section className="landing-card">
         <p className="eyebrow">TEMPLATE UNDANGAN PERSONAL</p>
         <p className="script">A celebration under the moon</p>
-        <h1>Aruna <span>&amp;</span> Bima</h1>
+        <h1>{couple.bride} <span>&amp;</span> {couple.groom}</h1>
         <p className="intro">Satu fondasi untuk undangan indah, daftar tamu yang tertata, dan RSVP yang mudah dipantau.</p>
         <div className="landing-actions">
           <Link className="button button-solid" href="/admin">Buka admin</Link>

@@ -1,0 +1,83 @@
+/* Pinned overscroll sequence — mobile-first transition from the wedding reveal to the gallery. */
+.overscroll-sequence {
+  position: relative;
+  background: #161815;
+}
+
+.invitation-shell .overscroll-panel {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  height: 100svh;
+  min-height: 100svh;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 26px 26px 0 0;
+  transform-origin: center top;
+  will-change: transform, opacity;
+}
+
+.overscroll-panel:nth-child(1) { z-index: 1; }
+.overscroll-panel:nth-child(2) { z-index: 2; }
+.overscroll-panel:nth-child(3) { z-index: 3; }
+
+.overscroll-panel-inner {
+  width: 100%;
+  min-height: 100svh;
+  will-change: transform;
+}
+
+.invitation-shell .journey-panel--wedding.overscroll-panel {
+  display: block;
+  height: 100svh;
+  min-height: 100svh;
+}
+
+.journey-panel--wedding > .overscroll-panel-inner {
+  position: relative;
+}
+
+.invitation-shell .rsvp-section.overscroll-panel {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background: #f5f1e8;
+}
+
+.rsvp-section > .overscroll-panel-inner {
+  display: grid;
+  grid-template-columns: minmax(280px, .78fr) minmax(480px, 1.22fr);
+  gap: clamp(52px, 8vw, 128px);
+  width: min(100%, 1280px);
+  box-sizing: border-box;
+  align-content: center;
+  padding: clamp(112px, 12vw, 170px) clamp(28px, 7vw, 104px);
+  margin: 0 auto;
+}
+
+.overscroll-panel--final {
+  height: auto !important;
+  min-height: 100svh;
+}
+
+@media (max-width: 700px) {
+  .invitation-shell .overscroll-panel {
+    border-radius: 18px 18px 0 0;
+  }
+
+  .invitation-shell .journey-panel--wedding.overscroll-panel {
+    border-radius: 0;
+  }
+
+  .rsvp-section > .overscroll-panel-inner {
+    display: block;
+    width: 100%;
+    padding: 92px 18px 96px;
+  }
+
+  .rsvp-section > .overscroll-panel-inner .rsvp-heading {
+    position: static;
+  }
+}
+

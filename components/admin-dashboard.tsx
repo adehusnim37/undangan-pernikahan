@@ -6,6 +6,7 @@ import { getApiErrorMessage } from "@/lib/client-api";
 import { guestFormSchema, validateWithToast } from "@/lib/client-validation";
 import { Search, Plus, Copy, RotateCcw, Edit2, Trash2, ShieldBan, ShieldCheck, LogOut, Images } from "lucide-react";
 import { MediaManagerDialog } from "@/components/media-manager-dialog";
+import { coupleCaps } from "@/lib/couple";
 
 type Guest = {
   id: string;
@@ -420,7 +421,7 @@ export function AdminDashboard() {
     <main className="admin-shell">
       <header className="admin-header">
         <div>
-          <p className="eyebrow">ARUNA &amp; BIMA · ADMIN</p>
+          <p className="eyebrow">{coupleCaps.name} · ADMIN</p>
           <h1>Daftar yang hadir.</h1>
         </div>
         <div className="admin-header-actions">

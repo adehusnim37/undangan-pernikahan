@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { InvitationThumbmarkProvider } from "@/components/thumbmark-provider";
+import { couple } from "@/lib/couple";
 
 export const metadata: Metadata = {
-  title: "Ade & Alvita — Undangan Pernikahan",
-  description: "Undangan pernikahan pribadi Ade dan Alvita.",
+  title: `${couple.name} — Undangan Pernikahan`,
+  description: `Undangan pernikahan pribadi ${couple.name}.`,
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

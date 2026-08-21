@@ -1,0 +1,826 @@
+/* Prewedding gallery — an editorial contact sheet between the RSVP and sign-off. */
+.prewedding-section {
+  position: relative;
+  padding: clamp(88px, 10vw, 146px) clamp(24px, 7vw, 104px) clamp(104px, 12vw, 176px);
+  overflow: hidden;
+  color: #f5f1e8;
+  background: #263129;
+}
+
+.prewedding-section::before {
+  content: "memories";
+  position: absolute;
+  top: clamp(180px, 22vw, 310px);
+  right: -3vw;
+  color: transparent;
+  font: italic 500 clamp(130px, 22vw, 330px)/.7 "Cormorant Garamond", serif;
+  letter-spacing: -.08em;
+  opacity: .35;
+  pointer-events: none;
+  -webkit-text-stroke: 1px rgba(217, 200, 165, .28);
+}
+
+.prewedding-heading {
+  position: relative;
+  z-index: 2;
+  max-width: 1120px;
+  margin: 0 auto clamp(72px, 9vw, 128px);
+}
+
+.prewedding-heading-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 17px;
+  margin-bottom: clamp(54px, 7vw, 94px);
+  border-bottom: 1px solid rgba(245, 241, 232, .22);
+  color: #a8afa3;
+  font: 500 8px "DM Mono", monospace;
+  letter-spacing: .13em;
+}
+
+.prewedding-heading .eyebrow {
+  color: #d9c8a5;
+}
+
+.prewedding-heading h2 {
+  max-width: 780px;
+  margin: 0;
+  color: #f5f1e8;
+  font: 500 clamp(64px, 8vw, 112px)/.78 "Cormorant Garamond", serif;
+  letter-spacing: -.07em;
+}
+
+.prewedding-heading h2 em {
+  color: #d9c8a5;
+  font-weight: 400;
+}
+
+.prewedding-heading > p:last-child {
+  max-width: 360px;
+  margin: 32px 0 0 auto;
+  color: #aeb5aa;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.prewedding-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: repeat(5, minmax(150px, auto));
+  gap: clamp(18px, 2.5vw, 38px);
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.prewedding-photo {
+  display: grid;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  color: #f5f1e8;
+  background: transparent;
+  text-align: left;
+  will-change: transform, opacity;
+}
+
+.prewedding-photo--1 {
+  grid-column: 1 / span 7;
+  grid-row: 1 / span 2;
+}
+
+.prewedding-photo--2 {
+  grid-column: 9 / span 4;
+  grid-row: 1;
+  margin-top: 16%;
+}
+
+.prewedding-photo--3 {
+  grid-column: 8 / span 5;
+  grid-row: 2;
+  align-self: end;
+}
+
+.prewedding-photo--4 {
+  grid-column: 1 / span 4;
+  grid-row: 3;
+  margin-top: 18%;
+}
+
+.prewedding-photo--5 {
+  grid-column: 5 / span 3;
+  grid-row: 3;
+}
+
+.prewedding-photo--6 {
+  grid-column: 9 / span 4;
+  grid-row: 3;
+  margin-top: 9%;
+}
+
+.prewedding-photo--7 {
+  grid-column: 1 / span 5;
+  grid-row: 4;
+}
+
+.prewedding-photo--8 {
+  grid-column: 7 / span 3;
+  grid-row: 4;
+  margin-top: 15%;
+}
+
+.prewedding-photo--9 {
+  grid-column: 10 / span 3;
+  grid-row: 4;
+  margin-top: 30%;
+}
+
+.prewedding-photo--10 {
+  grid-column: 1 / span 4;
+  grid-row: 5;
+  margin-top: 12%;
+}
+
+.prewedding-photo--11 {
+  grid-column: 5 / span 5;
+  grid-row: 5;
+}
+
+.prewedding-photo--12 {
+  grid-column: 10 / span 3;
+  grid-row: 5;
+  margin-top: 18%;
+}
+
+.prewedding-photo-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #171c18;
+}
+
+.prewedding-photo--1 .prewedding-photo-media {
+  aspect-ratio: 7 / 6;
+}
+
+.prewedding-photo--3 .prewedding-photo-media,
+.prewedding-photo--6 .prewedding-photo-media,
+.prewedding-photo--7 .prewedding-photo-media,
+.prewedding-photo--11 .prewedding-photo-media {
+  aspect-ratio: 5 / 3.5;
+}
+
+.prewedding-photo-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(245, 241, 232, .2);
+  background: linear-gradient(180deg, transparent 65%, rgba(10, 12, 10, .18));
+  pointer-events: none;
+}
+
+.prewedding-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(.72) sepia(.08) contrast(1.04);
+  transition: filter .6s ease, transform .8s cubic-bezier(.16, 1, .3, 1);
+}
+
+.prewedding-photo:hover img {
+  filter: saturate(.92) sepia(0) contrast(1.02);
+  transform: scale(1.035);
+}
+
+.prewedding-photo-caption {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid rgba(245, 241, 232, .2);
+  color: #aeb5aa;
+  font: 500 8px "DM Mono", monospace;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.prewedding-photo-caption b {
+  color: #d9c8a5;
+  font-weight: 500;
+}
+
+.prewedding-photo-caption i {
+  color: #d9c8a5;
+  font-size: 14px;
+  font-style: normal;
+  transition: transform .3s ease;
+}
+
+.prewedding-photo:hover .prewedding-photo-caption i {
+  transform: translate(2px, -2px);
+}
+
+.prewedding-photo:focus-visible {
+  outline: 2px solid #d9c8a5;
+  outline-offset: 7px;
+}
+
+.prewedding-endnote {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  max-width: 1120px;
+  margin: clamp(72px, 9vw, 118px) auto 0;
+  color: #8f998d;
+  font: 500 8px "DM Mono", monospace;
+  letter-spacing: .13em;
+}
+
+.prewedding-endnote i {
+  height: 1px;
+  flex: 1;
+  background: rgba(245, 241, 232, .2);
+}
+
+.prewedding-lightbox {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  padding: clamp(18px, 3vw, 34px);
+  color: #f5f1e8;
+  isolation: isolate;
+}
+
+.prewedding-lightbox-backdrop {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: rgba(12, 14, 12, .96);
+  backdrop-filter: blur(12px);
+  cursor: zoom-out;
+}
+
+.prewedding-lightbox-toolbar,
+.prewedding-lightbox-navigation {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #aeb5aa;
+  font: 500 8px "DM Mono", monospace;
+  letter-spacing: .13em;
+}
+
+.prewedding-lightbox-toolbar {
+  padding-bottom: 17px;
+  border-bottom: 1px solid rgba(245, 241, 232, .2);
+}
+
+.prewedding-lightbox-toolbar button,
+.prewedding-lightbox-navigation button {
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+}
+
+.prewedding-lightbox-toolbar button {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+.prewedding-lightbox-toolbar i {
+  color: #d9c8a5;
+  font: 400 23px/1 "Cormorant Garamond", serif;
+}
+
+.prewedding-lightbox-figure {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  min-height: 0;
+  place-items: center;
+  margin: clamp(18px, 3vw, 34px) 0;
+}
+
+.prewedding-lightbox-figure img {
+  display: block;
+  width: auto;
+  max-width: min(100%, 1180px);
+  height: auto;
+  max-height: calc(100svh - 170px);
+  object-fit: contain !important;
+  filter: saturate(.82) sepia(.04);
+  transform: none !important;
+}
+
+.prewedding-lightbox-figure figcaption {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  padding: 8px 10px;
+  color: #f5f1e8;
+  background: rgba(12, 14, 12, .72);
+  font: 500 8px "DM Mono", monospace;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.prewedding-lightbox-navigation {
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.prewedding-lightbox-navigation button {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid rgba(245, 241, 232, .28);
+  color: #d9c8a5;
+  font-size: 18px;
+  transition: color .2s ease, background .2s ease;
+}
+
+.prewedding-lightbox-navigation button:hover {
+  color: #20231e;
+  background: #d9c8a5;
+}
+
+.prewedding-lightbox button:focus-visible {
+  outline: 2px solid #d9c8a5;
+  outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+  .prewedding-section {
+    padding: 72px 18px 96px;
+  }
+
+  .prewedding-section::before {
+    top: 250px;
+    right: -20vw;
+    font-size: 40vw;
+  }
+
+  .prewedding-heading {
+    margin-bottom: 64px;
+  }
+
+  .prewedding-heading-meta {
+    margin-bottom: 52px;
+    font-size: 7px;
+  }
+
+  .prewedding-heading h2 {
+    font-size: clamp(56px, 16vw, 76px);
+    line-height: .81;
+  }
+
+  .prewedding-heading > p:last-child {
+    max-width: 285px;
+    margin: 27px 0 0;
+    font-size: 11px;
+  }
+
+  .prewedding-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto;
+    gap: 36px 12px;
+  }
+
+  .prewedding-photo--1,
+  .prewedding-photo--4,
+  .prewedding-photo--7,
+  .prewedding-photo--10 {
+    grid-column: 1 / -1;
+  }
+
+  .prewedding-photo--1,
+  .prewedding-photo--2,
+  .prewedding-photo--3,
+  .prewedding-photo--4,
+  .prewedding-photo--5,
+  .prewedding-photo--6,
+  .prewedding-photo--7,
+  .prewedding-photo--8,
+  .prewedding-photo--9,
+  .prewedding-photo--10,
+  .prewedding-photo--11,
+  .prewedding-photo--12 {
+    grid-row: auto;
+    margin-top: 0;
+  }
+
+  .prewedding-photo--2,
+  .prewedding-photo--5,
+  .prewedding-photo--8,
+  .prewedding-photo--11 {
+    grid-column: 1;
+  }
+
+  .prewedding-photo--3,
+  .prewedding-photo--6,
+  .prewedding-photo--9,
+  .prewedding-photo--12 {
+    grid-column: 2;
+    margin-top: 50px;
+  }
+
+  .prewedding-photo--1 .prewedding-photo-media,
+  .prewedding-photo--4 .prewedding-photo-media,
+  .prewedding-photo--7 .prewedding-photo-media,
+  .prewedding-photo--10 .prewedding-photo-media {
+    aspect-ratio: 16 / 11;
+  }
+
+  .prewedding-photo-caption {
+    gap: 7px;
+    padding-top: 9px;
+    font-size: 6px;
+    line-height: 1.4;
+  }
+
+  .prewedding-photo-caption i {
+    font-size: 11px;
+  }
+
+  .prewedding-endnote {
+    margin-top: 72px;
+    font-size: 7px;
+  }
+
+  .prewedding-lightbox {
+    padding: 18px 14px;
+  }
+
+  .prewedding-lightbox-figure img {
+    max-height: calc(100svh - 154px);
+  }
+
+  .prewedding-lightbox-figure figcaption {
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+    text-align: center;
+  }
+}
+
+.invitation-shell .folio-footer {
+  position: relative;
+  display: grid;
+  min-height: 100svh;
+  box-sizing: border-box;
+  place-items: center;
+  padding: clamp(28px, 4vw, 56px);
+  overflow: hidden;
+  color: #f5f1e8;
+  background: #f5f1e8;
+  text-align: center;
+}
+
+.folio-footer-curtains,
+.folio-footer-curtain {
+  position: absolute;
+  inset: 0;
+}
+
+.folio-footer-curtains {
+  z-index: 0;
+  pointer-events: none;
+}
+
+.folio-footer-curtain {
+  width: calc(50% + 1px);
+  background: #161815;
+  will-change: transform;
+}
+
+.folio-footer-curtain--left {
+  right: auto;
+}
+
+.folio-footer-curtain--right {
+  left: auto;
+}
+
+.folio-footer-closing {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: min(100%, 1120px);
+  height: 100%;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  align-items: center;
+  justify-items: center;
+}
+
+.folio-footer-opening {
+  display: grid;
+  align-self: start;
+  justify-items: center;
+}
+
+.folio-footer-kicker,
+.folio-footer-date {
+  color: #a8afa3;
+  font: 500 9px "DM Mono", monospace;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.folio-footer-kicker {
+  margin: 0 0 24px;
+}
+
+.folio-footer-rule {
+  width: min(180px, 38vw);
+  height: 1px;
+  background: #d9c8a5;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.folio-footer-name {
+  width: 100%;
+  color: #f5f1e8;
+  font: 500 clamp(92px, 15.2vw, 230px)/.72 "Cormorant Garamond", serif;
+  letter-spacing: -.075em;
+  text-align: center;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+
+.folio-footer-name em {
+  color: #d9c8a5;
+  font-size: .62em;
+  font-weight: 400;
+}
+
+.folio-footer-note {
+  max-width: 390px;
+  margin: 0 auto;
+  color: #a8afa3;
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+.folio-footer-signoff {
+  align-self: end;
+}
+
+.folio-footer-date {
+  display: block;
+  margin-top: 22px;
+  color: #d9c8a5;
+}
+
+@media (max-width: 700px) {
+  .invitation-shell .rsvp-section {
+    display: block;
+    width: 100%;
+    padding: 92px 18px 96px;
+  }
+
+  .invitation-shell .rsvp-heading {
+    margin: 0 6px 44px;
+  }
+
+  .invitation-shell .rsvp-heading h2 {
+    max-width: 390px;
+    font-size: clamp(49px, 14.5vw, 72px);
+  }
+
+  .rsvp-personal-note {
+    margin-top: 28px;
+    line-height: 1.55;
+  }
+
+  .invitation-shell .rsvp-form {
+    padding: 24px 16px 20px;
+  }
+
+  .rsvp-choice {
+    min-height: 145px;
+    padding: 14px;
+  }
+
+  .rsvp-choice b {
+    font-size: clamp(24px, 7.6vw, 31px);
+  }
+
+  .rsvp-choice small {
+    max-width: 120px;
+    font-size: 7px;
+  }
+
+  .rsvp-guest-field {
+    padding: 24px 0;
+  }
+
+  .rsvp-submit-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .rsvp-submit-row > span {
+    max-width: 100%;
+  }
+
+  .rsvp-submit {
+    width: 100%;
+  }
+
+  .invitation-shell .rsvp-success {
+    min-height: 520px;
+    padding: 30px 22px;
+  }
+
+  .rsvp-success-seal {
+    width: 62px;
+    height: 62px;
+    margin-bottom: 44px;
+  }
+
+  .invitation-shell .rsvp-success .rsvp-summary {
+    grid-template-columns: 90px 1fr;
+  }
+
+  .invitation-shell .folio-footer {
+    min-height: 100svh;
+    padding: 28px 18px;
+  }
+
+  .folio-footer-curtain {
+    width: 100%;
+    height: calc(50% + 1px);
+  }
+
+  .folio-footer-curtain--left {
+    right: 0;
+    bottom: auto;
+  }
+
+  .folio-footer-curtain--right {
+    top: auto;
+    left: 0;
+  }
+
+  .folio-footer-closing {
+    min-height: calc(100svh - 56px);
+  }
+
+  .folio-footer-kicker,
+  .folio-footer-date {
+    font-size: 7px;
+    line-height: 1.55;
+  }
+
+  .folio-footer-name {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    font-size: clamp(88px, 29vw, 126px);
+    line-height: .62;
+    white-space: normal;
+  }
+
+  .folio-footer-name em {
+    margin: .16em 0 .12em;
+    font-size: .42em;
+    line-height: 1;
+    transform: rotate(-8deg);
+  }
+
+  .folio-footer-name span:last-child {
+    padding-left: .16em;
+  }
+
+  .folio-footer-note {
+    max-width: 260px;
+    font-size: 11px;
+    line-height: 1.65;
+  }
+
+  .folio-footer-kicker {
+    max-width: 310px;
+    margin-bottom: 19px;
+  }
+
+  .folio-footer-rule {
+    width: min(150px, 42vw);
+  }
+
+  .folio-footer-date {
+    margin-top: 17px;
+  }
+}
+
+@media (max-width: 380px) {
+  .rsvp-choice {
+    min-height: 134px;
+    padding: 12px;
+  }
+
+  .rsvp-choice b {
+    font-size: 23px;
+  }
+
+  .rsvp-guest-field {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .folio-footer-name {
+    font-size: clamp(80px, 29vw, 106px);
+  }
+}
+
+@media (max-width: 700px) {
+  .invitation-shell .folio-footer {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: stretch;
+  }
+
+  .invitation-shell .folio-footer,
+  .invitation-shell .folio-footer-closing,
+  .invitation-shell .folio-footer-opening,
+  .invitation-shell .folio-footer-signoff,
+  .invitation-shell .folio-footer-kicker,
+  .invitation-shell .folio-footer-name,
+  .invitation-shell .folio-footer-note,
+  .invitation-shell .folio-footer-date {
+    box-sizing: border-box;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+  }
+
+  .invitation-shell .folio-footer-opening,
+  .invitation-shell .folio-footer-signoff,
+  .invitation-shell .folio-footer-name,
+  .invitation-shell .folio-footer-note,
+  .invitation-shell .folio-footer-date,
+  .invitation-shell .folio-footer-kicker {
+    width: 100%;
+    justify-self: center;
+    text-align: center;
+  }
+
+  .invitation-shell .folio-footer-closing,
+  .invitation-shell .folio-footer-opening,
+  .invitation-shell .folio-footer-signoff {
+    justify-items: center;
+    align-items: center;
+  }
+
+  .invitation-shell .folio-footer-closing {
+    width: 100%;
+    max-width: none;
+    justify-self: stretch;
+  }
+
+  .invitation-shell .folio-footer-signoff {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .invitation-shell .folio-footer-name span,
+  .invitation-shell .folio-footer-name span:last-child {
+    padding-right: 0;
+    padding-left: 0;
+    text-align: center;
+  }
+
+  .invitation-shell .folio-footer-kicker,
+  .invitation-shell .folio-footer-note,
+  .invitation-shell .folio-footer-date {
+    max-width: 280px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 700px) {
+  .invitation-shell .folio-hero .folio-photo--focus > img {
+    object-position: 58% center;
+    transform: scale(1.1);
+    transform-origin: center center;
+  }
+}
+

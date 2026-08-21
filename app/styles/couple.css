@@ -1,0 +1,380 @@
+/* Couple lineage — alternating portraits inspired by a ceremonial family album. */
+.invitation-shell .folio-story {
+  min-height: auto;
+  padding: clamp(48px, 6vw, 78px) clamp(24px, 7vw, 104px) clamp(36px, 5vw, 58px);
+  color: #20231e;
+  background: #eee7da;
+}
+
+.invitation-shell .folio-story::after {
+  right: -14%;
+  bottom: 8%;
+  width: min(760px, 65vw);
+  border-color: rgba(155, 89, 72, .14);
+}
+
+.couple-word {
+  position: absolute;
+  z-index: -1;
+  top: 12%;
+  right: -3vw;
+  color: transparent;
+  font: italic 500 clamp(170px, 28vw, 430px)/.7 "Cormorant Garamond", serif;
+  letter-spacing: -.1em;
+  opacity: .72;
+  -webkit-text-stroke: 1px rgba(155, 89, 72, .16);
+  will-change: transform, opacity;
+}
+
+.invitation-shell .folio-story-meta {
+  width: 100%;
+}
+
+.couple-intro {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  max-width: 780px;
+  justify-items: center;
+  margin: clamp(88px, 11vw, 150px) auto clamp(86px, 10vw, 136px);
+  text-align: center;
+  will-change: transform, opacity;
+}
+
+.couple-intro .eyebrow {
+  margin: 0 0 22px;
+  color: #9b5948;
+}
+
+.couple-intro h2 {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: clamp(7px, 1.8vw, 24px);
+  margin: 0;
+  color: #20231e;
+  font: 500 clamp(66px, 9vw, 122px)/.78 "Cormorant Garamond", serif;
+  letter-spacing: -.075em;
+}
+
+.couple-intro h2 i {
+  position: relative;
+  top: -.08em;
+  color: #9b5948;
+  font-size: .55em;
+  font-weight: 400;
+}
+
+.couple-intro > p:last-child {
+  max-width: 440px;
+  margin: 31px auto 0;
+  color: #687067;
+  font-size: 13px;
+  line-height: 1.85;
+  text-wrap: balance;
+}
+
+.couple-list {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: clamp(58px, 8vw, 110px);
+  width: min(100%, 1100px);
+  margin: 0 auto clamp(74px, 9vw, 118px);
+}
+
+.couple-profile {
+  display: grid;
+  grid-template-columns: minmax(300px, 1.04fr) minmax(270px, .96fr);
+  gap: clamp(42px, 7vw, 98px);
+  align-items: center;
+}
+
+.couple-portrait {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(32, 35, 30, .24);
+  background: #c9c3b6;
+  box-shadow: 22px 24px 0 rgba(155, 89, 72, .1);
+  will-change: clip-path;
+}
+
+.couple-portrait::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 52%, rgba(17, 20, 17, .48));
+  pointer-events: none;
+}
+
+.couple-portrait-media {
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+.couple-portrait img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  filter: saturate(.76) contrast(1.03) sepia(.08);
+}
+
+.couple-portrait figcaption {
+  position: absolute;
+  z-index: 2;
+  right: 17px;
+  bottom: 15px;
+  left: 17px;
+  color: rgba(245, 241, 232, .86);
+  font: 500 8px "DM Mono", monospace;
+  letter-spacing: .14em;
+}
+
+.couple-profile-copy {
+  position: relative;
+  max-width: 470px;
+  padding: clamp(26px, 4vw, 54px) 0;
+  border-top: 1px solid rgba(32, 35, 30, .23);
+  border-bottom: 1px solid rgba(32, 35, 30, .23);
+  will-change: transform, opacity;
+}
+
+.couple-index,
+.couple-role {
+  color: #9b5948;
+  font: 500 9px/1.5 "DM Mono", monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.couple-profile-copy h3 {
+  margin: 23px 0 30px;
+  color: #20231e;
+  font: italic 500 clamp(72px, 8vw, 112px)/.68 "Cormorant Garamond", serif;
+  letter-spacing: -.075em;
+}
+
+.couple-role {
+  margin: 0 0 14px;
+  color: #687067;
+}
+
+.couple-parents {
+  display: grid;
+  gap: 7px;
+}
+
+.couple-parents strong {
+  color: #20231e;
+  font: 500 clamp(21px, 2.25vw, 30px)/1.1 "Cormorant Garamond", serif;
+  letter-spacing: -.025em;
+  text-wrap: balance;
+}
+
+.couple-parents i {
+  color: #9b5948;
+  font: italic 500 18px "Cormorant Garamond", serif;
+}
+
+.couple-profile--groom .couple-portrait {
+  grid-column: 2;
+  grid-row: 1;
+  box-shadow: -22px 24px 0 rgba(32, 35, 30, .08);
+}
+
+.couple-profile--groom .couple-profile-copy {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: end;
+  width: 100%;
+  text-align: right;
+}
+
+.couple-ampersand {
+  display: grid;
+  height: clamp(92px, 11vw, 142px);
+  justify-items: center;
+  place-content: center;
+  color: #9b5948;
+  will-change: transform, opacity;
+}
+
+.couple-ampersand span {
+  position: relative;
+  z-index: 1;
+  padding: 8px 22px;
+  background: #eee7da;
+  font: italic 400 clamp(54px, 6vw, 82px)/.7 "Cormorant Garamond", serif;
+}
+
+.couple-ampersand i {
+  position: absolute;
+  width: 1px;
+  height: 100%;
+  background: rgba(155, 89, 72, .45);
+}
+
+.invitation-shell .folio-story-bottom {
+  width: 100%;
+  margin-top: 0;
+}
+
+@media (max-width: 700px) {
+  .invitation-shell .folio-story {
+    min-height: auto;
+    padding: 36px 18px 28px;
+    overflow-x: clip;
+  }
+
+  .invitation-shell .folio-story::after {
+    right: -55%;
+    bottom: 23%;
+    width: 145vw;
+  }
+
+  .couple-word {
+    top: 8%;
+    right: -10vw;
+    font-size: 48vw;
+  }
+
+  .invitation-shell .folio-story-meta {
+    padding-inline: 3px;
+  }
+
+  .couple-intro {
+    margin: 78px auto 80px;
+  }
+
+  .couple-intro .eyebrow {
+    margin-bottom: 17px;
+    font-size: 7px;
+  }
+
+  .couple-intro h2 {
+    gap: 7px;
+    font-size: clamp(54px, 16vw, 72px);
+    line-height: .8;
+  }
+
+  .couple-intro > p:last-child {
+    max-width: 315px;
+    margin-top: 24px;
+    font-size: 11px;
+    line-height: 1.75;
+  }
+
+  .couple-list {
+    gap: 52px;
+    margin-bottom: 75px;
+  }
+
+  .couple-profile {
+    display: block;
+    min-width: 0;
+  }
+
+  .couple-portrait,
+  .couple-profile--groom .couple-portrait {
+    width: calc(100% - 18px);
+    margin: 0 auto;
+    box-shadow: 10px 13px 0 rgba(155, 89, 72, .1);
+  }
+
+  .couple-profile-copy,
+  .couple-profile--groom .couple-profile-copy {
+    z-index: 3;
+    width: calc(100% - 42px);
+    max-width: none;
+    padding: 25px 19px 27px;
+    margin: -44px auto 0;
+    border: 1px solid rgba(32, 35, 30, .2);
+    background: rgba(238, 231, 218, .96);
+    text-align: left;
+  }
+
+  .couple-index,
+  .couple-role {
+    font-size: 7px;
+  }
+
+  .couple-profile-copy h3 {
+    margin: 19px 0 24px;
+    font-size: clamp(62px, 20vw, 82px);
+  }
+
+  .couple-role {
+    margin-bottom: 11px;
+  }
+
+  .couple-parents {
+    gap: 6px;
+  }
+
+  .couple-parents strong {
+    font-size: clamp(21px, 6.3vw, 27px);
+    overflow-wrap: anywhere;
+  }
+
+  .couple-parents i {
+    font-size: 16px;
+  }
+
+  .couple-ampersand {
+    height: 110px;
+  }
+
+  .couple-ampersand span {
+    font-size: 60px;
+  }
+}
+
+@media (max-width: 360px) {
+  .invitation-shell .folio-story {
+    padding-inline: 14px;
+  }
+
+  .couple-intro {
+    margin: 66px auto 68px;
+  }
+
+  .couple-intro h2 {
+    gap: 5px;
+    font-size: clamp(48px, 15.5vw, 58px);
+  }
+
+  .couple-intro > p:last-child {
+    max-width: 270px;
+    font-size: 10px;
+  }
+
+  .couple-list {
+    gap: 42px;
+  }
+
+  .couple-portrait,
+  .couple-profile--groom .couple-portrait {
+    width: calc(100% - 10px);
+  }
+
+  .couple-profile-copy,
+  .couple-profile--groom .couple-profile-copy {
+    width: calc(100% - 26px);
+    padding: 22px 16px 24px;
+    margin-top: -36px;
+  }
+
+  .couple-profile-copy h3 {
+    margin: 17px 0 21px;
+    font-size: clamp(57px, 19vw, 68px);
+  }
+
+  .couple-parents strong {
+    font-size: clamp(19px, 6.1vw, 23px);
+  }
+}
+

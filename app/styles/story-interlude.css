@@ -1,0 +1,260 @@
+/* Story interlude — a quiet letter before the timeline */
+.folio-story {
+  position: relative;
+  display: flex;
+  min-height: min(940px, 112svh);
+  flex-direction: column;
+  padding: clamp(54px, 7vw, 90px) clamp(28px, 7vw, 104px) clamp(38px, 5vw, 64px);
+  overflow: hidden;
+  isolation: isolate;
+  color: #20231e;
+  background: #eee7da;
+}
+
+.folio-story::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: -10%;
+  bottom: -30%;
+  width: min(620px, 60vw);
+  aspect-ratio: 1;
+  border: 1px solid rgba(155, 89, 72, .18);
+  border-radius: 50%;
+  transform: rotate(-18deg);
+}
+
+.folio-story-ghost {
+  position: absolute;
+  z-index: -1;
+  right: -3vw;
+  bottom: -5vw;
+  color: transparent;
+  font: 500 clamp(170px, 28vw, 430px)/.7 "Cormorant Garamond", serif;
+  letter-spacing: -.11em;
+  opacity: .7;
+  -webkit-text-stroke: 1px rgba(155, 89, 72, .18);
+  transform: rotate(-8deg);
+  will-change: transform, opacity;
+}
+
+.folio-story-meta,
+.folio-story-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  color: #70776d;
+  font: 500 9px "DM Mono", monospace;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.folio-story-meta {
+  padding-bottom: 17px;
+  border-bottom: 1px solid rgba(32, 35, 30, .2);
+  will-change: transform, opacity;
+}
+
+.folio-story-layout {
+  display: grid;
+  grid-template-columns: minmax(90px, .38fr) minmax(0, 700px) minmax(30px, 1fr);
+  gap: clamp(24px, 5vw, 84px);
+  align-items: center;
+  max-width: 1100px;
+  min-height: 650px;
+  flex: 1;
+  margin: auto;
+}
+
+.folio-story-side {
+  display: flex;
+  align-items: center;
+  align-self: start;
+  gap: 14px;
+  padding-top: 13px;
+  color: #9b5948;
+  font: 500 8px "DM Mono", monospace;
+  letter-spacing: .13em;
+  writing-mode: vertical-rl;
+  text-transform: uppercase;
+  will-change: transform, opacity;
+}
+
+.folio-story-side i {
+  display: block;
+  width: 1px;
+  height: 82px;
+  background: #9b5948;
+  opacity: .65;
+}
+
+.folio-story-copy {
+  grid-column: 2;
+  text-align: left;
+  will-change: transform, opacity;
+}
+
+.folio-story-copy .eyebrow {
+  margin: 0;
+  color: #9b5948;
+  font-size: 10px;
+}
+
+.folio-story-rule {
+  width: 76px;
+  height: 1px;
+  margin: 24px 0 25px;
+  background: #9b5948;
+  transform-origin: left center;
+  will-change: transform;
+}
+
+.folio-story-copy h2 {
+  max-width: 690px;
+  margin: 0;
+  color: #20231e;
+  font: 500 clamp(60px, 7vw, 98px)/.8 "Cormorant Garamond", serif;
+  letter-spacing: -.075em;
+}
+
+.folio-story-copy h2 span,
+.folio-story-copy h2 em {
+  display: block;
+}
+
+.folio-story-copy h2 em {
+  margin-top: .14em;
+  color: #9b5948;
+  font-size: .72em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -.045em;
+}
+
+.folio-story-copy > p:not(.eyebrow):not(.folio-story-signature) {
+  max-width: 390px;
+  margin: 34px 0 0;
+  color: #687067;
+  font-size: 13px;
+  line-height: 1.85;
+}
+
+.folio-story-signature {
+  display: grid;
+  gap: 7px;
+  margin: 39px 0 0;
+  color: #687067;
+  font: italic 14px "Cormorant Garamond", serif;
+}
+
+.folio-story-signature strong {
+  color: #20231e;
+  font: 500 25px "Cormorant Garamond", serif;
+  letter-spacing: -.02em;
+}
+
+.folio-story-signature i {
+  color: #9b5948;
+  font-size: .75em;
+  font-style: italic;
+}
+
+.folio-story-bottom {
+  padding-top: 16px;
+  border-top: 1px solid rgba(32, 35, 30, .2);
+}
+
+.folio-story-bottom span:last-child {
+  color: #9b5948;
+  font-size: 15px;
+  line-height: .5;
+}
+
+@media (max-width: 700px) {
+  .folio-story {
+    min-height: 105svh;
+    padding: 42px 22px 30px;
+  }
+
+  .folio-story::after {
+    right: -38%;
+    bottom: -8%;
+    width: 100vw;
+  }
+
+  .folio-story-ghost {
+    right: -8vw;
+    bottom: 17%;
+    font-size: 47vw;
+  }
+
+  .folio-story-meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+    padding-bottom: 14px;
+    font-size: 7px;
+    line-height: 1.4;
+  }
+
+  .folio-story-layout {
+    display: block;
+    min-height: 0;
+    flex: 1;
+  }
+
+  .folio-story-side {
+    flex-direction: row;
+    gap: 12px;
+    padding-top: 27px;
+    writing-mode: horizontal-tb;
+  }
+
+  .folio-story-side i {
+    width: 54px;
+    height: 1px;
+  }
+
+  .folio-story-copy {
+    margin-top: 55px;
+  }
+
+  .folio-story-copy .eyebrow {
+    font-size: 8px;
+  }
+
+  .folio-story-rule {
+    width: 54px;
+    margin: 19px 0 22px;
+  }
+
+  .folio-story-copy h2 {
+    font-size: clamp(52px, 14.5vw, 73px);
+    line-height: .84;
+  }
+
+  .folio-story-copy > p:not(.eyebrow):not(.folio-story-signature) {
+    max-width: 310px;
+    margin-top: 26px;
+    font-size: 12px;
+    line-height: 1.75;
+  }
+
+  .folio-story-signature {
+    margin-top: 30px;
+    font-size: 13px;
+  }
+
+  .folio-story-signature strong {
+    font-size: 23px;
+  }
+
+  .folio-story-bottom {
+    margin-top: auto;
+    padding-top: 22px;
+    font-size: 7px;
+  }
+}
+

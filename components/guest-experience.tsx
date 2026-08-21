@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { getApiErrorMessage } from "@/lib/client-api";
 import { rsvpFormSchema, validateWithToast } from "@/lib/client-validation";
 import { heroMediaSlots, invitationMediaBySlot, preweddingMediaSlots, type InvitationMediaSlot } from "@/lib/invitation-media";
+import { couple, coupleCaps } from "@/lib/couple";
 
 type AccessState = "checking" | "allowed" | "denied";
 type Rsvp = {
@@ -582,16 +583,16 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
   return (
     <main ref={invitationRef} className="invitation-shell">
       <header className="folio-hero">
-        <div className="folio-bar"><span>ALVITA + ADE</span><span>JKT · 17.09.26</span></div>
+        <div className="folio-bar"><span>{coupleCaps.plus}</span><span>JKT · 17.09.26</span></div>
         <div className="folio-gallery" aria-hidden="true">
           {heroMediaSlots.map((item, index) => <figure className={`folio-photo folio-photo-${index + 1} ${index === 2 ? "folio-photo--focus" : ""}`} key={item.slot}><img src={photo(item.slot)} style={photoStyle(item.slot)} alt="" /><figcaption></figcaption></figure>)}
         </div>
         <div className="folio-title">
           <p className="folio-kicker">You’re invited to the wedding of</p>
           <h1>
-            <span className="folio-name">Alvita</span>
+            <span className="folio-name">{couple.bride}</span>
             <em>&amp;</em>
-            <span className="folio-name">Ade</span>
+            <span className="folio-name">{couple.groom}</span>
           </h1>
           <p className="folio-guest">
             <span>Undangan khusus untuk</span>
@@ -605,7 +606,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
         <div className="couple-word" aria-hidden="true">restu</div>
         <div className="folio-story-meta">
           <span>DUA KELUARGA · SATU RUMAH</span>
-          <span>ALVITA + ADE / 2026</span>
+          <span>{coupleCaps.plus} / 2026</span>
         </div>
         <header className="couple-intro">
           <p className="eyebrow">DENGAN RESTU DAN SUKACITA</p>
@@ -617,18 +618,18 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
           <article className="couple-profile couple-profile--bride">
             <figure className="couple-portrait">
               <div className="couple-portrait-media">
-                <img src={photo("couple_bride_portrait")} style={photoStyle("couple_bride_portrait")} alt="Potret Alvita" />
+                <img src={photo("couple_bride_portrait")} style={photoStyle("couple_bride_portrait")} alt={`Potret ${couple.bride}`} />
               </div>
-              <figcaption>ALVITA · PUTRI</figcaption>
+              <figcaption>{coupleCaps.bride} · PUTRI</figcaption>
             </figure>
             <div className="couple-profile-copy">
               <span className="couple-index">01 / PUTRI</span>
-              <h3>Alvita</h3>
+              <h3>{couple.bride}</h3>
               <p className="couple-role">Putri dari</p>
               <div className="couple-parents">
-                <strong>Bapak [Nama Ayah Alvita]</strong>
+                <strong>Bapak [Nama Ayah {couple.bride}]</strong>
                 <i>&amp;</i>
-                <strong>Ibu [Nama Ibu Alvita]</strong>
+                <strong>Ibu [Nama Ibu {couple.bride}]</strong>
               </div>
             </div>
           </article>
@@ -638,18 +639,18 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
           <article className="couple-profile couple-profile--groom">
             <figure className="couple-portrait">
               <div className="couple-portrait-media">
-                <img src={photo("couple_groom_portrait")} style={photoStyle("couple_groom_portrait")} alt="Potret Ade" />
+                <img src={photo("couple_groom_portrait")} style={photoStyle("couple_groom_portrait")} alt={`Potret ${couple.groom}`} />
               </div>
-              <figcaption>ADE · PUTRA</figcaption>
+              <figcaption>{coupleCaps.groom} · PUTRA</figcaption>
             </figure>
             <div className="couple-profile-copy">
               <span className="couple-index">02 / PUTRA</span>
-              <h3>Ade</h3>
+              <h3>{couple.groom}</h3>
               <p className="couple-role">Putra dari</p>
               <div className="couple-parents">
-                <strong>Bapak [Nama Ayah Ade]</strong>
+                <strong>Bapak [Nama Ayah {couple.groom}]</strong>
                 <i>&amp;</i>
-                <strong>Ibu [Nama Ibu Ade]</strong>
+                <strong>Ibu [Nama Ibu {couple.groom}]</strong>
               </div>
             </div>
           </article>
@@ -670,11 +671,11 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             </div>
             <div className="journey-bento journey-bento--school">
               <figure className="journey-photo journey-photo--portrait">
-                <img src={photo("journey_school_portrait")} style={photoStyle("journey_school_portrait")} alt="Foto Alvita dan Ade semasa sekolah" />
+                <img src={photo("journey_school_portrait")} style={photoStyle("journey_school_portrait")} alt={`Foto ${couple.bride} dan ${couple.groom} semasa sekolah`} />
                 <figcaption>Surabaya · 2016</figcaption>
               </figure>
               <figure className="journey-school-mark">
-                <img src={photo("journey_school_mark")} style={photoStyle("journey_school_mark")} alt="Foto tambahan Alvita dan Ade semasa sekolah" />
+                <img src={photo("journey_school_mark")} style={photoStyle("journey_school_mark")} alt={`Foto tambahan ${couple.bride} dan ${couple.groom} semasa sekolah`} />
                 <figcaption>XI MIPA 4</figcaption>
               </figure>
               <figure className="journey-photo journey-photo--detail">
@@ -690,13 +691,13 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
               <h2>Dua jalan,<br />satu kota.</h2>
               <p className="journey-body">Kisah cinta SMA kami berlanjut sampai kuliah S1 dan profesi. Kami belajar, bertumbuh, lalu lulus—masih bersama di Surabaya.</p>
               <div className="journey-study">
-                <p><span>ALVITA</span>UNAIR · Farmasi hingga Apoteker</p>
-                <p><span>ADE</span>UPN “Veteran” Jatim · Ilmu Komputer</p>
+                <p><span>{coupleCaps.bride}</span>UNAIR · Farmasi hingga Apoteker</p>
+                <p><span>{coupleCaps.groom}</span>UPN “Veteran” Jatim · Ilmu Komputer</p>
               </div>
             </div>
             <div className="journey-bento journey-bento--campus">
               <figure className="journey-photo journey-photo--wide">
-                <img src={photo("journey_campus_wide")} style={photoStyle("journey_campus_wide")} alt="Masa kuliah Alvita dan Ade di Surabaya" />
+                <img src={photo("journey_campus_wide")} style={photoStyle("journey_campus_wide")} alt={`Masa kuliah ${couple.bride} dan ${couple.groom} di Surabaya`} />
                 <figcaption>Still in Surabaya</figcaption>
               </figure>
               <figure className="journey-photo journey-photo--small-a"><img src={photo("journey_campus_small_a")} style={photoStyle("journey_campus_small_a")} alt="Kelulusan kuliah" /></figure>
@@ -709,19 +710,19 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
               <p className="journey-year">2024—2026</p>
               <p className="eyebrow">DUA KOTA</p>
               <h2>Jauh di peta,<br />dekat di cerita.</h2>
-              <p className="journey-body">Selama dua tahun, Ade bekerja di Jakarta sementara Alvita melanjutkan studi S2 di Yogyakarta hingga lulus.</p>
+              <p className="journey-body">Selama dua tahun, {couple.groom} bekerja di Jakarta sementara {couple.bride} melanjutkan studi S2 di Yogyakarta hingga lulus.</p>
             </div>
             <div className="journey-route">
-              <span className="journey-city journey-city--west">JAKARTA<small>ADE · WORK</small></span>
+              <span className="journey-city journey-city--west">JAKARTA<small>{coupleCaps.groom} · WORK</small></span>
               <svg viewBox="0 0 640 180" role="img" aria-label="Jalur hubungan jarak jauh Jakarta dan Yogyakarta">
                 <path className="journey-route-guide" d="M52 92 C180 18 418 166 588 82" />
                 <path className="journey-route-path" d="M52 92 C180 18 418 166 588 82" />
               </svg>
-              <span className="journey-city journey-city--east">YOGYAKARTA<small>ALVITA · S2</small></span>
+              <span className="journey-city journey-city--east">YOGYAKARTA<small>{coupleCaps.bride} · S2</small></span>
             </div>
             <div className="journey-bento journey-bento--distance">
-              <figure className="journey-photo journey-photo--city"><img src={photo("journey_distance_city")} style={photoStyle("journey_distance_city")} alt="Ade bekerja di Jakarta" /><figcaption>Jakarta</figcaption></figure>
-              <figure className="journey-photo journey-photo--graduate"><img src={photo("journey_distance_graduate")} style={photoStyle("journey_distance_graduate")} alt="Alvita menyelesaikan studi S2 di Yogyakarta" /><figcaption>Yogyakarta</figcaption></figure>
+              <figure className="journey-photo journey-photo--city"><img src={photo("journey_distance_city")} style={photoStyle("journey_distance_city")} alt={`${couple.groom} bekerja di Jakarta`} /><figcaption>Jakarta</figcaption></figure>
+              <figure className="journey-photo journey-photo--graduate"><img src={photo("journey_distance_graduate")} style={photoStyle("journey_distance_graduate")} alt={`${couple.bride} menyelesaikan studi S2 di Yogyakarta`} /><figcaption>Yogyakarta</figcaption></figure>
             </div>
           </article>
 
@@ -730,10 +731,10 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
               <p className="journey-year">MEI 2026</p>
               <p className="eyebrow">SATU KEPUTUSAN</p>
               <h2>Pulang untuk<br />menetap.</h2>
-              <p className="journey-body">Setelah Alvita menyelesaikan studi S2, kami memutuskan melangkah ke jenjang yang lebih serius. Lamaran kami berlangsung pada 30 Mei 2026.</p>
+              <p className="journey-body">Setelah {couple.bride} menyelesaikan studi S2, kami memutuskan melangkah ke jenjang yang lebih serius. Lamaran kami berlangsung pada 30 Mei 2026.</p>
             </div>
             <div className="journey-bento journey-bento--engagement">
-              <figure className="journey-photo journey-photo--engagement-main"><img src={photo("journey_engagement_main")} style={photoStyle("journey_engagement_main")} alt="Lamaran Alvita dan Ade" /><figcaption>30 · 05 · 2026</figcaption></figure>
+              <figure className="journey-photo journey-photo--engagement-main"><img src={photo("journey_engagement_main")} style={photoStyle("journey_engagement_main")} alt={`Lamaran ${couple.bride} dan ${couple.groom}`} /><figcaption>30 · 05 · 2026</figcaption></figure>
               <figure className="journey-photo journey-photo--ring"><img src={photo("journey_engagement_ring")} style={photoStyle("journey_engagement_ring")} alt="Cincin lamaran" /></figure>
             </div>
           </article>
@@ -744,8 +745,8 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
         <article className="journey-panel journey-panel--wedding overscroll-panel">
           <div className="overscroll-panel-inner">
             <div className="journey-wedding-photo journey-photo">
-              <img src={photo("journey_wedding")} style={photoStyle("journey_wedding")} alt="Hari pernikahan Alvita dan Ade" />
-              <figcaption>ALVITA + ADE · JAKARTA</figcaption>
+              <img src={photo("journey_wedding")} style={photoStyle("journey_wedding")} alt={`Hari pernikahan ${couple.bride} dan ${couple.groom}`} />
+              <figcaption>{coupleCaps.plus} · JAKARTA</figcaption>
             </div>
             <div className="journey-wedding-card journey-copy">
               <div className="journey-wedding-meta">
@@ -825,7 +826,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
 
             <label className="rsvp-message-field">
               <span className="rsvp-field-label">Ucapan atau doa</span>
-              <textarea value={message} onChange={(event) => setMessage(event.target.value)} maxLength={500} placeholder="Tuliskan sesuatu untuk Alvita dan Ade…" />
+              <textarea value={message} onChange={(event) => setMessage(event.target.value)} maxLength={500} placeholder={`Tuliskan sesuatu untuk ${couple.bride} dan ${couple.groom}…`} />
               <small>{message.length} / 500</small>
             </label>
 
@@ -847,7 +848,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             <header className="prewedding-heading">
           <div className="prewedding-heading-meta">
             <span>05 / GALERI</span>
-            <span>ALVITA + ADE · 2026</span>
+            <span>{coupleCaps.plus} · 2026</span>
           </div>
           <p className="eyebrow">SEBELUM HARI BAHAGIA</p>
           <h2 id="prewedding-title">Satu cerita,<br /><em>dalam bingkai.</em></h2>
@@ -864,7 +865,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
               aria-label={`Buka foto prewedding ${index + 1}: ${item.caption}`}
             >
               <span className="prewedding-photo-media">
-                <img src={photo(item.slot)} style={photoStyle(item.slot)} alt={`Foto prewedding Alvita dan Ade ${index + 1}`} loading="lazy" />
+                <img src={photo(item.slot)} style={photoStyle(item.slot)} alt={`Foto prewedding ${couple.bride} dan ${couple.groom} ${index + 1}`} loading="lazy" />
               </span>
               <span className="prewedding-photo-caption"><b>{String(index + 1).padStart(2, "0")}</b><span>{item.caption}</span><i aria-hidden="true">↗</i></span>
             </button>
@@ -886,7 +887,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
               <button type="button" onClick={() => setActivePreweddingPhoto(null)} aria-label="Tutup galeri" autoFocus>TUTUP <i aria-hidden="true">×</i></button>
             </div>
             <figure className="prewedding-lightbox-figure">
-              <img src={photo(activeItem.slot)} style={photoStyle(activeItem.slot)} alt={`Foto prewedding Alvita dan Ade ${activePreweddingPhoto + 1}`} />
+              <img src={photo(activeItem.slot)} style={photoStyle(activeItem.slot)} alt={`Foto prewedding ${couple.bride} dan ${couple.groom} ${activePreweddingPhoto + 1}`} />
               <figcaption>{activeItem.caption}</figcaption>
             </figure>
             <div className="prewedding-lightbox-navigation">
@@ -907,7 +908,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             <p className="folio-footer-kicker">SAMPAI BERTEMU DI HARI BAHAGIA KAMI</p>
             <div className="folio-footer-rule" aria-hidden="true" />
           </div>
-          <div className="folio-footer-name"><span>Alvita</span> <em>&amp;</em> <span>Ade</span></div>
+          <div className="folio-footer-name"><span>{couple.bride}</span> <em>&amp;</em> <span>{couple.groom}</span></div>
           <div className="folio-footer-signoff">
             <p className="folio-footer-note">Dengan cinta, kami menantikan kehadiran dan doa baikmu.</p>
             <time className="folio-footer-date" dateTime="2026-09-17">17 · 09 · 2026</time>
