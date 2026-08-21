@@ -10,10 +10,10 @@ function read(key: string, fallback: string): string {
 }
 
 export const couple = {
-  bride: read("NEXT_PUBLIC_BRIDE_NAME", "Mempelai Wanita"),
-  groom: read("NEXT_PUBLIC_GROOM_NAME", "Mempelai Pria"),
+  bride: read("NEXT_PUBLIC_BRIDE_NAME", "Alvita"),
+  groom: read("NEXT_PUBLIC_GROOM_NAME", "Ade"),
   /** Gabungan untuk tampilan, mis. "Alvita & Ade". */
-  name: read("NEXT_PUBLIC_COUPLE_NAME", "Mempelai Wanita & Mempelai Pria"),
+  name: read("NEXT_PUBLIC_COUPLE_NAME", "Alvita & Ade"),
 };
 
 /** Varian huruf besar untuk teks dekoratif/teknis. */
