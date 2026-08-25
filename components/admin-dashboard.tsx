@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { getApiErrorMessage } from "@/lib/client-api";
+import { getApiErrorMessage, openWhatsAppInvite } from "@/lib/client-api";
 import { guestFormSchema, validateWithToast } from "@/lib/client-validation";
-import { Search, Plus, Copy, RotateCcw, Edit2, Trash2, ShieldBan, ShieldCheck, LogOut, Images } from "lucide-react";
+import { Search, Plus, Copy, RotateCcw, Edit2, Trash2, ShieldBan, ShieldCheck, LogOut, Images, MessageCircle } from "lucide-react";
 import { MediaManagerDialog } from "@/components/media-manager-dialog";
 import { coupleCaps } from "@/lib/couple";
 
@@ -407,6 +407,11 @@ export function AdminDashboard() {
     }
   }
 
+  function sendWa(guest: Guest) {
+    const result = openWhatsAppInvite(guest);
+    if (!result.ok) toast.error(result.message, { position: "top-center" });
+  }
+
   async function logout() {
     try {
       const response = await fetch("/api/admin/auth/logout", { method: "POST" });
@@ -514,6 +519,9 @@ export function AdminDashboard() {
                   </span>
                 </div>
                 <div className="guest-actions">
+                  <button className="action-icon whatsapp" onClick={() => sendWa(guest)} title="Kirim ke WhatsApp">
+                    <MessageCircle size={16} />
+                  </button>
                   <button className="action-icon" onClick={() => copy(guest.token)} title="Salin link">
                     <Copy size={16} />
                   </button>
