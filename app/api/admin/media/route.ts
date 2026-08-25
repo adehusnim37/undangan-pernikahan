@@ -15,7 +15,7 @@ import {
 
 export const runtime = "nodejs";
 
-const MAX_IMAGE_BYTES = 30 * 1024 * 1024; 
+const MAX_IMAGE_BYTES = 30 * 1024 * 1024;
 const extensions = {
   "image/jpeg": "jpg",
   "image/png": "png",

@@ -2,9 +2,18 @@ import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { adminCookie, createAdminSession } from "@/lib/auth";
 import { getAdminCredentials } from "@/lib/config";
-import { clientInfoFrom, getAdminRateLimit, recordAdminLogin, adminRateLimitConstants } from "@/lib/admin-security";
+import {
+  clientInfoFrom,
+  getAdminRateLimit,
+  recordAdminLogin,
+  adminRateLimitConstants,
+} from "@/lib/admin-security";
 import { assertSameOrigin } from "@/lib/csrf";
-import { adminLoginBodySchema, parseJson, validationError } from "@/lib/validation";
+import {
+  adminLoginBodySchema,
+  parseJson,
+  validationError,
+} from "@/lib/validation";
 
 function same(a: string, b: string) {
   const left = Buffer.from(a);
@@ -19,7 +28,10 @@ function unauthorized(message = "Email atau password tidak sesuai.") {
 export async function POST(request: Request) {
   // CSRF: hanya izinkan request dari origin aplikasi sendiri.
   if (!assertSameOrigin(request)) {
-    return NextResponse.json({ message: "Request tidak valid." }, { status: 403 });
+    return NextResponse.json(
+      { message: "Request tidak valid." },
+      { status: 403 },
+    );
   }
 
   const body = await parseJson(request, adminLoginBodySchema);
@@ -49,6 +61,10 @@ export async function POST(request: Request) {
   if (!valid) return unauthorized();
 
   const response = NextResponse.json({ ok: true });
-  response.cookies.set(adminCookie.name, createAdminSession(), adminCookie.options);
+  response.cookies.set(
+    adminCookie.name,
+    createAdminSession(),
+    adminCookie.options,
+  );
   return response;
 }

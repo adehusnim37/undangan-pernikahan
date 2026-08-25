@@ -2,14 +2,22 @@ import { NextResponse } from "next/server";
 import { isAdmin } from "@/lib/auth";
 import { assertSameOrigin } from "@/lib/csrf";
 import { query } from "@/lib/db";
-import { guestIdParamsSchema, parseJson, updateGuestBodySchema, validationError } from "@/lib/validation";
+import {
+  guestIdParamsSchema,
+  parseJson,
+  updateGuestBodySchema,
+  validationError,
+} from "@/lib/validation";
 
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   if (!assertSameOrigin(request)) {
-    return NextResponse.json({ message: "Request tidak valid." }, { status: 403 });
+    return NextResponse.json(
+      { message: "Request tidak valid." },
+      { status: 403 },
+    );
   }
   if (!(await isAdmin()))
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -42,7 +50,10 @@ export async function PATCH(
       [id],
     );
   } else if (action === "delete") {
-    const checkRsvp = await query("SELECT id FROM rsvps WHERE invitation_id = $1", [id]);
+    const checkRsvp = await query(
+      "SELECT id FROM rsvps WHERE invitation_id = $1",
+      [id],
+    );
     if ((checkRsvp?.rowCount ?? 0) > 0) {
       return NextResponse.json(
         { message: "Tamu ini sudah mengirim konfirmasi, tidak bisa dihapus." },

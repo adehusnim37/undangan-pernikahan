@@ -3,7 +3,11 @@ import { isAdmin } from "@/lib/auth";
 import { assertSameOrigin } from "@/lib/csrf";
 import { query } from "@/lib/db";
 import { newToken } from "@/lib/invitations";
-import { createGuestBodySchema, parseJson, validationError } from "@/lib/validation";
+import {
+  createGuestBodySchema,
+  parseJson,
+  validationError,
+} from "@/lib/validation";
 
 export async function GET() {
   if (!(await isAdmin()))
@@ -18,7 +22,10 @@ export async function GET() {
 
 export async function POST(request: Request) {
   if (!assertSameOrigin(request)) {
-    return NextResponse.json({ message: "Request tidak valid." }, { status: 403 });
+    return NextResponse.json(
+      { message: "Request tidak valid." },
+      { status: 403 },
+    );
   }
   if (!(await isAdmin()))
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

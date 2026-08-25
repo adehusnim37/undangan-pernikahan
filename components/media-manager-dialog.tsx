@@ -31,6 +31,7 @@ type DragState = {
 };
 
 const mediaToastOptions = { containerId: "media-manager", position: "top-center" as const };
+const MAX_IMAGE_BYTES = 30 * 1024 * 1024;
 
 function clampPosition(value: number) {
   return Math.min(100, Math.max(0, Math.round(value * 10) / 10));
@@ -58,8 +59,8 @@ export function MediaManagerDialog({ onClose }: { onClose: () => void }) {
   }, []);
 
   async function upload(slot: InvitationMediaSlot, file: File) {
-    if (file.size > 8 * 1024 * 1024) {
-      toast.error("Ukuran gambar maksimal 8 MB.", mediaToastOptions);
+    if (file.size > MAX_IMAGE_BYTES) {
+      toast.error("Ukuran gambar maksimal 30 MB.", mediaToastOptions);
       return;
     }
     const formData = new FormData();
@@ -334,7 +335,7 @@ export function MediaManagerDialog({ onClose }: { onClose: () => void }) {
           </div>
         )}
         <div className="media-manager-footnote">
-          <span>JPG, PNG, WebP, atau GIF · maksimal 8 MB</span>
+          <span>JPG, PNG, WebP, atau GIF · maksimal 30 MB</span>
           <strong>Perubahan tersimpan otomatis</strong>
         </div>
       </div>
