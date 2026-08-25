@@ -11,11 +11,12 @@
  * without touching `.env`.
  */
 
-const MIN_SESSION_SECRET_LENGTH = 16;
+const MIN_SESSION_SECRET_LENGTH = 32;
 
 const DEV_SESSION_SECRET = "local-development-secret-change-me";
 const DEV_ADMIN_EMAIL = "admin@undangan.local";
 const DEV_ADMIN_PASSWORD = "ganti-password-ini";
+const MIN_ADMIN_PASSWORD_LENGTH = 15;
 
 /** Values that appear in .env.example / docs and must never be trusted. */
 const INSECURE_PLACEHOLDERS = new Set([
@@ -38,14 +39,14 @@ function looksInsecure(value: string | undefined, minLength = 0): boolean {
 }
 
 /**
- * HMAC secret for signing admin session cookies.
+ * HMAC secret for OTP hashes and rate-limit identifiers.
  * Throws in production when missing, too short, or still a placeholder.
  */
 export function getSessionSecret(): string {
   const value = process.env.SESSION_SECRET?.trim();
   if (isProduction() && looksInsecure(value, MIN_SESSION_SECRET_LENGTH)) {
     throw new Error(
-      "SESSION_SECRET wajib diisi dengan nilai acak (minimal 16 karakter) di production.",
+      `SESSION_SECRET wajib diisi dengan nilai acak (minimal ${MIN_SESSION_SECRET_LENGTH} karakter) di production.`,
     );
   }
   return value || DEV_SESSION_SECRET;
@@ -53,20 +54,94 @@ export function getSessionSecret(): string {
 
 /**
  * Admin login credentials.
- * Throws in production when either value is missing or still a placeholder.
+ * Throws in production when either list is missing, mismatched, or insecure.
  */
-export function getAdminCredentials(): { email: string; password: string } {
-  const email = process.env.ADMIN_EMAIL?.trim();
-  const password = process.env.ADMIN_PASSWORD?.trim();
-  if (isProduction() && (!email || looksInsecure(password))) {
+export type AdminCredential = { email: string; password: string };
+
+/**
+ * Kredensial admin dipasangkan berdasarkan posisi pada dua daftar env.
+ * Password sengaja tidak di-trim agar spasi yang memang menjadi bagian
+ * password tidak berubah diam-diam.
+ */
+export function getAdminCredentials(): AdminCredential[] {
+  const configuredUsers = process.env.USER_ADMIN;
+  const configuredPasswords = process.env.PASSWORD_ADMIN;
+
+  if (!configuredUsers && !configuredPasswords && !isProduction()) {
+    return [{ email: DEV_ADMIN_EMAIL, password: DEV_ADMIN_PASSWORD }];
+  }
+
+  if (!configuredUsers || !configuredPasswords) {
     throw new Error(
-      "ADMIN_EMAIL dan ADMIN_PASSWORD wajib diisi dengan nilai yang aman (bukan placeholder) di production.",
+      "USER_ADMIN dan PASSWORD_ADMIN wajib diisi bersama sebagai daftar yang berpasangan.",
     );
   }
-  return {
-    email: email || DEV_ADMIN_EMAIL,
-    password: password || DEV_ADMIN_PASSWORD,
-  };
+
+  const users = configuredUsers.split(",").map((email) => email.trim().toLowerCase());
+  const passwords = configuredPasswords.split(",");
+  if (users.length !== passwords.length || users.length === 0) {
+    throw new Error(
+      "Jumlah USER_ADMIN dan PASSWORD_ADMIN harus sama dan urutannya harus berpasangan.",
+    );
+  }
+
+  const seen = new Set<string>();
+  return users.map((email, index) => {
+    const password = passwords[index] ?? "";
+    if (!/^\S+@\S+\.\S+$/.test(email) || seen.has(email)) {
+      throw new Error("USER_ADMIN harus berisi alamat email unik yang valid.");
+    }
+    if (
+      isProduction() &&
+      (looksInsecure(password, MIN_ADMIN_PASSWORD_LENGTH) || password.includes(","))
+    ) {
+      throw new Error(
+        `PASSWORD_ADMIN ke-${index + 1} wajib minimal ${MIN_ADMIN_PASSWORD_LENGTH} karakter dan bukan placeholder.`,
+      );
+    }
+    seen.add(email);
+    return { email, password };
+  });
+}
+
+export type SmtpConfig = {
+  host: string;
+  port: number;
+  user: string;
+  pass: string;
+  fromEmail: string;
+  fromName: string;
+};
+
+/** SMTP wajib tersedia karena sesi admin tidak dibuat sebelum OTP terkirim. */
+export function getSmtpConfig(): SmtpConfig {
+  const host = process.env.SMTP_HOST?.trim();
+  const port = Number(process.env.SMTP_PORT ?? "587");
+  const user = process.env.SMTP_USER?.trim();
+  const pass = process.env.SMTP_PASS;
+  const fromEmail = process.env.FROM_EMAIL?.trim();
+  const fromName = process.env.FROM_NAME?.trim();
+
+  if (
+    !host ||
+    /\s/.test(host) ||
+    !Number.isInteger(port) ||
+    port < 1 ||
+    port > 65535 ||
+    !user ||
+    !pass?.trim() ||
+    !fromEmail ||
+    !/^\S+@\S+\.\S+$/.test(fromEmail) ||
+    !fromName ||
+    fromName.length > 120 ||
+    /[\r\n]/.test(fromName)
+  ) {
+    throw new Error(
+      "SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, FROM_EMAIL, dan FROM_NAME wajib valid untuk OTP admin.",
+    );
+  }
+
+  return { host, port, user, pass, fromEmail, fromName };
 }
 
 /** Whether the session cookie requires HTTPS. */
@@ -92,4 +167,3 @@ export function getAllowedOrigin(): string {
 export function trustProxy(): boolean {
   return process.env.TRUST_PROXY === "true";
 }
-

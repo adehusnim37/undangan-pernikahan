@@ -149,13 +149,18 @@ export async function POST(request: Request) {
       }
       return NextResponse.json({ media: result.rows[0] }, { status: 201 });
     } catch (databaseError) {
-      await deleteImage(objectKey).catch((cleanupError) =>
-        console.error("R2 cleanup failed", cleanupError),
-      );
+      await deleteImage(objectKey).catch((cleanupError) => {
+        console.error("R2 cleanup failed after database error", cleanupError);
+      });
       throw databaseError;
     }
   } catch (error) {
-    console.error("Invitation media upload failed", error);
+    console.error("Invitation media upload failed", {
+      error,
+      slot,
+      contentType,
+      byteSize: entry.size,
+    });
     return NextResponse.json(
       {
         message:

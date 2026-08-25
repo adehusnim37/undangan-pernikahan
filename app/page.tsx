@@ -10,10 +10,6 @@ export default function Home() {
         <p className="script">A celebration under the moon</p>
         <h1>{couple.bride} <span>&amp;</span> {couple.groom}</h1>
         <p className="intro">Satu fondasi untuk undangan indah, daftar tamu yang tertata, dan RSVP yang mudah dipantau.</p>
-        <div className="landing-actions">
-          <Link className="button button-solid" href="/admin">Buka admin</Link>
-          <a className="button button-quiet" href="#cara-kerja">Lihat struktur</a>
-        </div>
       </section>
       <section className="how" id="cara-kerja">
         <article><b>01</b><h2>Link personal</h2><p>Setiap tamu menerima token undangan sendiri.</p></article>

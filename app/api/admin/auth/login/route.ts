@@ -1,13 +1,19 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { NextResponse } from "next/server";
-import { adminCookie, createAdminSession } from "@/lib/auth";
-import { getAdminCredentials } from "@/lib/config";
+import { getAdminCredentials, getSessionSecret } from "@/lib/config";
 import {
   clientInfoFrom,
   getAdminRateLimit,
   recordAdminLogin,
   adminRateLimitConstants,
 } from "@/lib/admin-security";
+import {
+  consumeOtpChallenge,
+  createOtpChallenge,
+  maskEmail,
+  otpCookie,
+} from "@/lib/admin-otp";
+import { sendAdminOtp } from "@/lib/admin-mail";
 import { assertSameOrigin } from "@/lib/csrf";
 import {
   adminLoginBodySchema,
@@ -15,56 +21,106 @@ import {
   validationError,
 } from "@/lib/validation";
 
-function same(a: string, b: string) {
-  const left = Buffer.from(a);
-  const right = Buffer.from(b);
-  return left.length === right.length && crypto.timingSafeEqual(left, right);
+function secureDigest(label: string, value: string) {
+  return crypto
+    .createHmac("sha256", getSessionSecret())
+    .update(`${label}:${value}`)
+    .digest();
 }
 
-function unauthorized(message = "Email atau password tidak sesuai.") {
-  return NextResponse.json({ message }, { status: 401 });
+function findCredential(email: string, password: string) {
+  let matchedEmail: string | null = null;
+  for (const credential of getAdminCredentials()) {
+    const emailOk = crypto.timingSafeEqual(
+      secureDigest("email", email.toLowerCase()),
+      secureDigest("email", credential.email),
+    );
+    const passwordOk = crypto.timingSafeEqual(
+      secureDigest("password", password),
+      secureDigest("password", credential.password),
+    );
+    if (emailOk && passwordOk) matchedEmail = credential.email;
+  }
+  return matchedEmail;
+}
+
+function json(body: unknown, init?: ResponseInit) {
+  const response = NextResponse.json(body, init);
+  response.headers.set("Cache-Control", "no-store");
+  return response;
 }
 
 export async function POST(request: Request) {
-  // CSRF: hanya izinkan request dari origin aplikasi sendiri.
   if (!assertSameOrigin(request)) {
-    return NextResponse.json(
-      { message: "Request tidak valid." },
-      { status: 403 },
-    );
+    return json({ message: "Request tidak valid." }, { status: 403 });
   }
 
   const body = await parseJson(request, adminLoginBodySchema);
   if (!body.success) return validationError(body.error);
-  const { email, password } = body.data;
-  const { ipAddress, userAgent } = clientInfoFrom(request);
+  const email = body.data.email.trim().toLowerCase();
+  const { password } = body.data;
+  const client = clientInfoFrom(request);
 
-  const rateLimit = await getAdminRateLimit(email, ipAddress);
+  const rateLimit = await getAdminRateLimit(email, client.ipAddress);
   if (rateLimit.locked) {
-    await recordAdminLogin(email, ipAddress, userAgent, false);
-    return NextResponse.json(
+    const retryAfterSeconds = rateLimit.lockoutUntil
+      ? Math.max(
+          1,
+          Math.ceil((new Date(rateLimit.lockoutUntil).getTime() - Date.now()) / 1000),
+        )
+      : adminRateLimitConstants.lockoutMs / 1000;
+    const response = json(
       {
-        message: `Terlalu banyak percobaan. Coba lagi setelah ${Math.ceil(adminRateLimitConstants.lockoutMs / 60000)} menit.`,
-        retryAfterSeconds: adminRateLimitConstants.lockoutMs / 1000,
+        message: "Terlalu banyak percobaan. Coba lagi beberapa saat lagi.",
+        retryAfterSeconds,
       },
       { status: 429 },
     );
+    response.headers.set("Retry-After", String(retryAfterSeconds));
+    return response;
   }
 
-  const { email: adminEmail, password: adminPassword } = getAdminCredentials();
-  // Bandingkan keduanya tanpa short-circuit agar tidak bocor validitas email
-  // lewat perbedaan waktu respons.
-  const emailOk = same(email, adminEmail);
-  const passwordOk = same(password, adminPassword);
-  const valid = emailOk && passwordOk;
-  await recordAdminLogin(email, ipAddress, userAgent, valid);
-  if (!valid) return unauthorized();
+  const matchedEmail = findCredential(email, password);
+  if (!matchedEmail) {
+    await recordAdminLogin(email, client.ipAddress, client.userAgent, false);
+    return json(
+      { message: "Email atau password tidak sesuai." },
+      { status: 401 },
+    );
+  }
 
-  const response = NextResponse.json({ ok: true });
-  response.cookies.set(
-    adminCookie.name,
-    createAdminSession(),
-    adminCookie.options,
-  );
+  const challenge = await createOtpChallenge(matchedEmail, client);
+  if (!challenge.ok) {
+    const response = json(
+      {
+        message: "Terlalu banyak permintaan kode. Coba lagi nanti.",
+        retryAfterSeconds: challenge.retryAfterSeconds,
+      },
+      { status: 429 },
+    );
+    response.headers.set("Retry-After", String(challenge.retryAfterSeconds));
+    return response;
+  }
+
+  try {
+    await sendAdminOtp(matchedEmail, challenge.code);
+  } catch (error) {
+    await consumeOtpChallenge(challenge.token).catch(() => undefined);
+    console.error("Admin OTP delivery failed", {
+      name: error instanceof Error ? error.name : "UnknownError",
+      message: error instanceof Error ? error.message : "Unknown SMTP error",
+    });
+    return json(
+      { message: "Kode verifikasi belum dapat dikirim. Coba lagi nanti." },
+      { status: 502 },
+    );
+  }
+
+  const response = json({
+    requiresOtp: true,
+    destination: maskEmail(matchedEmail),
+    expiresInSeconds: challenge.expiresInSeconds,
+  });
+  response.cookies.set(otpCookie.name, challenge.token, otpCookie.options);
   return response;
 }

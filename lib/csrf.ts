@@ -7,8 +7,9 @@ import { getAllowedOrigin } from "@/lib/config";
  */
 export function isSameOrigin(request: Request): boolean {
   const origin = request.headers.get("origin");
-  // Request non-browser (curl, server-side, health-check) tidak punya Origin.
-  if (!origin) return true;
+  // Semua endpoint mutasi aplikasi dipanggil browser. Origin yang hilang tidak
+  // diberi bypass; klien non-browser harus mengirim Origin yang diizinkan.
+  if (!origin) return false;
   return origin.replace(/\/+$/, "") === getAllowedOrigin();
 }
 

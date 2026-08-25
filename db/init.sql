@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS invitation_media (
   public_url TEXT NOT NULL,
   original_name TEXT NOT NULL,
   content_type TEXT NOT NULL CHECK (content_type IN ('image/jpeg', 'image/png', 'image/webp', 'image/gif')),
-  byte_size INTEGER NOT NULL CHECK (byte_size BETWEEN 1 AND 8388608),
+  byte_size INTEGER NOT NULL CHECK (byte_size BETWEEN 1 AND 31457280),
   object_fit TEXT NOT NULL DEFAULT 'cover' CHECK (object_fit IN ('cover', 'contain')),
   scale DOUBLE PRECISION NOT NULL DEFAULT 1 CHECK (scale BETWEEN 0.5 AND 2.5),
   position_x DOUBLE PRECISION NOT NULL DEFAULT 50 CHECK (position_x BETWEEN 0 AND 100),

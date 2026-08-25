@@ -21,7 +21,12 @@ const nextConfig: NextConfig = {
     "/*": ["./db/migrations/*.sql"],
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    const noStore = [{ key: "Cache-Control", value: "no-store" }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      { source: "/admin/:path*", headers: noStore },
+      { source: "/api/admin/:path*", headers: noStore },
+    ];
   },
 };
 

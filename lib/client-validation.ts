@@ -11,6 +11,10 @@ export const loginFormSchema = z.object({
   password: z.string().min(1, "Password wajib diisi."),
 });
 
+export const otpFormSchema = z.object({
+  code: z.string().regex(/^\d{8}$/, "Masukkan 8 angka kode OTP."),
+});
+
 export const guestFormSchema = z.object({
   guestName: z.string().trim().min(1, "Nama tamu wajib diisi.").max(120, "Nama tamu maksimal 120 karakter."),
   guestGroup: guestGroupSchema,

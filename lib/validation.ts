@@ -32,6 +32,12 @@ export const adminLoginBodySchema = z
   })
   .strict();
 
+export const adminOtpBodySchema = z
+  .object({
+    code: z.string().regex(/^\d{8}$/, "Kode OTP harus terdiri dari 8 angka."),
+  })
+  .strict();
+
 export const createGuestBodySchema = guestFieldsSchema.strict();
 
 export const updateGuestBodySchema = z.discriminatedUnion("action", [

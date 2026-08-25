@@ -19,7 +19,22 @@ Template full-stack untuk undangan web dengan link personal per tamu, dashboard 
    Copy-Item .env.example .env
    ```
 
-2. Ubah `ADMIN_PASSWORD` dan `SESSION_SECRET` di `.env`.
+2. Isi daftar admin, secret sesi, dan SMTP untuk OTP di `.env`:
+
+   ```dotenv
+   USER_ADMIN=admin-satu@example.com,admin-dua@example.com
+   PASSWORD_ADMIN=password-acak-admin-satu,password-acak-admin-dua
+   SESSION_SECRET=random-string-minimal-32-byte
+   SMTP_HOST=smtp.zeptomail.com
+   SMTP_PORT=587
+   SMTP_USER=emailapikey
+   SMTP_PASS=zeptomail-api-key
+   FROM_EMAIL=no-reply@example.com
+   FROM_NAME=Undangan Pernikahan
+   ```
+
+   Posisi email dan password harus berpasangan. Password production minimal 15
+   karakter dan tidak boleh mengandung koma karena koma dipakai sebagai pemisah.
 
    Gunakan `APP_ENV=development` saat aplikasi diakses melalui HTTP. Untuk deployment production, ubah menjadi `APP_ENV=production` dan akses aplikasi hanya melalui HTTPS karena cookie admin akan memakai atribut `Secure`. `NODE_ENV` tetap dikelola oleh Next.js dan tidak dipakai untuk memilih protokol deployment. Isi `NEXT_PUBLIC_APP_URL` dengan URL yang akan dibagikan ke tamu, misalnya `http://localhost:3020` atau `https://nikah.mas-a.de`.
 
@@ -32,7 +47,24 @@ Template full-stack untuk undangan web dengan link personal per tamu, dashboard 
    bun run dev
    ```
 
-5. Buka `http://localhost:<PORT>/admin`, masuk memakai `ADMIN_EMAIL` dan `ADMIN_PASSWORD`, lalu buat link tamu pertama.
+5. Buka `http://localhost:<PORT>/admin`, masuk memakai salah satu pasangan
+   `USER_ADMIN` dan `PASSWORD_ADMIN`, lalu masukkan OTP yang dikirim ke email
+   admin tersebut.
+
+## Keamanan login admin
+
+- OTP terdiri dari 8 angka acak, berlaku 10 menit, hanya dapat dipakai sekali,
+  dan terkunci setelah 5 kesalahan.
+- Pengiriman ulang memiliki jeda 60 detik dan maksimal 3 kiriman dalam 15 menit.
+- Kode disimpan sebagai HMAC, bukan plaintext, serta tidak ditulis ke log.
+- Sesi memakai token acak di cookie `HttpOnly`, `Secure`, `SameSite=Strict` dan
+  dapat dicabut di server saat logout. Batas absolut sesi 8 jam dan idle 1 jam.
+- Perubahan password admin atau `SESSION_SECRET` otomatis membatalkan sesi lama.
+- Semua endpoint mutasi menolak request tanpa `Origin` yang sama dengan
+  `NEXT_PUBLIC_APP_URL` sebagai perlindungan CSRF tambahan.
+- Email OTP adalah lapisan verifikasi tambahan yang praktis, tetapi bukan MFA
+  phishing-resistant menurut NIST. Untuk sistem bernilai tinggi, gunakan TOTP
+  atau passkey/WebAuthn.
 
 ## Migrasi database otomatis
 
