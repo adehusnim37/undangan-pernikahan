@@ -151,3 +151,6 @@ vite.config.ts.timestamp-*
 
 # Next.env.d.ts
 next-env.d.ts
+
+# Graphify Output
+/graphify-out/
