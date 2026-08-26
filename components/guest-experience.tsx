@@ -543,7 +543,9 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
               onUpdate: renderPanel,
               scrollTrigger: {
                 trigger: panel,
-                start: "bottom bottom",
+                // Safari's dynamic toolbar can make 100svh shorter than the
+                // viewport ScrollTrigger uses, so bottom-to-bottom leaves a gap.
+                start: "top top",
                 end: () => `+=${innerPanel.scrollHeight}`,
                 pin: true,
                 pinSpacing: false,

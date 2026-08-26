@@ -307,6 +307,10 @@
     font-size: clamp(62px, 20vw, 82px);
   }
 
+  .couple-profile--groom .couple-profile-copy h3 {
+    font-size: clamp(46px, 16vw, 66px);
+  }
+
   .couple-role {
     margin-bottom: 11px;
   }
@@ -377,4 +381,3 @@
     font-size: clamp(19px, 6.1vw, 23px);
   }
 }
-
