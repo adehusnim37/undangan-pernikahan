@@ -4,7 +4,12 @@ import { getInvitation } from "@/lib/invitations";
 import { assertSameOrigin } from "@/lib/csrf";
 import { clientInfoFrom } from "@/lib/admin-security";
 import { consumeRateLimit } from "@/lib/rate-limit";
-import { invitationParamsSchema, parseJson, rsvpBodySchema, validationError } from "@/lib/validation";
+import {
+  invitationParamsSchema,
+  parseJson,
+  rsvpBodySchema,
+  validationError,
+} from "@/lib/validation";
 
 const RSVP_LIMIT_PER_TOKEN = 15;
 const RSVP_LIMIT_PER_IP = 60;
@@ -15,7 +20,10 @@ export async function POST(
   { params }: { params: Promise<{ token: string }> },
 ) {
   if (!assertSameOrigin(request)) {
-    return NextResponse.json({ message: "Request tidak valid." }, { status: 403 });
+    return NextResponse.json(
+      { message: "Request tidak valid." },
+      { status: 403 },
+    );
   }
   const { ipAddress } = clientInfoFrom(request);
   const rawParams = await params;
@@ -27,8 +35,18 @@ export async function POST(
   const invitation = await getInvitation(token);
 
   if (
-    !(await consumeRateLimit("invite-rsvp", token, RSVP_LIMIT_PER_TOKEN, RSVP_WINDOW_SECONDS)) ||
-    !(await consumeRateLimit("invite-rsvp", ipAddress, RSVP_LIMIT_PER_IP, RSVP_WINDOW_SECONDS))
+    !(await consumeRateLimit(
+      "invite-rsvp",
+      token,
+      RSVP_LIMIT_PER_TOKEN,
+      RSVP_WINDOW_SECONDS,
+    )) ||
+    !(await consumeRateLimit(
+      "invite-rsvp",
+      ipAddress,
+      RSVP_LIMIT_PER_IP,
+      RSVP_WINDOW_SECONDS,
+    ))
   ) {
     return NextResponse.json(
       { message: "Terlalu banyak percobaan. Coba lagi nanti." },
@@ -55,13 +73,17 @@ export async function POST(
     );
   }
 
-  const existing = await query<{ current_editable_rsvps: number; max_editable_rsvps: number }>(
+  const existing = await query<{
+    current_editable_rsvps: number;
+    max_editable_rsvps: number;
+  }>(
     "SELECT current_editable_rsvps, max_editable_rsvps FROM rsvps WHERE invitation_id = $1",
     [invitation.id],
   );
   if (
     existing.rowCount === 1 &&
-    existing.rows[0].current_editable_rsvps >= existing.rows[0].max_editable_rsvps
+    existing.rows[0].current_editable_rsvps >=
+      existing.rows[0].max_editable_rsvps
   ) {
     return NextResponse.json(
       { message: "Batas perubahan konfirmasi sudah tercapai." },
