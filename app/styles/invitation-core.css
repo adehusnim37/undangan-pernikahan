@@ -1,16 +1,763 @@
 /* Guest invitation: private viewing / contact sheet direction */
-.access-screen { min-height: 100svh; display: grid; place-content: center; justify-items: center; gap: 17px; padding: 30px; color: #f5f1e8; background: #161815; text-align: center; }.access-screen p { max-width: 350px; margin: 0; color: #b4b8ad; font-size: 12px; line-height: 1.7; }.access-screen .eyebrow { color: #d9c8a5; }.access-screen-denied { justify-items: start; align-content: center; text-align: left; }.access-screen-denied h1 { max-width: 540px; margin: 0; font: 500 clamp(48px, 8vw, 92px)/.88 "Cormorant Garamond", serif; letter-spacing: -.06em; }.access-screen-denied p:not(.eyebrow) { max-width: 400px; }.access-screen small { color: #747a70; font-size: 11px; }.access-mark { color: #d9c8a5; font: 500 11px "DM Mono", monospace; letter-spacing: .16em; }.access-screen .gate-spinner { margin: 0; border-color: rgba(245,241,232,.2); border-top-color: #d9c8a5; }
-.invitation-shell { overflow: hidden; color: #20231e; background: #f5f1e8; }.folio-hero { min-height: 100svh; position: relative; display: grid; place-items: center; overflow: hidden; isolation: isolate; color: #f5f1e8; background: #161815; }.folio-hero::before { content: ""; position: absolute; z-index: 9; inset: 15px; border: 1px solid rgba(245,241,232,.26); pointer-events: none; }.folio-bar { position: absolute; z-index: 10; top: 27px; left: 29px; right: 29px; display: flex; justify-content: space-between; color: #d9c8a5; font: 500 9px "DM Mono", monospace; letter-spacing: .13em; will-change: transform, opacity; }.folio-gallery { position: absolute; inset: 0; overflow: hidden; }.folio-photo { position: absolute; z-index: 1; width: clamp(115px, 15vw, 220px); height: clamp(165px, 23vw, 310px); overflow: hidden; border: 1px solid rgba(245,241,232,.45); background: #0d100e; box-shadow: 0 24px 46px rgba(0,0,0,.23); will-change: transform, opacity, width, height, left, top; transform-origin: center center; }.folio-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(12,14,11,.08), transparent 48%, rgba(12,14,11,.45)); pointer-events: none; }.folio-photo img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center center; filter: sepia(.12) saturate(.74) contrast(1.02) brightness(.9); transform: scale(1.08); }.folio-photo figcaption { position: absolute; z-index: 2; right: 9px; bottom: 8px; left: 9px; overflow: hidden; color: rgba(245,241,232,.82); font: 500 8px "DM Mono", monospace; letter-spacing: .08em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }.folio-photo-1 { top: 11%; left: 9%; transform: rotate(-8deg); }.folio-photo-2 { top: 8%; left: 75%; transform: rotate(7deg); }.folio-photo-3 { top: 62%; left: 42%; z-index: 2; width: clamp(145px, 19vw, 270px); height: clamp(205px, 30vw, 385px); transform: rotate(-3deg); }.folio-photo-4 { top: 39%; left: 2%; transform: rotate(6deg); }.folio-photo-5 { top: 72%; left: 16%; transform: rotate(-5deg); }.folio-photo-6 { top: 43%; left: 80%; transform: rotate(-7deg); }.folio-photo-7 { top: 76%; left: 68%; transform: rotate(8deg); }.folio-title { position: absolute; z-index: 6; top: 50%; left: 50%; width: min(92vw, 760px); transform: translate(-50%, -50%); color: #f5f1e8; text-align: center; will-change: transform, color; }.folio-kicker { margin: 0 0 17px; color: #d9c8a5; font: 500 10px "DM Mono", monospace; letter-spacing: .18em; }.folio-title h1 { margin: 0; font: 500 clamp(72px, 12vw, 150px)/.76 "Cormorant Garamond", serif; letter-spacing: -.08em; }.folio-title h1 em { display: inline-block; color: #d9c8a5; font-size: .58em; font-weight: 400; }.folio-guest { display: flex; flex-direction: column; gap: 7px; margin: 26px 0 0; color: #bfc5b9; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; will-change: transform, color; }.folio-guest strong { color: #f5f1e8; font: 500 18px "Cormorant Garamond", serif; letter-spacing: .01em; text-transform: none; }.folio-scroll { position: absolute; z-index: 10; bottom: 29px; left: 50%; display: flex; align-items: center; gap: 11px; transform: translateX(-50%); color: #f5f1e8; font: 500 9px "DM Mono", monospace; letter-spacing: .13em; white-space: nowrap; will-change: transform, opacity; }.folio-scroll i { display: grid; width: 24px; height: 24px; place-items: center; border: 1px solid rgba(245,241,232,.48); border-radius: 50%; font-size: 14px; font-style: normal; }
-.folio-story { position: relative; display: grid; grid-template-columns: 1fr minmax(0, 590px) 1fr; gap: 24px; align-items: center; min-height: 88vh; padding: 130px clamp(24px, 7vw, 100px); background: #f5f1e8; }.folio-story-index { align-self: start; color: #7c8278; font: 500 9px "DM Mono", monospace; letter-spacing: .13em; }.folio-story-copy { grid-column: 2; text-align: center; will-change: transform, opacity; }.folio-story-copy .eyebrow { color: #9b5948; }.folio-story-copy h2 { margin: 0; color: #20231e; font: 500 clamp(48px, 6vw, 76px)/.9 "Cormorant Garamond", serif; letter-spacing: -.06em; }.folio-story-copy > p:last-child { max-width: 390px; margin: 30px auto 0; color: #687067; font-size: 13px; line-height: 1.8; }.folio-story-mark { align-self: end; justify-self: end; color: #9b5948; font: italic 500 clamp(22px, 3vw, 35px) "Cormorant Garamond", serif; }
-.details-section { position: relative; padding: 120px clamp(24px, 8vw, 120px) 130px; color: #f5f1e8; background: #20231e; }.details-heading { display: grid; grid-template-columns: minmax(150px, .55fr) minmax(0, 1fr); gap: 30px; align-items: end; max-width: 1060px; margin: 0 auto 70px; }.details-heading .eyebrow { margin: 0; color: #d9c8a5; }.details-heading h2 { max-width: 620px; margin: 0; font: 500 clamp(45px, 6vw, 76px)/.9 "Cormorant Garamond", serif; letter-spacing: -.06em; }.details-date { display: flex; gap: 10px; max-width: 1060px; margin: 0 auto 52px; border-top: 1px solid rgba(245,241,232,.24); border-bottom: 1px solid rgba(245,241,232,.24); }.details-date span { flex: 1; padding: 18px 0 15px; color: #d9c8a5; font: 500 clamp(39px, 6vw, 70px)/1 "Cormorant Garamond", serif; }.details-date span + span { padding-left: 18px; border-left: 1px solid rgba(245,241,232,.24); }.details-grid { display: grid; grid-template-columns: 1fr 1fr; max-width: 1060px; margin: 0 auto; border-bottom: 1px solid rgba(245,241,232,.24); }.details-grid article { padding: 30px 0 37px; }.details-grid article + article { padding-left: 30px; border-left: 1px solid rgba(245,241,232,.24); }.details-grid article > span { color: #9ea69a; font: 500 9px "DM Mono", monospace; letter-spacing: .13em; }.details-grid h3 { margin: 25px 0 10px; font: 500 clamp(34px, 4vw, 50px) "Cormorant Garamond", serif; }.details-grid p { margin: 0; color: #bfc5b9; font-size: 13px; line-height: 1.7; }.folio-link { display: flex; justify-content: space-between; max-width: 1060px; padding: 18px 0 0; margin: 0 auto; color: #d9c8a5; font: 500 10px "DM Mono", monospace; letter-spacing: .1em; text-decoration: none; text-transform: uppercase; }.folio-link span { font-size: 15px; }
-.invitation-shell .rsvp-section { display: grid; grid-template-columns: minmax(0, .9fr) minmax(280px, 1.1fr); gap: clamp(38px, 8vw, 120px); max-width: 1120px; padding: 140px clamp(24px, 7vw, 100px); margin: 0 auto; text-align: left; background: #f5f1e8; }.rsvp-heading { align-self: start; position: sticky; top: 30px; }.rsvp-heading .eyebrow { color: #9b5948; }.rsvp-heading h2 { max-width: 430px; margin: 0; color: #20231e; font: 500 clamp(49px, 6vw, 76px)/.88 "Cormorant Garamond", serif; letter-spacing: -.06em; }.rsvp-heading > p:last-child { max-width: 290px; margin: 24px 0 0; color: #687067; font-size: 13px; line-height: 1.7; }.invitation-shell .rsvp-form { display: grid; gap: 25px; margin: 0; text-align: left; }.invitation-shell .rsvp-form label { display: grid; gap: 10px; margin: 0; color: #687067; font: 500 9px "DM Mono", monospace; letter-spacing: .11em; text-transform: uppercase; }.invitation-shell .rsvp-form select, .invitation-shell .rsvp-form textarea { width: 100%; padding: 13px 0; border: 0; border-bottom: 1px solid rgba(32,35,30,.25); border-radius: 0; outline: 0; color: #20231e; background: transparent; font: 500 15px Manrope, sans-serif; }.invitation-shell .rsvp-form textarea { min-height: 116px; resize: vertical; }.invitation-shell .rsvp-form select:focus, .invitation-shell .rsvp-form textarea:focus { border-color: #9b5948; box-shadow: 0 2px 0 -1px #9b5948; }.invitation-shell .button { width: 100%; border-color: #20231e; }.invitation-shell .button-solid { color: #f5f1e8; background: #20231e; }.rsvp-success { display: grid; gap: 12px; padding: 28px; border: 1px solid rgba(32,35,30,.25); background: transparent; }.rsvp-success-index { color: #9b5948; font: 500 9px "DM Mono", monospace; letter-spacing: .1em; }.rsvp-success b { color: #20231e; font: 500 34px "Cormorant Garamond", serif; }.rsvp-success p { margin: 0; color: #687067; font-size: 13px; }.rsvp-summary { display: grid; grid-template-columns: 100px 1fr; gap: 9px 15px; padding: 17px 0 2px; margin: 8px 0; border-top: 1px solid rgba(32,35,30,.18); }.rsvp-summary dt { color: #687067; font: 500 9px "DM Mono", monospace; letter-spacing: .08em; text-transform: uppercase; }.rsvp-summary dd { margin: 0; color: #20231e; font-size: 12px; }.invitation-shell .text-button { width: fit-content; padding: 6px 0; border: 0; border-bottom: 1px solid #20231e; color: #20231e; background: transparent; font: 500 10px "DM Mono", monospace; letter-spacing: .07em; text-transform: uppercase; }.folio-footer { display: flex; justify-content: space-between; gap: 18px; padding: 28px clamp(24px, 7vw, 100px); color: #a8afa3; background: #161815; font: 500 9px "DM Mono", monospace; letter-spacing: .12em; }
-@media (max-width: 700px) { .folio-hero::before { inset: 10px; }.folio-bar { top: 21px; left: 19px; right: 19px; font-size: 7px; letter-spacing: .08em; }.folio-bar span:nth-child(2) { display: none; }.folio-photo { width: 27vw; height: 38vw; }.folio-photo-1 { top: 13%; left: 6%; }.folio-photo-2 { top: 11%; left: 72%; }.folio-photo-3 { top: 65%; left: 35%; width: 31vw; height: 45vw; }.folio-photo-4 { top: 42%; left: -5%; }.folio-photo-5 { top: 74%; left: 8%; }.folio-photo-6 { top: 44%; left: 78%; }.folio-photo-7 { top: 78%; left: 69%; }.folio-photo figcaption { font-size: 6px; }.folio-title { width: calc(100% - 36px); }.folio-kicker { margin-bottom: 13px; font-size: 8px; letter-spacing: .12em; }.folio-title h1 { font-size: clamp(60px, 17vw, 94px); line-height: .8; }.folio-guest { margin-top: 19px; font-size: 8px; }.folio-guest strong { font-size: 16px; }.folio-scroll { bottom: 21px; font-size: 7px; }.folio-scroll i { width: 22px; height: 22px; font-size: 12px; }.folio-story { display: block; min-height: 78vh; padding: 90px 24px; }.folio-story-index { margin-bottom: 100px; }.folio-story-copy h2 { font-size: clamp(47px, 14vw, 70px); }.folio-story-copy > p:last-child { margin-top: 24px; font-size: 12px; }.folio-story-mark { display: block; margin-top: 65px; text-align: right; }.details-section { padding: 88px 24px 92px; }.details-heading { display: block; margin-bottom: 56px; }.details-heading h2 { margin-top: 19px; font-size: clamp(47px, 14vw, 70px); }.details-date { margin-bottom: 32px; }.details-date span { font-size: clamp(42px, 14vw, 66px); }.details-grid { grid-template-columns: 1fr; }.details-grid article { padding: 25px 0; }.details-grid article + article { padding-left: 0; border-top: 1px solid rgba(245,241,232,.24); border-left: 0; }.details-grid h3 { margin: 17px 0 7px; }.invitation-shell .rsvp-section { display: block; padding: 92px 24px 100px; }.rsvp-heading { position: static; margin-bottom: 52px; }.rsvp-heading h2 { font-size: clamp(50px, 15vw, 74px); }.invitation-shell .rsvp-form { gap: 22px; }.rsvp-success { padding: 23px 18px; }.rsvp-summary { grid-template-columns: 85px 1fr; }.folio-footer { flex-direction: column; gap: 9px; padding: 25px 24px; font-size: 8px; } }
+.access-screen {
+  min-height: 100svh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 17px;
+  padding: 30px;
+  color: #f5f1e8;
+  background: #161815;
+  text-align: center;
+}
+.access-screen p {
+  max-width: 350px;
+  margin: 0;
+  color: #b4b8ad;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.access-screen .eyebrow {
+  color: #d9c8a5;
+}
+.access-screen-denied {
+  justify-items: start;
+  align-content: center;
+  text-align: left;
+}
+.access-screen-denied h1 {
+  max-width: 540px;
+  margin: 0;
+  font:
+    500 clamp(48px, 8vw, 92px)/0.88 "Cormorant Garamond",
+    serif;
+  letter-spacing: -0.06em;
+}
+.access-screen-denied p:not(.eyebrow) {
+  max-width: 400px;
+}
+.access-screen small {
+  color: #747a70;
+  font-size: 11px;
+}
+.access-mark {
+  color: #d9c8a5;
+  font:
+    500 11px "DM Mono",
+    monospace;
+  letter-spacing: 0.16em;
+}
+.access-screen .gate-spinner {
+  margin: 0;
+  border-color: rgba(245, 241, 232, 0.2);
+  border-top-color: #d9c8a5;
+}
+.invitation-shell {
+  overflow: hidden;
+  color: #20231e;
+  background: #f5f1e8;
+}
+.folio-hero {
+  min-height: 100svh;
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  color: #f5f1e8;
+  background: #161815;
+}
+.folio-hero::before {
+  content: "";
+  position: absolute;
+  z-index: 9;
+  inset: 15px;
+  border: 1px solid rgba(245, 241, 232, 0.26);
+  pointer-events: none;
+}
+.folio-bar {
+  position: absolute;
+  z-index: 10;
+  top: 27px;
+  left: 29px;
+  right: 29px;
+  display: flex;
+  justify-content: space-between;
+  color: #d9c8a5;
+  font:
+    500 9px "DM Mono",
+    monospace;
+  letter-spacing: 0.13em;
+  will-change: transform, opacity;
+}
+.folio-gallery {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.folio-photo {
+  position: absolute;
+  z-index: 1;
+  width: clamp(115px, 15vw, 220px);
+  height: clamp(165px, 23vw, 310px);
+  overflow: hidden;
+  border: 1px solid rgba(245, 241, 232, 0.45);
+  background: #0d100e;
+  box-shadow: 0 24px 46px rgba(0, 0, 0, 0.23);
+  will-change: transform, opacity, width, height, left, top;
+  transform-origin: center center;
+}
+.folio-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(12, 14, 11, 0.08),
+    transparent 48%,
+    rgba(12, 14, 11, 0.45)
+  );
+  pointer-events: none;
+}
+.folio-photo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center center;
+  filter: sepia(0.12) saturate(0.74) contrast(1.02) brightness(0.9);
+  transform: scale(1.08);
+}
+.folio-photo figcaption {
+  position: absolute;
+  z-index: 2;
+  right: 9px;
+  bottom: 8px;
+  left: 9px;
+  overflow: hidden;
+  color: rgba(245, 241, 232, 0.82);
+  font:
+    500 8px "DM Mono",
+    monospace;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.folio-photo-1 {
+  top: 11%;
+  left: 9%;
+  transform: rotate(-8deg);
+}
+.folio-photo-2 {
+  top: 8%;
+  left: 75%;
+  transform: rotate(7deg);
+}
+.folio-photo-3 {
+  top: 62%;
+  left: 42%;
+  z-index: 2;
+  width: clamp(145px, 19vw, 270px);
+  height: clamp(205px, 30vw, 385px);
+  transform: rotate(-3deg);
+}
+.folio-photo-4 {
+  top: 39%;
+  left: 2%;
+  transform: rotate(6deg);
+}
+.folio-photo-5 {
+  top: 72%;
+  left: 16%;
+  transform: rotate(-5deg);
+}
+.folio-photo-6 {
+  top: 43%;
+  left: 80%;
+  transform: rotate(-7deg);
+}
+.folio-photo-7 {
+  top: 76%;
+  left: 68%;
+  transform: rotate(8deg);
+}
+.folio-title {
+  position: absolute;
+  z-index: 6;
+  top: 50%;
+  left: 50%;
+  width: min(92vw, 760px);
+  transform: translate(-50%, -50%);
+  color: #f5f1e8;
+  text-align: center;
+  will-change: transform, color;
+}
+.folio-kicker {
+  margin: 0 0 17px;
+  color: #d9c8a5;
+  font:
+    500 22px "DM Mono",
+    monospace;
+  letter-spacing: 0.18em;
+}
+.folio-title h1 {
+  margin: 0;
+  font:
+    500 clamp(72px, 12vw, 150px)/0.76 "Cormorant Garamond",
+    serif;
+  letter-spacing: -0.08em;
+}
+.folio-title h1 em {
+  display: inline-block;
+  color: #d9c8a5;
+  font-size: 0.58em;
+  font-weight: 400;
+}
+.folio-guest {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 26px 0 0;
+  color: #bfc5b9;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  will-change: transform, color;
+}
+.folio-guest strong {
+  color: #f5f1e8;
+  font:
+    500 18px "Cormorant Garamond",
+    serif;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+.folio-scroll {
+  position: absolute;
+  z-index: 10;
+  bottom: 29px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  transform: translateX(-50%);
+  color: #f5f1e8;
+  font:
+    500 9px "DM Mono",
+    monospace;
+  letter-spacing: 0.13em;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+.folio-scroll i {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border: 1px solid rgba(245, 241, 232, 0.48);
+  border-radius: 50%;
+  font-size: 14px;
+  font-style: normal;
+}
+.folio-story {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 590px) 1fr;
+  gap: 24px;
+  align-items: center;
+  min-height: 88vh;
+  padding: 130px clamp(24px, 7vw, 100px);
+  background: #f5f1e8;
+}
+.folio-story-index {
+  align-self: start;
+  color: #7c8278;
+  font:
+    500 9px "DM Mono",
+    monospace;
+  letter-spacing: 0.13em;
+}
+.folio-story-copy {
+  grid-column: 2;
+  text-align: center;
+  will-change: transform, opacity;
+}
+.folio-story-copy .eyebrow {
+  color: #9b5948;
+}
+.folio-story-copy h2 {
+  margin: 0;
+  color: #20231e;
+  font:
+    500 clamp(48px, 6vw, 76px)/0.9 "Cormorant Garamond",
+    serif;
+  letter-spacing: -0.06em;
+}
+.folio-story-copy > p:last-child {
+  max-width: 390px;
+  margin: 30px auto 0;
+  color: #687067;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.folio-story-mark {
+  align-self: end;
+  justify-self: end;
+  color: #9b5948;
+  font:
+    italic 500 clamp(22px, 3vw, 35px) "Cormorant Garamond",
+    serif;
+}
+.details-section {
+  position: relative;
+  padding: 120px clamp(24px, 8vw, 120px) 130px;
+  color: #f5f1e8;
+  background: #20231e;
+}
+.details-heading {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.55fr) minmax(0, 1fr);
+  gap: 30px;
+  align-items: end;
+  max-width: 1060px;
+  margin: 0 auto 70px;
+}
+.details-heading .eyebrow {
+  margin: 0;
+  color: #d9c8a5;
+}
+.details-heading h2 {
+  max-width: 620px;
+  margin: 0;
+  font:
+    500 clamp(45px, 6vw, 76px)/0.9 "Cormorant Garamond",
+    serif;
+  letter-spacing: -0.06em;
+}
+.details-date {
+  display: flex;
+  gap: 10px;
+  max-width: 1060px;
+  margin: 0 auto 52px;
+  border-top: 1px solid rgba(245, 241, 232, 0.24);
+  border-bottom: 1px solid rgba(245, 241, 232, 0.24);
+}
+.details-date span {
+  flex: 1;
+  padding: 18px 0 15px;
+  color: #d9c8a5;
+  font:
+    500 clamp(39px, 6vw, 70px)/1 "Cormorant Garamond",
+    serif;
+}
+.details-date span + span {
+  padding-left: 18px;
+  border-left: 1px solid rgba(245, 241, 232, 0.24);
+}
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 1060px;
+  margin: 0 auto;
+  border-bottom: 1px solid rgba(245, 241, 232, 0.24);
+}
+.details-grid article {
+  padding: 30px 0 37px;
+}
+.details-grid article + article {
+  padding-left: 30px;
+  border-left: 1px solid rgba(245, 241, 232, 0.24);
+}
+.details-grid article > span {
+  color: #9ea69a;
+  font:
+    500 9px "DM Mono",
+    monospace;
+  letter-spacing: 0.13em;
+}
+.details-grid h3 {
+  margin: 25px 0 10px;
+  font:
+    500 clamp(34px, 4vw, 50px) "Cormorant Garamond",
+    serif;
+}
+.details-grid p {
+  margin: 0;
+  color: #bfc5b9;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.folio-link {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1060px;
+  padding: 18px 0 0;
+  margin: 0 auto;
+  color: #d9c8a5;
+  font:
+    500 10px "DM Mono",
+    monospace;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.folio-link span {
+  font-size: 15px;
+}
+.invitation-shell .rsvp-section {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(280px, 1.1fr);
+  gap: clamp(38px, 8vw, 120px);
+  max-width: 1120px;
+  padding: 140px clamp(24px, 7vw, 100px);
+  margin: 0 auto;
+  text-align: left;
+  background: #f5f1e8;
+}
+.rsvp-heading {
+  align-self: start;
+  position: sticky;
+  top: 30px;
+}
+.rsvp-heading .eyebrow {
+  color: #9b5948;
+}
+.rsvp-heading h2 {
+  max-width: 430px;
+  margin: 0;
+  color: #20231e;
+  font:
+    500 clamp(49px, 6vw, 76px)/0.88 "Cormorant Garamond",
+    serif;
+  letter-spacing: -0.06em;
+}
+.rsvp-heading > p:last-child {
+  max-width: 290px;
+  margin: 24px 0 0;
+  color: #687067;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.invitation-shell .rsvp-form {
+  display: grid;
+  gap: 25px;
+  margin: 0;
+  text-align: left;
+}
+.invitation-shell .rsvp-form label {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  color: #687067;
+  font:
+    500 9px "DM Mono",
+    monospace;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+.invitation-shell .rsvp-form select,
+.invitation-shell .rsvp-form textarea {
+  width: 100%;
+  padding: 13px 0;
+  border: 0;
+  border-bottom: 1px solid rgba(32, 35, 30, 0.25);
+  border-radius: 0;
+  outline: 0;
+  color: #20231e;
+  background: transparent;
+  font:
+    500 15px Manrope,
+    sans-serif;
+}
+.invitation-shell .rsvp-form textarea {
+  min-height: 116px;
+  resize: vertical;
+}
+.invitation-shell .rsvp-form select:focus,
+.invitation-shell .rsvp-form textarea:focus {
+  border-color: #9b5948;
+  box-shadow: 0 2px 0 -1px #9b5948;
+}
+.invitation-shell .button {
+  width: 100%;
+  border-color: #20231e;
+}
+.invitation-shell .button-solid {
+  color: #f5f1e8;
+  background: #20231e;
+}
+.rsvp-success {
+  display: grid;
+  gap: 12px;
+  padding: 28px;
+  border: 1px solid rgba(32, 35, 30, 0.25);
+  background: transparent;
+}
+.rsvp-success-index {
+  color: #9b5948;
+  font:
+    500 9px "DM Mono",
+    monospace;
+  letter-spacing: 0.1em;
+}
+.rsvp-success b {
+  color: #20231e;
+  font:
+    500 34px "Cormorant Garamond",
+    serif;
+}
+.rsvp-success p {
+  margin: 0;
+  color: #687067;
+  font-size: 13px;
+}
+.rsvp-summary {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 9px 15px;
+  padding: 17px 0 2px;
+  margin: 8px 0;
+  border-top: 1px solid rgba(32, 35, 30, 0.18);
+}
+.rsvp-summary dt {
+  color: #687067;
+  font:
+    500 9px "DM Mono",
+    monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.rsvp-summary dd {
+  margin: 0;
+  color: #20231e;
+  font-size: 12px;
+}
+.invitation-shell .text-button {
+  width: fit-content;
+  padding: 6px 0;
+  border: 0;
+  border-bottom: 1px solid #20231e;
+  color: #20231e;
+  background: transparent;
+  font:
+    500 10px "DM Mono",
+    monospace;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.folio-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 28px clamp(24px, 7vw, 100px);
+  color: #a8afa3;
+  background: #161815;
+  font:
+    500 9px "DM Mono",
+    monospace;
+  letter-spacing: 0.12em;
+}
+@media (max-width: 700px) {
+  .folio-hero::before {
+    inset: 10px;
+  }
+  .folio-bar {
+    top: 21px;
+    left: 19px;
+    right: 19px;
+    font-size: 7px;
+    letter-spacing: 0.08em;
+  }
+  .folio-bar span:nth-child(2) {
+    display: none;
+  }
+  .folio-photo {
+    width: 27vw;
+    height: 38vw;
+  }
+  .folio-photo-1 {
+    top: 13%;
+    left: 6%;
+  }
+  .folio-photo-2 {
+    top: 11%;
+    left: 72%;
+  }
+  .folio-photo-3 {
+    top: 65%;
+    left: 35%;
+    width: 31vw;
+    height: 45vw;
+  }
+  .folio-photo-4 {
+    top: 42%;
+    left: -5%;
+  }
+  .folio-photo-5 {
+    top: 74%;
+    left: 8%;
+  }
+  .folio-photo-6 {
+    top: 44%;
+    left: 78%;
+  }
+  .folio-photo-7 {
+    top: 78%;
+    left: 69%;
+  }
+  .folio-photo figcaption {
+    font-size: 6px;
+  }
+  .folio-title {
+    width: calc(100% - 36px);
+  }
+  .folio-kicker {
+    margin-bottom: 18px;
+    font-size: 15px;
+    letter-spacing: 0.12em;
+  }
+  .folio-title h1 {
+    font-size: clamp(60px, 17vw, 94px);
+    line-height: 0.8;
+  }
+  .folio-guest {
+    margin-top: 19px;
+    font-size: 8px;
+  }
+  .folio-guest strong {
+    font-size: 16px;
+  }
+  .folio-scroll {
+    bottom: 21px;
+    font-size: 7px;
+  }
+  .folio-scroll i {
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+  }
+  .folio-story {
+    display: block;
+    min-height: 78vh;
+    padding: 90px 24px;
+  }
+  .folio-story-index {
+    margin-bottom: 100px;
+  }
+  .folio-story-copy h2 {
+    font-size: clamp(47px, 14vw, 70px);
+  }
+  .folio-story-copy > p:last-child {
+    margin-top: 24px;
+    font-size: 12px;
+  }
+  .folio-story-mark {
+    display: block;
+    margin-top: 65px;
+    text-align: right;
+  }
+  .details-section {
+    padding: 88px 24px 92px;
+  }
+  .details-heading {
+    display: block;
+    margin-bottom: 56px;
+  }
+  .details-heading h2 {
+    margin-top: 19px;
+    font-size: clamp(47px, 14vw, 70px);
+  }
+  .details-date {
+    margin-bottom: 32px;
+  }
+  .details-date span {
+    font-size: clamp(42px, 14vw, 66px);
+  }
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+  .details-grid article {
+    padding: 25px 0;
+  }
+  .details-grid article + article {
+    padding-left: 0;
+    border-top: 1px solid rgba(245, 241, 232, 0.24);
+    border-left: 0;
+  }
+  .details-grid h3 {
+    margin: 17px 0 7px;
+  }
+  .invitation-shell .rsvp-section {
+    display: block;
+    padding: 92px 24px 100px;
+  }
+  .rsvp-heading {
+    position: static;
+    margin-bottom: 52px;
+  }
+  .rsvp-heading h2 {
+    font-size: clamp(50px, 15vw, 74px);
+  }
+  .invitation-shell .rsvp-form {
+    gap: 22px;
+  }
+  .rsvp-success {
+    padding: 23px 18px;
+  }
+  .rsvp-summary {
+    grid-template-columns: 85px 1fr;
+  }
+  .folio-footer {
+    flex-direction: column;
+    gap: 9px;
+    padding: 25px 24px;
+    font-size: 8px;
+  }
+}
 
 /* Clean mobile frame: let the image field breathe to the viewport edges. */
-.folio-hero::before { display: none; }
-.folio-story { grid-template-columns: 1fr; }
-.folio-story-copy { grid-column: 1; max-width: 590px; margin: 0 auto; }
-@media (max-width: 700px) { .folio-bar span:nth-child(2) { display: block; }.folio-photo-2 { left: auto; right: 7%; }.folio-photo-3 { top: 66%; left: 33%; width: 34vw; height: auto; aspect-ratio: 4 / 5; }.folio-photo-4 { left: 3%; }.folio-photo-6 { left: auto; right: 4%; }.folio-photo-7 { left: auto; right: 6%; }.folio-title h1 { font-size: clamp(64px, 18vw, 100px); } }
+.folio-hero::before {
+  display: none;
+}
+.folio-story {
+  grid-template-columns: 1fr;
+}
+.folio-story-copy {
+  grid-column: 1;
+  max-width: 590px;
+  margin: 0 auto;
+}
+@media (max-width: 700px) {
+  .folio-bar span:nth-child(2) {
+    display: block;
+  }
+  .folio-photo-2 {
+    left: auto;
+    right: 7%;
+  }
+  .folio-photo-3 {
+    top: 66%;
+    left: 33%;
+    width: 34vw;
+    height: auto;
+    aspect-ratio: 4 / 5;
+  }
+  .folio-photo-4 {
+    left: 3%;
+  }
+  .folio-photo-6 {
+    left: auto;
+    right: 4%;
+  }
+  .folio-photo-7 {
+    left: auto;
+    right: 6%;
+  }
+  .folio-title h1 {
+    font-size: clamp(64px, 18vw, 100px);
+  }
+}
 
 /* Hero title — editorial invitation hierarchy and personalized nameplate. */
 .invitation-shell .folio-title {
@@ -27,8 +774,10 @@
   width: min(100%, 490px);
   margin: 0 0 clamp(17px, 2.3vw, 27px);
   color: #d9c8a5;
-  font: 500 clamp(8px, .72vw, 10px)/1.4 "DM Mono", monospace;
-  letter-spacing: .19em;
+  font:
+    500 clamp(8px, 0.72vw, 12px)/1.4 "DM Mono",
+    monospace;
+  letter-spacing: 0.19em;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -37,7 +786,7 @@
 .invitation-shell .folio-kicker::after {
   content: "";
   height: 1px;
-  background: rgba(217, 200, 165, .62);
+  background: rgba(217, 200, 165, 0.62);
 }
 
 .invitation-shell .folio-title h1 {
@@ -47,8 +796,8 @@
   gap: clamp(5px, 1.1vw, 15px);
   margin: 0;
   font-size: clamp(72px, 12vw, 150px);
-  line-height: .72;
-  letter-spacing: -.065em;
+  line-height: 0.72;
+  letter-spacing: -0.065em;
   white-space: nowrap;
 }
 
@@ -58,9 +807,9 @@
 
 .invitation-shell .folio-title h1 em {
   position: relative;
-  top: -.04em;
+  top: -0.04em;
   color: #d9c8a5;
-  font-size: .5em;
+  font-size: 0.5em;
   font-weight: 400;
   line-height: 1;
 }
@@ -72,22 +821,26 @@
   max-width: min(82vw, 440px);
   padding: 12px clamp(20px, 3vw, 34px) 13px;
   margin: clamp(29px, 3.2vw, 39px) 0 0;
-  border-top: 1px solid rgba(245, 241, 232, .42);
-  border-bottom: 1px solid rgba(245, 241, 232, .42);
+  border-top: 1px solid rgba(245, 241, 232, 0.42);
+  border-bottom: 1px solid rgba(245, 241, 232, 0.42);
   color: #bfc5b9;
 }
 
 .invitation-shell .folio-guest span {
-  font: 500 8px/1.4 "DM Mono", monospace;
-  letter-spacing: .16em;
+  font:
+    500 8px/1.4 "DM Mono",
+    monospace;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
 .invitation-shell .folio-guest strong {
   max-width: 100%;
   color: #f5f1e8;
-  font: italic 500 clamp(20px, 2.1vw, 27px)/1.05 "Cormorant Garamond", serif;
-  letter-spacing: .015em;
+  font:
+    italic 500 clamp(20px, 2.1vw, 27px)/1.05 "Cormorant Garamond",
+    serif;
+  letter-spacing: 0.015em;
   overflow-wrap: anywhere;
   text-wrap: balance;
   text-transform: none;
@@ -103,32 +856,32 @@
     gap: 9px;
     width: min(100%, 330px);
     margin-bottom: 18px;
-    font-size: 7px;
-    letter-spacing: .13em;
+    font-size: 10px;
+    letter-spacing: 0.13em;
   }
 
   .invitation-shell .folio-title h1 {
     gap: 6px;
     font-size: clamp(58px, 17vw, 76px);
-    line-height: .75;
-    letter-spacing: -.075em;
+    line-height: 0.75;
+    letter-spacing: -0.075em;
   }
 
   .invitation-shell .folio-guest {
-    gap: 5px;
+    gap: 7px;
     min-width: min(74vw, 260px);
     max-width: 86vw;
-    padding: 10px 14px 11px;
+    padding: 12px 16px 14px;
     margin-top: 24px;
   }
 
   .invitation-shell .folio-guest span {
-    font-size: 7px;
-    letter-spacing: .13em;
+    font-size: 9px;
+    letter-spacing: 0.13em;
   }
 
   .invitation-shell .folio-guest strong {
-    font-size: clamp(18px, 5.5vw, 23px);
+    font-size: clamp(24px, 6.5vw, 30px);
   }
 }
 
@@ -234,4 +987,3 @@
     top: 46svh;
   }
 }
-

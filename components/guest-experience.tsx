@@ -459,6 +459,188 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             });
           }
         });
+
+        responsiveMotion.add(
+          "(min-width: 701px) and (hover: hover) and (pointer: fine)",
+          () => {
+            const schoolBento = journey.querySelector<HTMLElement>(
+              ".journey-bento--school",
+            );
+            const schoolPhotos = schoolBento?.querySelectorAll<HTMLElement>(
+              ":scope > figure",
+            );
+            if (!schoolBento || !schoolPhotos?.length) return;
+
+            gsap.set(schoolBento, {
+              perspective: 900,
+              transformStyle: "preserve-3d",
+            });
+            gsap.set(schoolPhotos, {
+              z: (index) => [18, 42, 30][index] ?? 22,
+              transformStyle: "preserve-3d",
+              backfaceVisibility: "hidden",
+            });
+
+            const tiltX = gsap.quickTo(schoolBento, "rotationX", {
+              duration: 0.55,
+              ease: "power3.out",
+            });
+            const tiltY = gsap.quickTo(schoolBento, "rotationY", {
+              duration: 0.55,
+              ease: "power3.out",
+            });
+            const photoX = Array.from(schoolPhotos, (photo) =>
+              gsap.quickTo(photo, "x", {
+                duration: 0.65,
+                ease: "power3.out",
+              }),
+            );
+            const photoY = Array.from(schoolPhotos, (photo) =>
+              gsap.quickTo(photo, "y", {
+                duration: 0.65,
+                ease: "power3.out",
+              }),
+            );
+            const photoDepth = [14, 24, 19];
+
+            const resetSchoolTilt = () => {
+              tiltX(0);
+              tiltY(0);
+              photoX.forEach((move) => move(0));
+              photoY.forEach((move) => move(0));
+            };
+            const moveSchoolTilt = (event: PointerEvent) => {
+              const bounds = schoolBento.getBoundingClientRect();
+              const xProgress = gsap.utils.clamp(
+                0,
+                1,
+                (event.clientX - bounds.left) / bounds.width,
+              );
+              const yProgress = gsap.utils.clamp(
+                0,
+                1,
+                (event.clientY - bounds.top) / bounds.height,
+              );
+
+              tiltX(gsap.utils.interpolate(7, -7, yProgress));
+              tiltY(gsap.utils.interpolate(-9, 9, xProgress));
+              photoDepth.forEach((depth, index) => {
+                photoX[index]?.(
+                  gsap.utils.interpolate(-depth, depth, xProgress),
+                );
+                photoY[index]?.(
+                  gsap.utils.interpolate(-depth * 0.7, depth * 0.7, yProgress),
+                );
+              });
+            };
+
+            schoolBento.addEventListener("pointermove", moveSchoolTilt);
+            schoolBento.addEventListener("pointerleave", resetSchoolTilt);
+            window.addEventListener("blur", resetSchoolTilt);
+
+            return () => {
+              schoolBento.removeEventListener("pointermove", moveSchoolTilt);
+              schoolBento.removeEventListener("pointerleave", resetSchoolTilt);
+              window.removeEventListener("blur", resetSchoolTilt);
+            };
+          },
+        );
+
+        responsiveMotion.add(
+          "(max-width: 700px) and (pointer: coarse)",
+          () => {
+            const schoolBento = journey.querySelector<HTMLElement>(
+              ".journey-bento--school",
+            );
+            const schoolPhotos = schoolBento?.querySelectorAll<HTMLElement>(
+              ":scope > figure",
+            );
+            if (!schoolBento || !schoolPhotos?.length) return;
+
+            gsap.set(schoolBento, {
+              perspective: 760,
+              transformStyle: "preserve-3d",
+            });
+            gsap.set(schoolPhotos, {
+              z: (index) => [10, 26, 18][index] ?? 14,
+              transformStyle: "preserve-3d",
+              backfaceVisibility: "hidden",
+            });
+
+            const tiltX = gsap.quickTo(schoolBento, "rotationX", {
+              duration: 0.38,
+              ease: "power3.out",
+            });
+            const tiltY = gsap.quickTo(schoolBento, "rotationY", {
+              duration: 0.38,
+              ease: "power3.out",
+            });
+            const photoX = Array.from(schoolPhotos, (photo) =>
+              gsap.quickTo(photo, "x", {
+                duration: 0.45,
+                ease: "power3.out",
+              }),
+            );
+            const photoDepth = [8, 14, 11];
+
+            const resetSchoolTouch = () => {
+              tiltX(0);
+              tiltY(0);
+              photoX.forEach((move) => move(0));
+            };
+            const moveSchoolTouch = (event: TouchEvent) => {
+              const touch = event.touches[0];
+              if (!touch) return;
+              const bounds = schoolBento.getBoundingClientRect();
+              const xProgress = gsap.utils.clamp(
+                0,
+                1,
+                (touch.clientX - bounds.left) / bounds.width,
+              );
+              const yProgress = gsap.utils.clamp(
+                0,
+                1,
+                (touch.clientY - bounds.top) / bounds.height,
+              );
+
+              tiltX(gsap.utils.interpolate(5, -5, yProgress));
+              tiltY(gsap.utils.interpolate(-6, 6, xProgress));
+              photoDepth.forEach((depth, index) => {
+                photoX[index]?.(
+                  gsap.utils.interpolate(-depth, depth, xProgress),
+                );
+              });
+            };
+            const passiveTouchOptions: AddEventListenerOptions = {
+              passive: true,
+            };
+
+            schoolBento.addEventListener(
+              "touchstart",
+              moveSchoolTouch,
+              passiveTouchOptions,
+            );
+            schoolBento.addEventListener(
+              "touchmove",
+              moveSchoolTouch,
+              passiveTouchOptions,
+            );
+            schoolBento.addEventListener("touchend", resetSchoolTouch);
+            schoolBento.addEventListener("touchcancel", resetSchoolTouch);
+            window.addEventListener("blur", resetSchoolTouch);
+
+            return () => {
+              schoolBento.removeEventListener("touchstart", moveSchoolTouch);
+              schoolBento.removeEventListener("touchmove", moveSchoolTouch);
+              schoolBento.removeEventListener("touchend", resetSchoolTouch);
+              schoolBento.removeEventListener(
+                "touchcancel",
+                resetSchoolTouch,
+              );
+              window.removeEventListener("blur", resetSchoolTouch);
+            };
+          },
+        );
       }
 
       if (overscrollPanels.length > 1) {
@@ -977,11 +1159,11 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
               <figcaption>{coupleCaps.bride} · PUTRI</figcaption>
             </figure>
             <div className="couple-profile-copy">
-              <span className="couple-index">01 / PUTRI</span>
-              <h3>{couple.bride} Raniah Aisyah Putri</h3>
+              <span className="couple-index">Alvita</span>
+              <h3>apt. Alvita Raniah Aisyah Putri, M.Pharm.</h3>
               <p className="couple-role">Putri Pertama dari</p>
               <div className="couple-parents">
-                <strong>Bapak Andi Subyantoro ,S.T.</strong>
+                <strong>Bapak Andi Subyantoro, S.T.</strong>
                 <i>&amp;</i>
                 <strong>Ibu drg. Rully Kusumawardhany, M.M.</strong>
               </div>
@@ -1005,11 +1187,11 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
               <figcaption>{coupleCaps.groom} · PUTRA</figcaption>
             </figure>
             <div className="couple-profile-copy">
-              <span className="couple-index">02 / PUTRA </span>
-              <h3>{couple.groom} Husni Mubarrok</h3>
+              <span className="couple-index">Ade </span>
+              <h3>{couple.groom} Husni Mubarrok, S.Kom</h3>
               <p className="couple-role">Putra Kedua dari</p>
               <div className="couple-parents">
-                <strong>Bapak Lukman Hakim ,S.Pd.</strong>
+                <strong>Bapak Lukman Hakim, S.Pd.</strong>
                 <i>&amp;</i>
                 <strong>Ibu Dra. Djuwariah</strong>
               </div>
@@ -1050,7 +1232,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                   alt={`Foto ${couple.bride} dan ${couple.groom} semasa sekolah`}
                 />
               </figure>
-              <figure className="journey-school-mark">
+              <figure className="journey-photo journey-school-mark">
                 <img
                   src={photo("journey_school_mark")}
                   style={photoStyle("journey_school_mark")}

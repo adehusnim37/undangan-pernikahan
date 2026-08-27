@@ -210,9 +210,6 @@ export function LoginForm() {
             >
               {resendIn > 0 ? `Kirim ulang (${resendIn})` : "Kirim ulang kode"}
             </button>
-            <button className="text-button" type="button" onClick={restart}>
-              Ganti akun
-            </button>
           </div>
         </form>
       )}

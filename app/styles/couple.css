@@ -304,7 +304,9 @@
 
   .couple-profile-copy h3 {
     margin: 19px 0 24px;
-    font-size: clamp(62px, 20vw, 82px);
+    font-size: clamp(52px, 16.5vw, 70px);
+    line-height: .88;
+    letter-spacing: -.055em;
   }
 
   .couple-profile--groom .couple-profile-copy h3 {
@@ -374,7 +376,8 @@
 
   .couple-profile-copy h3 {
     margin: 17px 0 21px;
-    font-size: clamp(57px, 19vw, 68px);
+    font-size: clamp(50px, 16.5vw, 59px);
+    line-height: .9;
   }
 
   .couple-parents strong {

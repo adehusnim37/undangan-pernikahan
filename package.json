@@ -11,7 +11,7 @@
     "docker:down": "docker compose down"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1118.0",
+    "@aws-sdk/client-s3": "^3.1119.0",
     "@thumbmarkjs/react": "^1.1.0",
     "@thumbmarkjs/thumbmarkjs": "^1.11.0",
     "gsap": "^3.15.0",
@@ -25,7 +25,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/node": "^26.3.0",
+    "@types/node": "^26.4.0",
     "@types/nodemailer": "^8.0.1",
     "@types/pg": "^8.23.1",
     "@types/react": "^19.2.18",
