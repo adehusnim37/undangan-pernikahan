@@ -1,5 +1,35 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-  <rect width="256" height="256" rx="60" fill="#0e2721" />
-  <rect width="220" height="220" x="18" y="18" rx="45" fill="none" stroke="#739b88" stroke-width="3" opacity="0.6" />
-  <text x="50%" y="52%" font-family="Georgia, 'Times New Roman', Times, serif" font-size="95" font-style="italic" fill="#e1d5bd" text-anchor="middle" dominant-baseline="central">A&amp;B</text>
+  <title>Alvita &amp; Ade</title>
+  <defs>
+    <radialGradient id="background" cx="50%" cy="38%" r="72%">
+      <stop offset="0" stop-color="#45604a" />
+      <stop offset="1" stop-color="#253426" />
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4dda7" />
+      <stop offset="0.5" stop-color="#d4b06f" />
+      <stop offset="1" stop-color="#f1d398" />
+    </linearGradient>
+  </defs>
+
+  <rect width="256" height="256" rx="58" fill="url(#background)" />
+  <rect x="13" y="13" width="230" height="230" rx="49" fill="none" stroke="#d4b06f" stroke-width="4" opacity="0.72" />
+
+  <g fill="none" stroke="url(#gold)" stroke-width="13">
+    <circle cx="99" cy="121" r="48" />
+    <circle cx="157" cy="121" r="48" />
+  </g>
+
+  <path d="M128 35l4.5 10.5L143 50l-10.5 4.5L128 65l-4.5-10.5L113 50l10.5-4.5z" fill="#fff4d9" />
+
+  <g fill="none" stroke="#aebf99" stroke-linecap="round" stroke-width="5">
+    <path d="M63 196c25-4 45-13 63-30" />
+    <path d="M193 196c-25-4-45-13-63-30" />
+  </g>
+  <g fill="#aebf99">
+    <ellipse cx="78" cy="188" rx="8" ry="15" transform="rotate(-54 78 188)" />
+    <ellipse cx="97" cy="180" rx="8" ry="15" transform="rotate(-43 97 180)" />
+    <ellipse cx="178" cy="188" rx="8" ry="15" transform="rotate(54 178 188)" />
+    <ellipse cx="159" cy="180" rx="8" ry="15" transform="rotate(43 159 180)" />
+  </g>
 </svg>
