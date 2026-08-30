@@ -1188,7 +1188,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             </figure>
             <div className="couple-profile-copy">
               <span className="couple-index">Ade </span>
-              <h3>{couple.groom} Husni Mubarrok, S.Kom</h3>
+              <h3>{couple.groom} Husni Mubarrok, S.Kom.</h3>
               <p className="couple-role">Putra Kedua dari</p>
               <div className="couple-parents">
                 <strong>Bapak Lukman Hakim, S.Pd.</strong>
@@ -1409,7 +1409,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                 <h2>
                   Insya Allah,
                   <br />
-                  <em>,kami akan menikah.</em>
+                  <em>kami akan menikah.</em>
                 </h2>
               </div>
               <p>

@@ -46,7 +46,7 @@
   max-width: 1100px;
   margin: 0 auto;
   color: #70776d;
-  font: 500 9px "DM Mono", monospace;
+  font: 500 12px "DM Mono", monospace;
   letter-spacing: .12em;
   text-transform: uppercase;
 }
@@ -195,7 +195,7 @@
     flex-direction: column;
     gap: 7px;
     padding-bottom: 14px;
-    font-size: 7px;
+    font-size: 9px;
     line-height: 1.4;
   }
 
@@ -254,7 +254,7 @@
   .folio-story-bottom {
     margin-top: auto;
     padding-top: 22px;
-    font-size: 7px;
+    font-size: 9px;
   }
 }
 

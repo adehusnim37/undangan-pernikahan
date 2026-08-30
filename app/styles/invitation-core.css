@@ -85,7 +85,7 @@
   justify-content: space-between;
   color: #d9c8a5;
   font:
-    500 9px "DM Mono",
+    500 10px "DM Mono",
     monospace;
   letter-spacing: 0.13em;
   will-change: transform, opacity;
@@ -566,7 +566,7 @@
     top: 21px;
     left: 19px;
     right: 19px;
-    font-size: 7px;
+    font-size: 10px;
     letter-spacing: 0.08em;
   }
   .folio-bar span:nth-child(2) {

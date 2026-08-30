@@ -10,7 +10,7 @@
   right: -14%;
   bottom: 8%;
   width: min(760px, 65vw);
-  border-color: rgba(155, 89, 72, .14);
+  border-color: rgba(155, 89, 72, 0.14);
 }
 
 .couple-word {
@@ -19,10 +19,12 @@
   top: 12%;
   right: -3vw;
   color: transparent;
-  font: italic 500 clamp(170px, 28vw, 430px)/.7 "Cormorant Garamond", serif;
-  letter-spacing: -.1em;
-  opacity: .72;
-  -webkit-text-stroke: 1px rgba(155, 89, 72, .16);
+  font:
+    italic 500 clamp(170px, 28vw, 430px)/0.7 "Cormorant Garamond",
+    serif;
+  letter-spacing: -0.1em;
+  opacity: 0.72;
+  -webkit-text-stroke: 1px rgba(155, 89, 72, 0.16);
   will-change: transform, opacity;
 }
 
@@ -53,15 +55,17 @@
   gap: clamp(7px, 1.8vw, 24px);
   margin: 0;
   color: #20231e;
-  font: 500 clamp(66px, 9vw, 122px)/.78 "Cormorant Garamond", serif;
-  letter-spacing: -.075em;
+  font:
+    500 clamp(66px, 9vw, 122px)/0.78 "Cormorant Garamond",
+    serif;
+  letter-spacing: -0.075em;
 }
 
 .couple-intro h2 i {
   position: relative;
-  top: -.08em;
+  top: -0.08em;
   color: #9b5948;
-  font-size: .55em;
+  font-size: 0.55em;
   font-weight: 400;
 }
 
@@ -69,7 +73,7 @@
   max-width: 440px;
   margin: 31px auto 0;
   color: #687067;
-  font-size: 13px;
+  font-size: 17px;
   line-height: 1.85;
   text-wrap: balance;
 }
@@ -85,7 +89,7 @@
 
 .couple-profile {
   display: grid;
-  grid-template-columns: minmax(300px, 1.04fr) minmax(270px, .96fr);
+  grid-template-columns: minmax(300px, 1.04fr) minmax(270px, 0.96fr);
   gap: clamp(42px, 7vw, 98px);
   align-items: center;
 }
@@ -95,9 +99,9 @@
   aspect-ratio: 4 / 5;
   margin: 0;
   overflow: hidden;
-  border: 1px solid rgba(32, 35, 30, .24);
+  border: 1px solid rgba(32, 35, 30, 0.24);
   background: #c9c3b6;
-  box-shadow: 22px 24px 0 rgba(155, 89, 72, .1);
+  box-shadow: 22px 24px 0 rgba(155, 89, 72, 0.1);
   will-change: clip-path;
 }
 
@@ -105,7 +109,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 52%, rgba(17, 20, 17, .48));
+  background: linear-gradient(180deg, transparent 52%, rgba(17, 20, 17, 0.48));
   pointer-events: none;
 }
 
@@ -120,7 +124,7 @@
   height: 100%;
   display: block;
   object-fit: cover;
-  filter: saturate(.76) contrast(1.03) sepia(.08);
+  filter: saturate(0.76) contrast(1.03) sepia(0.08);
 }
 
 .couple-portrait figcaption {
@@ -129,33 +133,39 @@
   right: 17px;
   bottom: 15px;
   left: 17px;
-  color: rgba(245, 241, 232, .86);
-  font: 500 8px "DM Mono", monospace;
-  letter-spacing: .14em;
+  color: rgba(245, 241, 232, 0.86);
+  font:
+    500 8px "DM Mono",
+    monospace;
+  letter-spacing: 0.14em;
 }
 
 .couple-profile-copy {
   position: relative;
   max-width: 470px;
   padding: clamp(26px, 4vw, 54px) 0;
-  border-top: 1px solid rgba(32, 35, 30, .23);
-  border-bottom: 1px solid rgba(32, 35, 30, .23);
+  border-top: 1px solid rgba(32, 35, 30, 0.23);
+  border-bottom: 1px solid rgba(32, 35, 30, 0.23);
   will-change: transform, opacity;
 }
 
 .couple-index,
 .couple-role {
   color: #9b5948;
-  font: 500 9px/1.5 "DM Mono", monospace;
-  letter-spacing: .14em;
+  font:
+    500 9px/1.5 "DM Mono",
+    monospace;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .couple-profile-copy h3 {
   margin: 23px 0 30px;
-  color: #20231e;
-  font: italic 500 clamp(72px, 8vw, 112px)/.68 "Cormorant Garamond", serif;
-  letter-spacing: -.075em;
+  color: #e88aa2;
+  font:
+    italic 500 clamp(60px, 8vw, 100px)/0.68 "Cormorant Garamond",
+    serif;
+  letter-spacing: -0.0075em;
 }
 
 .couple-role {
@@ -170,20 +180,24 @@
 
 .couple-parents strong {
   color: #20231e;
-  font: 500 clamp(21px, 2.25vw, 30px)/1.1 "Cormorant Garamond", serif;
-  letter-spacing: -.025em;
+  font:
+    500 clamp(21px, 2.25vw, 30px)/1.1 "Cormorant Garamond",
+    serif;
+  letter-spacing: -0.025em;
   text-wrap: balance;
 }
 
 .couple-parents i {
   color: #9b5948;
-  font: italic 500 18px "Cormorant Garamond", serif;
+  font:
+    italic 500 18px "Cormorant Garamond",
+    serif;
 }
 
 .couple-profile--groom .couple-portrait {
   grid-column: 2;
   grid-row: 1;
-  box-shadow: -22px 24px 0 rgba(32, 35, 30, .08);
+  box-shadow: -22px 24px 0 rgba(32, 35, 30, 0.08);
 }
 
 .couple-profile--groom .couple-profile-copy {
@@ -208,14 +222,16 @@
   z-index: 1;
   padding: 8px 22px;
   background: #eee7da;
-  font: italic 400 clamp(54px, 6vw, 82px)/.7 "Cormorant Garamond", serif;
+  font:
+    italic 400 clamp(54px, 6vw, 82px)/0.7 "Cormorant Garamond",
+    serif;
 }
 
 .couple-ampersand i {
   position: absolute;
   width: 1px;
   height: 100%;
-  background: rgba(155, 89, 72, .45);
+  background: rgba(155, 89, 72, 0.45);
 }
 
 .invitation-shell .folio-story-bottom {
@@ -252,19 +268,19 @@
 
   .couple-intro .eyebrow {
     margin-bottom: 17px;
-    font-size: 7px;
+    font-size: 14px;
   }
 
   .couple-intro h2 {
     gap: 7px;
     font-size: clamp(54px, 16vw, 72px);
-    line-height: .8;
+    line-height: 0.8;
   }
 
   .couple-intro > p:last-child {
     max-width: 315px;
     margin-top: 24px;
-    font-size: 11px;
+    font-size: 16px;
     line-height: 1.75;
   }
 
@@ -282,7 +298,7 @@
   .couple-profile--groom .couple-portrait {
     width: calc(100% - 18px);
     margin: 0 auto;
-    box-shadow: 10px 13px 0 rgba(155, 89, 72, .1);
+    box-shadow: 10px 13px 0 rgba(155, 89, 72, 0.1);
   }
 
   .couple-profile-copy,
@@ -292,21 +308,21 @@
     max-width: none;
     padding: 25px 19px 27px;
     margin: -44px auto 0;
-    border: 1px solid rgba(32, 35, 30, .2);
-    background: rgba(238, 231, 218, .96);
+    border: 1px solid rgba(32, 35, 30, 0.2);
+    background: rgba(238, 231, 218, 0.96);
     text-align: left;
   }
 
   .couple-index,
   .couple-role {
-    font-size: 7px;
+    font-size: 12px;
   }
 
   .couple-profile-copy h3 {
     margin: 19px 0 24px;
-    font-size: clamp(52px, 16.5vw, 70px);
-    line-height: .88;
-    letter-spacing: -.055em;
+    font-size: clamp(43px, 16.5vw, 55px);
+    line-height: 0.88;
+    letter-spacing: -0.055em;
   }
 
   .couple-profile--groom .couple-profile-copy h3 {
@@ -355,7 +371,7 @@
 
   .couple-intro > p:last-child {
     max-width: 270px;
-    font-size: 10px;
+    font-size: 16px;
   }
 
   .couple-list {
@@ -376,8 +392,8 @@
 
   .couple-profile-copy h3 {
     margin: 17px 0 21px;
-    font-size: clamp(50px, 16.5vw, 59px);
-    line-height: .9;
+    font-size: clamp(43px, 16.5vw, 55px);
+    line-height: 0.9;
   }
 
   .couple-parents strong {
