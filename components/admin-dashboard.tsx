@@ -335,6 +335,62 @@ function DeleteDialog({
   );
 }
 
+function ResetAccessDialog({
+  count,
+  error,
+  resetting,
+  onClose,
+  onConfirm,
+}: {
+  count: number;
+  error: string;
+  resetting: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    dialogRef.current?.showModal();
+  }, []);
+
+  function handleBackdrop(event: React.MouseEvent<HTMLDialogElement>) {
+    if (!resetting && event.target === dialogRef.current) onClose();
+  }
+
+  return (
+    <dialog ref={dialogRef} className="edit-dialog" onClick={handleBackdrop}>
+      <div className="edit-dialog-inner">
+        <p className="eyebrow">RESET AKSES</p>
+        <h2>Reset akses undangan?</h2>
+        <p>
+          Ikatan perangkat untuk <b>{count} undangan</b> akan dihapus. Tamu
+          dapat membuka kembali link undangannya dari perangkat baru.
+        </p>
+        {error && <p className="admin-notice">{error}</p>}
+        <div className="edit-dialog-actions">
+          <button
+            type="button"
+            className="button button"
+            onClick={onClose}
+            disabled={resetting}
+          >
+            Batal
+          </button>
+          <button
+            type="button"
+            className="button button-solid"
+            onClick={onConfirm}
+            disabled={resetting}
+          >
+            {resetting ? "Mereset…" : "Reset akses"}
+          </button>
+        </div>
+      </div>
+    </dialog>
+  );
+}
+
 export function AdminDashboard() {
   const [guests, setGuests] = useState<Guest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -342,6 +398,10 @@ export function AdminDashboard() {
   const [deleteGuest, setDeleteGuest] = useState<Guest | null>(null);
   const [showAddGuest, setShowAddGuest] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedGuestIds, setSelectedGuestIds] = useState<string[]>([]);
+  const [resettingAccess, setResettingAccess] = useState(false);
+  const [resetTargetIds, setResetTargetIds] = useState<string[] | null>(null);
+  const [resetError, setResetError] = useState("");
   const [notice, setNotice] = useState("");
   const [showMediaManager, setShowMediaManager] = useState(false);
 
@@ -350,7 +410,11 @@ export function AdminDashboard() {
       const response = await fetch("/api/admin/guests");
       if (!response.ok) throw new Error(await getApiErrorMessage(response, "Daftar tamu tidak dapat dimuat."));
       const data = await response.json();
-      setGuests(data.guests ?? []);
+      const nextGuests: Guest[] = data.guests ?? [];
+      setGuests(nextGuests);
+      setSelectedGuestIds((current) =>
+        current.filter((id) => nextGuests.some((guest) => guest.id === id)),
+      );
     } catch (requestError) {
       toast.error(requestError instanceof Error ? requestError.message : "Daftar tamu tidak dapat dimuat.");
     } finally {
@@ -382,6 +446,10 @@ export function AdminDashboard() {
     );
   }, [guests, searchQuery]);
 
+  const allFilteredSelected =
+    filteredGuests.length > 0 &&
+    filteredGuests.every((guest) => selectedGuestIds.includes(guest.id));
+
   async function action(id: string, actionName: "reset-device" | "toggle-status") {
     try {
       const response = await fetch(`/api/admin/guests/${id}`, {
@@ -396,6 +464,66 @@ export function AdminDashboard() {
       load();
     } catch (requestError) {
       toast.error(requestError instanceof Error ? requestError.message : "Perubahan tidak dapat disimpan.", { position: "top-center" });
+    }
+  }
+
+  function toggleGuestSelection(id: string) {
+    setSelectedGuestIds((current) =>
+      current.includes(id)
+        ? current.filter((selectedId) => selectedId !== id)
+        : [...current, id],
+    );
+  }
+
+  function toggleAllFilteredGuests() {
+    const filteredIds = filteredGuests.map((guest) => guest.id);
+    const filteredIdSet = new Set(filteredIds);
+    setSelectedGuestIds((current) => {
+      if (filteredGuests.length > 0 && filteredGuests.every((guest) => current.includes(guest.id))) {
+        return current.filter((id) => !filteredIdSet.has(id));
+      }
+      return Array.from(new Set([...current, ...filteredIds]));
+    });
+  }
+
+  function requestResetSelectedDevices() {
+    if (selectedGuestIds.length === 0) return;
+    setResetError("");
+    setResetTargetIds([...selectedGuestIds]);
+  }
+
+  async function resetSelectedDevices(ids: string[]) {
+    setResettingAccess(true);
+    setResetError("");
+    try {
+      const response = await fetch("/api/admin/guests/reset-device", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+      if (!response.ok) {
+        throw new Error(await getApiErrorMessage(response, "Akses undangan tidak dapat direset."));
+      }
+      const data = await response.json().catch(() => ({}));
+      const resetCount = typeof data.resetCount === "number" ? data.resetCount : ids.length;
+      const successMessage = `${resetCount} akses undangan berhasil direset.`;
+      setSelectedGuestIds([]);
+      setResetTargetIds(null);
+      setNotice(successMessage);
+      toast.success(successMessage, { position: "top-center" });
+      await load();
+    } catch (requestError) {
+      const message =
+        requestError instanceof Error
+          ? requestError.message
+          : "Akses undangan tidak dapat direset.";
+      setResetError(message);
+      toast.error(
+        message,
+        { position: "top-center" },
+      );
+    } finally {
+      setResettingAccess(false);
     }
   }
 
@@ -486,9 +614,32 @@ export function AdminDashboard() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
+
+            {!loading && guests.length > 0 && filteredGuests.length > 0 && (
+              <div className="bulk-action-bar">
+                <label className="bulk-select-all">
+                  <input
+                    type="checkbox"
+                    checked={allFilteredSelected}
+                    onChange={toggleAllFilteredGuests}
+                    aria-label={searchQuery.trim() ? "Pilih semua hasil pencarian" : "Pilih semua undangan"}
+                  />
+                  <span>{searchQuery.trim() ? "Pilih semua hasil pencarian" : "Pilih semua undangan"}</span>
+                </label>
+                <div className="bulk-action-controls">
+                  <span className="bulk-count">{selectedGuestIds.length} dipilih</span>
+                  <button
+                    type="button"
+                    className="button button-solid bulk-reset-button"
+                    onClick={requestResetSelectedDevices}
+                    disabled={selectedGuestIds.length === 0 || resettingAccess}
+                  >
+                    {resettingAccess ? "Mereset…" : "Reset akses"}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-          
-          {notice && <div className="admin-notice-bar">{notice}</div>}
 
           {!loading && guests.length === 0 && (
             <div className="empty-state">
@@ -504,13 +655,26 @@ export function AdminDashboard() {
 
           <div className="guest-grid">
             {filteredGuests.map((guest) => (
-              <article className="guest-row" key={guest.id}>
-                <div className="guest-name">
-                  <b>{guest.guest_name}</b>
-                  <span>
-                    {guest.guest_group || "Tanpa kelompok"} · {guest.max_guests}{" "}
-                    orang
-                  </span>
+              <article
+                className={`guest-row${selectedGuestIds.includes(guest.id) ? " is-selected" : ""}`}
+                key={guest.id}
+              >
+                <div className="guest-identity">
+                  <label className="guest-select">
+                    <input
+                      type="checkbox"
+                      checked={selectedGuestIds.includes(guest.id)}
+                      onChange={() => toggleGuestSelection(guest.id)}
+                      aria-label={`Pilih undangan ${guest.guest_name}`}
+                    />
+                  </label>
+                  <div className="guest-name">
+                    <b>{guest.guest_name}</b>
+                    <span>
+                      {guest.guest_group || "Tanpa kelompok"} · {guest.max_guests}{" "}
+                      orang
+                    </span>
+                  </div>
                 </div>
                 <div className="guest-state">
                   <span className={`pill ${guest.status}`}>
@@ -568,6 +732,16 @@ export function AdminDashboard() {
       )}
 
       {showMediaManager && <MediaManagerDialog onClose={() => setShowMediaManager(false)} />}
+
+      {resetTargetIds && (
+        <ResetAccessDialog
+          count={resetTargetIds.length}
+          error={resetError}
+          resetting={resettingAccess}
+          onClose={() => setResetTargetIds(null)}
+          onConfirm={() => resetSelectedDevices(resetTargetIds)}
+        />
+      )}
 
       {editGuest && (
         <EditDialog

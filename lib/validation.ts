@@ -47,6 +47,16 @@ export const updateGuestBodySchema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("update-guest") }).extend(guestFieldsSchema.shape).strict(),
 ]);
 
+export const resetDeviceBulkBodySchema = z
+  .object({
+    ids: z
+      .array(z.string().uuid("ID tamu tidak valid."))
+      .min(1, "Pilih minimal satu undangan.")
+      .max(5000, "Maksimal 5000 undangan per permintaan.")
+      .refine((ids) => new Set(ids).size === ids.length, "ID undangan tidak boleh duplikat."),
+  })
+  .strict();
+
 export const invitationAccessBodySchema = z
   .object({
     hash: z.string().regex(thumbmark, "Fingerprint perangkat tidak valid."),

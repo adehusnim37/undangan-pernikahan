@@ -98,7 +98,14 @@
   overflow: hidden;
   margin: 0;
   background: rgba(0, 0, 0, 0.15);
-  will-change: transform;
+  will-change: transform, clip-path, opacity;
+}
+.journey-mask-definitions {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 .journey-photo::after {
   content: "";

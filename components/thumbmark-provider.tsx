@@ -14,7 +14,7 @@ export function InvitationThumbmarkProvider({
       {children}
       <ToastContainer
         position="top-center"
-        autoClose={3500}
+        autoClose={2000}
         closeOnClick
         pauseOnFocusLoss
         theme="colored"

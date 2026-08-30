@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { flushSync } from "react-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -27,6 +27,44 @@ type Rsvp = {
   current_editable_rsvps: number;
   max_editable_rsvps: number;
 };
+
+type MaskedJourneyImageProps = {
+  maskId: string;
+  src: string;
+  style?: CSSProperties;
+  alt: string;
+};
+
+function MaskedJourneyImage({
+  maskId,
+  src,
+  style,
+  alt,
+}: MaskedJourneyImageProps) {
+  return (
+    <>
+      <svg
+        className="journey-mask-definitions"
+        width="0"
+        height="0"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <defs>
+          <mask
+            id={maskId}
+            maskUnits="objectBoundingBox"
+            maskContentUnits="objectBoundingBox"
+          >
+            <rect width="1" height="1" fill="black" />
+            <g className="journey-mask-grid" />
+          </mask>
+        </defs>
+      </svg>
+      <img src={src} style={style} alt={alt} data-journey-mask={maskId} />
+    </>
+  );
+}
 
 export function GuestExperience({ invitation }: { invitation: Invitation }) {
   const invitationRef = useRef<HTMLElement>(null);
@@ -106,6 +144,9 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
       );
       const overscrollPanels =
         root.querySelectorAll<HTMLElement>(".overscroll-panel");
+      const weddingMaskImage = root.querySelector<HTMLImageElement>(
+        'img[data-journey-mask="journey-mask-wedding"]',
+      );
       const prewedding = root.querySelector<HTMLElement>(".prewedding-section");
       const footer = root.querySelector<HTMLElement>(".folio-footer");
       const footerName = root.querySelector<HTMLElement>(".folio-footer-name");
@@ -119,6 +160,100 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
       const footerCopy = root.querySelectorAll<HTMLElement>(
         ".folio-footer-kicker, .folio-footer-note, .folio-footer-date",
       );
+
+      const createJourneyGridMask = (
+        image: HTMLImageElement,
+        mobileMask: boolean,
+        containerAnimation?: gsap.core.Animation,
+      ) => {
+        const maskId = image.dataset.journeyMask;
+        const mask = maskId ? document.getElementById(maskId) : null;
+        const grid = mask?.querySelector<SVGGElement>(".journey-mask-grid");
+        const trigger = image.closest<HTMLElement>(".journey-photo") ?? image;
+        if (!maskId || !grid) return;
+
+        grid.replaceChildren();
+        const bounds = trigger.getBoundingClientRect();
+        const columns = mobileMask
+          ? 6
+          : window.innerWidth <= 1024
+            ? 10
+            : 14;
+        const rows = Math.max(
+          3,
+          Math.min(
+            mobileMask ? 12 : 18,
+            Math.round(columns * (bounds.height / bounds.width)),
+          ),
+        );
+        const cellWidth = 1 / columns;
+        const cellHeight = 1 / rows;
+        const cells: SVGRectElement[] = [];
+        const svgNamespace = "http://www.w3.org/2000/svg";
+
+        for (let row = 0; row < rows; row += 1) {
+          for (let column = 0; column < columns; column += 1) {
+            const cell = document.createElementNS(svgNamespace, "rect");
+            cell.setAttribute("x", String(column * cellWidth));
+            cell.setAttribute("y", String(row * cellHeight));
+            cell.setAttribute("width", String(cellWidth + 0.002));
+            cell.setAttribute("height", String(cellHeight + 0.002));
+            cell.setAttribute("fill", "white");
+            cell.setAttribute("shape-rendering", "crispEdges");
+            cell.setAttribute("opacity", "0");
+            grid.appendChild(cell);
+            cells.push(cell);
+          }
+        }
+
+        const orderedCells: SVGRectElement[] = [];
+        for (let column = 0; column < columns; column += 1) {
+          const columnCells: SVGRectElement[] = [];
+          for (let row = 0; row < rows; row += 1) {
+            columnCells.push(cells[row * columns + column]);
+          }
+          orderedCells.push(...gsap.utils.shuffle(columnCells));
+        }
+
+        const maskReference = `url("#${maskId}")`;
+        image.style.setProperty("mask-image", maskReference);
+        image.style.setProperty("-webkit-mask-image", maskReference);
+        image.style.setProperty("mask-repeat", "no-repeat");
+        image.style.setProperty("-webkit-mask-repeat", "no-repeat");
+        image.style.setProperty("mask-size", "100% 100%");
+        image.style.setProperty("-webkit-mask-size", "100% 100%");
+
+        gsap.to(orderedCells, {
+          attr: { opacity: 1 },
+          duration: 1,
+          ease: "power3.out",
+          stagger: { each: mobileMask ? 0.016 : 0.012 },
+          scrollTrigger: containerAnimation
+            ? {
+                trigger,
+                containerAnimation,
+                start: "left 90%",
+                end: "center 45%",
+                scrub: 1.15,
+              }
+            : {
+                trigger,
+                start: mobileMask ? "top 90%" : "top 88%",
+                end: mobileMask ? "bottom 52%" : "top 18%",
+                scrub: mobileMask ? 0.7 : 1.1,
+              },
+        });
+
+        return () => {
+          grid.replaceChildren();
+          image.style.removeProperty("mask-image");
+          image.style.removeProperty("-webkit-mask-image");
+          image.style.removeProperty("mask-repeat");
+          image.style.removeProperty("-webkit-mask-repeat");
+          image.style.removeProperty("mask-size");
+          image.style.removeProperty("-webkit-mask-size");
+        };
+      };
 
       if (
         hero &&
@@ -330,6 +465,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
 
       if (journey && journeyTrack && journeyPanels.length && journeyProgress) {
         responsiveMotion.add("(min-width: 701px)", () => {
+          const maskCleanups: Array<() => void> = [];
           const horizontalJourney = gsap.to(journeyTrack, {
             x: () => -(journeyTrack.scrollWidth - window.innerWidth),
             ease: "none",
@@ -360,30 +496,50 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             },
           );
 
-          journeyPanels.forEach((panel) => {
+          journeyPanels.forEach((panel, panelIndex) => {
             const photos =
               panel.querySelectorAll<HTMLElement>(".journey-photo");
             if (!photos.length) return;
-            gsap.fromTo(
-              photos,
-              {
-                yPercent: (index) => (index % 2 === 0 ? 18 : -14),
-                scale: 0.82,
-              },
-              {
-                yPercent: (index) => (index % 2 === 0 ? -12 : 10),
-                scale: 1,
-                ease: "none",
-                stagger: 0.04,
-                scrollTrigger: {
-                  trigger: panel,
-                  containerAnimation: horizontalJourney,
-                  start: "left 92%",
-                  end: "right 8%",
-                  scrub: 1,
+
+            if (panelIndex === 0) {
+              gsap.fromTo(
+                photos,
+                {
+                  clipPath: "inset(100% 0% 0% 0%)",
+                  yPercent: 8,
+                  opacity: 0.5,
                 },
-              },
-            );
+                {
+                  clipPath: "inset(0% 0% 0% 0%)",
+                  yPercent: 0,
+                  opacity: 1,
+                  duration: 0.9,
+                  ease: "power3.out",
+                  stagger: 0.12,
+                  scrollTrigger: {
+                    trigger: panel,
+                    containerAnimation: horizontalJourney,
+                    start: "left 82%",
+                    toggleActions: "play none none none",
+                    once: true,
+                  },
+                },
+              );
+              return;
+            }
+
+            photos.forEach((photo) => {
+              const image = photo.querySelector<HTMLImageElement>(
+                "img[data-journey-mask]",
+              );
+              if (!image) return;
+              const cleanup = createJourneyGridMask(
+                image,
+                false,
+                horizontalJourney,
+              );
+              if (cleanup) maskCleanups.push(cleanup);
+            });
           });
 
           if (routePath) {
@@ -404,10 +560,14 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
               },
             });
           }
+
+          return () => maskCleanups.forEach((cleanup) => cleanup());
         });
 
         responsiveMotion.add("(max-width: 700px)", () => {
-          journeyPanels.forEach((panel) => {
+          const maskCleanups: Array<() => void> = [];
+
+          journeyPanels.forEach((panel, panelIndex) => {
             gsap.fromTo(
               panel.querySelector(".journey-copy"),
               { y: 48, opacity: 0 },
@@ -423,22 +583,44 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                 },
               },
             );
-            gsap.fromTo(
-              panel.querySelectorAll(".journey-photo"),
-              { y: 54, scale: 0.9 },
-              {
-                y: -18,
-                scale: 1,
-                stagger: 0.08,
-                ease: "none",
-                scrollTrigger: {
-                  trigger: panel,
-                  start: "top 92%",
-                  end: "bottom 40%",
-                  scrub: 0.8,
+
+            const photos =
+              panel.querySelectorAll<HTMLElement>(".journey-photo");
+            if (panelIndex === 0) {
+              gsap.fromTo(
+                photos,
+                {
+                  clipPath: "inset(100% 0% 0% 0%)",
+                  y: 32,
+                  opacity: 0.5,
                 },
-              },
-            );
+                {
+                  clipPath: "inset(0% 0% 0% 0%)",
+                  y: 0,
+                  opacity: 1,
+                  duration: 0.82,
+                  stagger: 0.1,
+                  ease: "power3.out",
+                  scrollTrigger: {
+                    trigger:
+                      panel.querySelector(".journey-bento") ?? panel,
+                    start: "top 86%",
+                    toggleActions: "play none none none",
+                    once: true,
+                  },
+                },
+              );
+              return;
+            }
+
+            photos.forEach((photo) => {
+              const image = photo.querySelector<HTMLImageElement>(
+                "img[data-journey-mask]",
+              );
+              if (!image) return;
+              const cleanup = createJourneyGridMask(image, true);
+              if (cleanup) maskCleanups.push(cleanup);
+            });
           });
 
           const schoolPhotoImages = journey.querySelectorAll<HTMLElement>(
@@ -484,6 +666,8 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
               },
             });
           }
+
+          return () => maskCleanups.forEach((cleanup) => cleanup());
         });
 
         responsiveMotion.add(
@@ -666,6 +850,15 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
               window.removeEventListener("blur", resetSchoolTouch);
             };
           },
+        );
+      }
+
+      if (weddingMaskImage) {
+        responsiveMotion.add("(min-width: 701px)", () =>
+          createJourneyGridMask(weddingMaskImage, false),
+        );
+        responsiveMotion.add("(max-width: 700px)", () =>
+          createJourneyGridMask(weddingMaskImage, true),
         );
       }
 
@@ -1302,7 +1495,8 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             </div>
             <div className="journey-bento journey-bento--campus">
               <figure className="journey-photo journey-photo--wide">
-                <img
+                <MaskedJourneyImage
+                  maskId="journey-mask-campus-wide"
                   src={photo("journey_campus_wide")}
                   style={photoStyle("journey_campus_wide")}
                   alt={`Masa kuliah ${couple.bride} dan ${couple.groom} di Surabaya`}
@@ -1310,7 +1504,8 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                 <figcaption>Sumpah Profesi Apoteker Alvita</figcaption>
               </figure>
               <figure className="journey-photo journey-photo--small-a">
-                <img
+                <MaskedJourneyImage
+                  maskId="journey-mask-campus-small-a"
                   src={photo("journey_campus_small_a")}
                   style={photoStyle("journey_campus_small_a")}
                   alt="Kelulusan kuliah"
@@ -1318,7 +1513,8 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                 <figcaption>Sidang Akhir S1 Ade</figcaption>
               </figure>
               <figure className="journey-photo journey-photo--small-b">
-                <img
+                <MaskedJourneyImage
+                  maskId="journey-mask-campus-small-b"
                   src={photo("journey_campus_small_b")}
                   style={photoStyle("journey_campus_small_b")}
                   alt="Perjalanan selama kuliah"
@@ -1366,7 +1562,8 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             </div>
             <div className="journey-bento journey-bento--distance">
               <figure className="journey-photo journey-photo--city">
-                <img
+                <MaskedJourneyImage
+                  maskId="journey-mask-distance-city"
                   src={photo("journey_distance_city")}
                   style={photoStyle("journey_distance_city")}
                   alt={`${couple.groom} bekerja di Jakarta`}
@@ -1374,7 +1571,8 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                 <figcaption>Jakarta</figcaption>
               </figure>
               <figure className="journey-photo journey-photo--graduate">
-                <img
+                <MaskedJourneyImage
+                  maskId="journey-mask-distance-graduate"
                   src={photo("journey_distance_graduate")}
                   style={photoStyle("journey_distance_graduate")}
                   alt={`${couple.bride} menyelesaikan studi S2 di Yogyakarta`}
@@ -1401,7 +1599,8 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             </div>
             <div className="journey-bento journey-bento--engagement">
               <figure className="journey-photo journey-photo--engagement-main">
-                <img
+                <MaskedJourneyImage
+                  maskId="journey-mask-engagement-main"
                   src={photo("journey_engagement_main")}
                   style={photoStyle("journey_engagement_main")}
                   alt={`Lamaran ${couple.bride} dan ${couple.groom}`}
@@ -1409,7 +1608,8 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                 <figcaption>WE ARE ENGAGED</figcaption>
               </figure>
               <figure className="journey-photo journey-photo--ring">
-                <img
+                <MaskedJourneyImage
+                  maskId="journey-mask-engagement-ring"
                   src={photo("journey_engagement_ring")}
                   style={photoStyle("journey_engagement_ring")}
                   alt="Cincin lamaran"
@@ -1424,7 +1624,8 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
         <article className="journey-panel journey-panel--wedding overscroll-panel">
           <div className="overscroll-panel-inner">
             <div className="journey-wedding-photo journey-photo">
-              <img
+              <MaskedJourneyImage
+                maskId="journey-mask-wedding"
                 src={photo("journey_wedding")}
                 style={photoStyle("journey_wedding")}
                 alt={`Hari pernikahan ${couple.bride} dan ${couple.groom}`}
