@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-import { coupleCaps } from "@/lib/couple";
-
 const apiErrorSchema = z.object({ message: z.string().min(1) }).loose();
 
 /** Extract a safe, user-facing message from any API failure response. */
@@ -25,15 +23,22 @@ export function openWhatsAppInvite(guest: { guest_name: string; token: string })
   if (!appUrl) return { ok: false as const, message: "NEXT_PUBLIC_APP_URL belum diatur." };
 
   const text = [
-    `Assalamu'alaikum ${guest.guest_name},`,
+    "Kepada Yth.",
+    `Bapak/Ibu/Saudara/i *${guest.guest_name}*`,
     "",
-    `Dengan hormat, kami mengundang Anda ke acara pernikahan kami:`,
-    `${coupleCaps.name}.`,
+    "*Assalamualaikum Warahmatullahi Wabarakatuh*",
     "",
-    `Silakan buka undangan personal Anda melalui link berikut:`,
-    `${appUrl}/invite/${guest.token}`,
+    "Dengan mengharap ridha dan rahmat Allah SWT, kami mengundang Bpk/Ibu/Sdr/i untuk hadir di acara pernikahan kami:",
+    "*Alvita Raniah Aisyah Putri & Ade Husni Mubarrok*",
     "",
-    "Mohon konfirmasi kehadiran ya. Terima kasih.",
+    "Untuk informasi detail acara dan tempat, silahkan mengakses tautan berikut ini:",
+    `*${appUrl}/invite/${guest.token}*`,
+    "",
+    "Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i dapat ikut hadir membersamai hari bahagia ini.",
+    "*Wassalamualaikum Warahmatullahi Wabarakatuh*",
+    "",
+    "Kami yang berbahagia,",
+    "Alvita & Ade",
   ].join("\n");
 
   window.open(
