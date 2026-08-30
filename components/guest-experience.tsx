@@ -1629,9 +1629,9 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
               </div>
               <p className="eyebrow">SEBELUM HARI BAHAGIA</p>
               <h2 id="prewedding-title">
-                Satu cerita,
+                Berbagai cerita,
                 <br />
-                <em>dalam bingkai.</em>
+                <em>terekam sempurna.</em>
               </h2>
               <p>
                 Sepenggal momen yang kami simpan sebelum melangkah menuju
@@ -1666,7 +1666,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             </div>
 
             <div className="prewedding-endnote" aria-hidden="true">
-              <span>ONE LOVE · ONE STORY</span>
+              <span>ONE SOUL · TWO BODIES</span>
               <i />
             </div>
           </div>

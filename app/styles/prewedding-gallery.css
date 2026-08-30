@@ -35,7 +35,7 @@
   margin-bottom: clamp(54px, 7vw, 94px);
   border-bottom: 1px solid rgba(245, 241, 232, .22);
   color: #a8afa3;
-  font: 500 8px "DM Mono", monospace;
+  font: 500 10px "DM Mono", monospace;
   letter-spacing: .13em;
 }
 
@@ -60,7 +60,7 @@
   max-width: 360px;
   margin: 32px 0 0 auto;
   color: #aeb5aa;
-  font-size: 12px;
+  font-size: 16px;
   line-height: 1.8;
 }
 
@@ -382,7 +382,7 @@
 
   .prewedding-heading-meta {
     margin-bottom: 52px;
-    font-size: 7px;
+    font-size: 10px;
   }
 
   .prewedding-heading h2 {
@@ -393,7 +393,7 @@
   .prewedding-heading > p:last-child {
     max-width: 285px;
     margin: 27px 0 0;
-    font-size: 11px;
+    font-size: 14px;
   }
 
   .prewedding-grid {

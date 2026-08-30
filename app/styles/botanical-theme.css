@@ -18,257 +18,504 @@
 .access-screen {
   color: #fff9ed;
   background:
-    radial-gradient(circle at 12% 12%, rgba(185, 104, 120, .22), transparent 30%),
-    radial-gradient(circle at 90% 88%, rgba(212, 176, 111, .14), transparent 32%),
+    radial-gradient(
+      circle at 12% 12%,
+      rgba(185, 104, 120, 0.22),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 90% 88%,
+      rgba(212, 176, 111, 0.14),
+      transparent 32%
+    ),
     #253426;
 }
 
 .access-screen p,
-.access-screen small { color: #d3d8c8; }
+.access-screen small {
+  color: #d3d8c8;
+}
 .access-screen .eyebrow,
-.access-mark { color: #d7b77a; }
-.access-screen .gate-spinner { border-color: rgba(255, 249, 237, .2); border-top-color: #d7b77a; }
+.access-mark {
+  color: #d7b77a;
+}
+.access-screen .gate-spinner {
+  border-color: rgba(255, 249, 237, 0.2);
+  border-top-color: #d7b77a;
+}
 
 .invitation-shell .folio-hero {
   color: #fff9ed;
   background:
-    radial-gradient(ellipse at 8% 14%, rgba(185, 104, 120, .24), transparent 29%),
-    radial-gradient(ellipse at 92% 10%, rgba(135, 154, 119, .28), transparent 31%),
-    radial-gradient(ellipse at 52% 105%, rgba(212, 176, 111, .16), transparent 36%),
+    radial-gradient(
+      ellipse at 8% 14%,
+      rgba(185, 104, 120, 0.24),
+      transparent 29%
+    ),
+    radial-gradient(
+      ellipse at 92% 10%,
+      rgba(135, 154, 119, 0.28),
+      transparent 31%
+    ),
+    radial-gradient(
+      ellipse at 52% 105%,
+      rgba(212, 176, 111, 0.16),
+      transparent 36%
+    ),
     var(--botanical-deep);
 }
 
 .invitation-shell .folio-bar,
 .invitation-shell .folio-kicker,
-.invitation-shell .folio-title h1 em { color: #d7b77a; }
-
-.invitation-shell .folio-kicker::before,
-.invitation-shell .folio-kicker::after { background: rgba(215, 183, 122, .68); }
-
-.invitation-shell .folio-photo {
-  border-color: rgba(239, 209, 210, .6);
-  background: var(--botanical-sage-pale);
-  box-shadow: 0 24px 52px rgba(18, 30, 20, .3);
+.invitation-shell .folio-title h1 em {
+  color: #d7b77a;
 }
 
-.invitation-shell .folio-photo img { filter: sepia(.05) saturate(.9) contrast(1.01) brightness(.94); }
+.invitation-shell .folio-kicker::before,
+.invitation-shell .folio-kicker::after {
+  background: rgba(215, 183, 122, 0.68);
+}
+
+.invitation-shell .folio-photo {
+  border-color: rgba(239, 209, 210, 0.6);
+  background: var(--botanical-sage-pale);
+  box-shadow: 0 24px 52px rgba(18, 30, 20, 0.3);
+}
+
+.invitation-shell .folio-photo img {
+  filter: sepia(0.05) saturate(0.9) contrast(1.01) brightness(0.94);
+}
 
 .invitation-shell .folio-guest {
-  border-color: rgba(212, 176, 111, .52);
+  border-color: rgba(212, 176, 111, 0.52);
   color: #d8ddcf;
-  background: rgba(37, 52, 38, .32);
+  background: rgba(37, 52, 38, 0.32);
   backdrop-filter: blur(5px);
 }
 
 .invitation-shell .folio-guest strong,
-.invitation-shell .folio-scroll { color: #fff9ed; }
-.invitation-shell .folio-scroll i { border-color: rgba(239, 209, 210, .56); }
+.invitation-shell .folio-scroll {
+  color: #fff9ed;
+}
+.invitation-shell .folio-scroll i {
+  border-color: rgba(239, 209, 210, 0.56);
+}
 
 .invitation-shell .folio-story {
   color: var(--botanical-ink);
   background:
-    radial-gradient(ellipse at -8% 8%, rgba(239, 209, 210, .78), transparent 31%),
-    radial-gradient(ellipse at 106% 22%, rgba(135, 154, 119, .24), transparent 29%),
+    radial-gradient(
+      ellipse at -8% 8%,
+      rgba(239, 209, 210, 0.78),
+      transparent 31%
+    ),
+    radial-gradient(
+      ellipse at 106% 22%,
+      rgba(135, 154, 119, 0.24),
+      transparent 29%
+    ),
     linear-gradient(145deg, #fbf6ea 0%, var(--botanical-cream) 100%);
 }
 
-.invitation-shell .folio-story::after { border-color: rgba(185, 104, 120, .22); }
-.couple-word { -webkit-text-stroke-color: rgba(185, 104, 120, .2); }
+.invitation-shell .folio-story::after {
+  border-color: rgba(185, 104, 120, 0.22);
+}
+.couple-word {
+  -webkit-text-stroke-color: rgba(185, 104, 120, 0.2);
+}
 .couple-intro .eyebrow,
 .couple-intro h2 i,
 .couple-index,
 .couple-parents i,
-.couple-ampersand { color: var(--botanical-rose); }
+.couple-ampersand {
+  color: var(--botanical-rose);
+}
 .couple-intro h2,
-.couple-parents strong { color: var(--botanical-ink); }
+.couple-parents strong {
+  color: var(--botanical-ink);
+}
 .couple-intro > p:last-child,
-.couple-role { color: #667060; }
-
-.couple-portrait {
-  border-color: rgba(52, 74, 53, .28);
-  background: var(--botanical-sage-pale);
-  box-shadow: 22px 24px 0 rgba(185, 104, 120, .15);
+.couple-role {
+  color: #667060;
 }
 
-.couple-profile--groom .couple-portrait { box-shadow: -22px 24px 0 rgba(135, 154, 119, .2); }
-.couple-portrait img { filter: saturate(.88) contrast(1.02) sepia(.03); }
-.couple-profile-copy { border-color: rgba(52, 74, 53, .24); }
-.couple-ampersand span { background: var(--botanical-cream); }
-.couple-ampersand i { background: rgba(185, 104, 120, .5); }
+.couple-portrait {
+  border-color: rgba(52, 74, 53, 0.28);
+  background: var(--botanical-sage-pale);
+  box-shadow: 22px 24px 0 rgba(185, 104, 120, 0.15);
+}
+
+.couple-profile--groom .couple-portrait {
+  box-shadow: -22px 24px 0 rgba(135, 154, 119, 0.2);
+}
+.couple-portrait img {
+  filter: saturate(0.88) contrast(1.02) sepia(0.03);
+}
+.couple-profile-copy {
+  border-color: rgba(52, 74, 53, 0.24);
+}
+.couple-ampersand span {
+  background: var(--botanical-cream);
+}
+.couple-ampersand i {
+  background: rgba(185, 104, 120, 0.5);
+}
 .invitation-shell .folio-story-meta,
-.invitation-shell .folio-story-bottom { color: #667060; border-color: rgba(52, 74, 53, .2); }
-.invitation-shell .folio-story-bottom span:last-child { color: var(--botanical-rose); }
+.invitation-shell .folio-story-bottom {
+  color: #667060;
+  border-color: rgba(52, 74, 53, 0.2);
+}
+.invitation-shell .folio-story-bottom span:last-child {
+  color: var(--botanical-rose);
+}
 
 .invitation-shell .journey-section,
-.overscroll-sequence { background: var(--botanical-deep); }
-.journey-progress { background: rgba(255, 249, 237, .2); }
-.journey-progress span { background: var(--botanical-gold); }
-.journey-panel--school { color: var(--botanical-ink); background: var(--botanical-sage-pale); }
-.journey-panel--campus { color: #fff9ed; background: var(--botanical-eucalyptus); }
-.journey-panel--distance { color: #bd7b85; background: #3f5b4c; }
-.journey-panel--engagement { color: #fff9ed; background: var(--botanical-rose); }
-.journey-study { border-color: rgba(255, 249, 237, .24); }
+.overscroll-sequence {
+  background: var(--botanical-deep);
+}
+.journey-progress {
+  background: rgba(255, 249, 237, 0.2);
+}
+.journey-progress span {
+  background: var(--botanical-gold);
+}
+.journey-panel--school {
+  color: var(--botanical-ink);
+  background: var(--botanical-sage-pale);
+}
+.journey-panel--campus {
+  color: #fff9ed;
+  background: var(--botanical-eucalyptus);
+}
+.journey-panel--distance {
+  color: #bd7b85;
+  background: #3f5b4c;
+}
+.journey-panel--engagement {
+  color: #fff9ed;
+  background: var(--botanical-rose);
+}
+.journey-study {
+  border-color: rgba(255, 249, 237, 0.24);
+}
 .journey-study p,
-.journey-city small { color: #d7dfd0; }
-.journey-study span { color: #f1d398; }
-.journey-route-path { stroke: #f1d398; }
-.journey-route-guide { stroke: rgba(241, 211, 152, .26); }
-.journey-city { color: #fff9ed; }
-.journey-city::before { border-color: #3f5b4c; background: #f1d398; box-shadow: 0 0 0 1px #f1d398; }
+.journey-city small {
+  color: #d7dfd0;
+}
+.journey-study span {
+  color: #f1d398;
+}
+.journey-route-path {
+  stroke: #f1d398;
+}
+.journey-route-guide {
+  stroke: rgba(241, 211, 152, 0.26);
+}
+.journey-city {
+  color: #fff9ed;
+}
+.journey-city::before {
+  border-color: #3f5b4c;
+  background: #f1d398;
+  box-shadow: 0 0 0 1px #f1d398;
+}
 .journey-photo img,
-.journey-school-mark img { filter: saturate(.86) contrast(1.02); }
+.journey-school-mark img {
+  filter: saturate(0.86) contrast(1.02);
+}
 
 .invitation-shell .journey-panel--wedding,
-.invitation-shell .journey-panel--wedding.overscroll-panel { background: var(--botanical-sage-pale); }
+.invitation-shell .journey-panel--wedding.overscroll-panel {
+  background: var(--botanical-sage-pale);
+}
 
 .invitation-shell .journey-wedding-card {
-  border-color: rgba(52, 74, 53, .22);
+  border-color: rgba(52, 74, 53, 0.22);
   color: var(--botanical-ink);
   background:
-    linear-gradient(rgba(248, 241, 227, .7), rgba(248, 241, 227, .85)),
+    linear-gradient(rgba(248, 241, 227, 0.7), rgba(248, 241, 227, 0.85)),
     url("/images/masjid-istiqlal-background.jpg") center / cover no-repeat;
   background-color: var(--botanical-ivory);
-  box-shadow: 0 28px 70px rgba(25, 41, 27, .3);
+  box-shadow: 0 28px 70px rgba(25, 41, 27, 0.3);
 }
 
 .journey-wedding-meta,
 .invitation-shell .journey-wedding-card dt,
-.journey-wedding-card h2 em { color: var(--botanical-rose); }
+.journey-wedding-card h2 em {
+  color: var(--botanical-rose);
+}
 .invitation-shell .journey-wedding-card h2,
-.invitation-shell .journey-wedding-card dd { color: var(--botanical-ink); }
-.invitation-shell .journey-wedding-card > p { color: #667060; }
+.invitation-shell .journey-wedding-card dd {
+  color: var(--botanical-ink);
+}
+.invitation-shell .journey-wedding-card > p {
+  color: #667060;
+}
 .invitation-shell .journey-wedding-meta,
 .invitation-shell .journey-wedding-details,
 .invitation-shell .journey-wedding-details div,
 .invitation-shell .journey-wedding-details div + div,
-.invitation-shell .journey-wedding-details .journey-wedding-place { border-color: rgba(52, 74, 53, .22); }
+.invitation-shell .journey-wedding-details .journey-wedding-place {
+  border-color: rgba(52, 74, 53, 0.22);
+}
 
-.invitation-shell .journey-location { color: #fff9ed; background: var(--botanical-olive); }
-.invitation-shell .journey-location:hover { color: var(--botanical-ink); background: var(--botanical-gold); }
-.invitation-shell .journey-location:focus-visible { outline-color: var(--botanical-rose); }
+.invitation-shell .journey-location {
+  color: #fff9ed;
+  background: var(--botanical-olive);
+}
+.invitation-shell .journey-location:hover {
+  color: var(--botanical-ink);
+  background: var(--botanical-gold);
+}
+.invitation-shell .journey-location:focus-visible {
+  outline-color: var(--botanical-rose);
+}
 
 .invitation-shell .rsvp-section.overscroll-panel {
   background:
-    radial-gradient(ellipse at 0% 16%, rgba(239, 209, 210, .72), transparent 30%),
-    radial-gradient(ellipse at 100% 92%, rgba(135, 154, 119, .2), transparent 28%),
+    radial-gradient(
+      ellipse at 0% 16%,
+      rgba(239, 209, 210, 0.72),
+      transparent 30%
+    ),
+    radial-gradient(
+      ellipse at 100% 92%,
+      rgba(135, 154, 119, 0.2),
+      transparent 28%
+    ),
     var(--botanical-ivory);
 }
 
 .invitation-shell .rsvp-heading .eyebrow,
-.rsvp-personal-note { color: var(--botanical-rose); }
-.invitation-shell .rsvp-heading h2 { color: var(--botanical-ink); }
-.invitation-shell .rsvp-heading > p:last-of-type { color: #667060; }
-.rsvp-personal-note { border-color: rgba(52, 74, 53, .24); }
+.rsvp-personal-note {
+  color: var(--botanical-rose);
+}
+.invitation-shell .rsvp-heading h2 {
+  color: var(--botanical-ink);
+}
+.invitation-shell .rsvp-heading > p:last-of-type {
+  color: #667060;
+}
+.rsvp-personal-note {
+  border-color: rgba(52, 74, 53, 0.24);
+}
 
 .invitation-shell .rsvp-form,
 .invitation-shell .rsvp-success {
   color: #fff9ed;
   background: var(--botanical-olive);
-  box-shadow: 18px 20px 0 rgba(185, 104, 120, .13);
+  box-shadow: 18px 20px 0 rgba(185, 104, 120, 0.13);
 }
 
 .rsvp-attendance legend,
-.rsvp-field-label { color: #d7dfd0; }
-.rsvp-choice { color: #fff9ed; border-color: rgba(255, 249, 237, .28); }
-.rsvp-choice:hover:not(.is-active) { border-color: rgba(239, 209, 210, .72); }
-.rsvp-choice.is-active { color: var(--botanical-ink); border-color: var(--botanical-gold); }
+.rsvp-field-label {
+  color: #d7dfd0;
+}
+.rsvp-choice {
+  color: #fff9ed;
+  border-color: rgba(255, 249, 237, 0.28);
+}
+.rsvp-choice:hover:not(.is-active) {
+  border-color: rgba(239, 209, 210, 0.72);
+}
+.rsvp-choice.is-active {
+  color: var(--botanical-ink);
+  border-color: var(--botanical-gold);
+}
 .rsvp-choice-indicator,
-.rsvp-submit { background: var(--botanical-gold); }
-.rsvp-stepper { border-color: rgba(255, 249, 237, .34); }
+.rsvp-submit {
+  background: var(--botanical-gold);
+}
+.rsvp-stepper {
+  border-color: rgba(255, 249, 237, 0.34);
+}
 .rsvp-stepper button,
 .rsvp-stepper output,
-.invitation-shell .rsvp-form textarea { color: #fff9ed; }
+.invitation-shell .rsvp-form textarea {
+  color: #fff9ed;
+}
 .rsvp-stepper output,
 .rsvp-guest-field,
-.invitation-shell .rsvp-form textarea { border-color: rgba(255, 249, 237, .22); }
-.rsvp-stepper button:hover:not(:disabled) { color: var(--botanical-ink); background: var(--botanical-blush); }
+.invitation-shell .rsvp-form textarea {
+  border-color: rgba(255, 249, 237, 0.22);
+}
+.rsvp-stepper button:hover:not(:disabled) {
+  color: var(--botanical-ink);
+  background: var(--botanical-blush);
+}
 .invitation-shell .rsvp-form textarea::placeholder,
 .rsvp-guest-field small,
 .rsvp-message-field > small,
-.rsvp-submit-row > span { color: #b9c3b4; }
-.invitation-shell .rsvp-form textarea:focus { border-color: var(--botanical-gold); box-shadow: 0 2px 0 -1px var(--botanical-gold); }
-.rsvp-submit { color: var(--botanical-ink); border-color: var(--botanical-gold); }
-.rsvp-submit:hover:not(:disabled) { color: #fff9ed; }
+.rsvp-submit-row > span {
+  color: #b9c3b4;
+}
+.invitation-shell .rsvp-form textarea:focus {
+  border-color: var(--botanical-gold);
+  box-shadow: 0 2px 0 -1px var(--botanical-gold);
+}
+.rsvp-submit {
+  color: var(--botanical-ink);
+  border-color: var(--botanical-gold);
+}
+.rsvp-submit:hover:not(:disabled) {
+  color: #fff9ed;
+}
 .rsvp-choice:focus-visible,
 .rsvp-stepper button:focus-visible,
 .rsvp-submit:focus-visible,
-.invitation-shell .rsvp-success .text-button:focus-visible { outline-color: var(--botanical-gold); }
-.rsvp-success-seal { color: var(--botanical-gold); border-color: var(--botanical-gold); }
+.invitation-shell .rsvp-success .text-button:focus-visible {
+  outline-color: var(--botanical-gold);
+}
+.rsvp-success-seal {
+  color: var(--botanical-gold);
+  border-color: var(--botanical-gold);
+}
 .invitation-shell .rsvp-success-index,
-.invitation-shell .rsvp-success .text-button { color: var(--botanical-gold); border-color: var(--botanical-gold); }
+.invitation-shell .rsvp-success .text-button {
+  color: var(--botanical-gold);
+  border-color: var(--botanical-gold);
+}
 .invitation-shell .rsvp-success b,
-.invitation-shell .rsvp-success .rsvp-summary dd { color: #fff9ed; }
-.invitation-shell .rsvp-success > p { color: #d7dfd0; }
+.invitation-shell .rsvp-success .rsvp-summary dd {
+  color: #fff9ed;
+}
+.invitation-shell .rsvp-success > p {
+  color: #d7dfd0;
+}
 
 .prewedding-section {
   color: #fff9ed;
   background:
-    radial-gradient(ellipse at 4% 5%, rgba(185, 104, 120, .3), transparent 25%),
-    radial-gradient(ellipse at 96% 30%, rgba(212, 176, 111, .18), transparent 28%),
+    radial-gradient(
+      ellipse at 4% 5%,
+      rgba(185, 104, 120, 0.3),
+      transparent 25%
+    ),
+    radial-gradient(
+      ellipse at 96% 30%,
+      rgba(212, 176, 111, 0.18),
+      transparent 28%
+    ),
     linear-gradient(150deg, #4f6954 0%, #3c5545 52%, #304637 100%);
 }
 
-.prewedding-section::before { -webkit-text-stroke-color: rgba(239, 209, 210, .24); }
-.prewedding-heading-meta { color: #c8d2c4; border-color: rgba(255, 249, 237, .22); }
+.prewedding-section::before {
+  -webkit-text-stroke-color: rgba(239, 209, 210, 0.24);
+}
+.prewedding-heading-meta {
+  color: #c8d2c4;
+  border-color: rgba(255, 249, 237, 0.22);
+}
 .prewedding-heading .eyebrow,
 .prewedding-heading h2 em,
 .prewedding-photo-caption b,
-.prewedding-photo-caption i { color: #f1d398; }
+.prewedding-photo-caption i {
+  color: #f1d398;
+}
 .prewedding-heading h2,
-.prewedding-photo { color: #fff9ed; }
+.prewedding-photo {
+  color: #fff9ed;
+}
 .prewedding-heading > p:last-child,
-.prewedding-photo-caption { color: #d1d9ce; }
-.prewedding-photo-media { background: var(--botanical-deep); }
+.prewedding-photo-caption {
+  color: #d1d9ce;
+}
+.prewedding-photo-media {
+  background: var(--botanical-deep);
+}
 .prewedding-photo-media::after,
-.prewedding-photo-caption { border-color: rgba(255, 249, 237, .2); }
-.prewedding-photo img { filter: saturate(.86) sepia(.03) contrast(1.03); }
-.prewedding-photo:hover img { filter: saturate(1) sepia(0) contrast(1.02); }
-.prewedding-photo:focus-visible { outline-color: var(--botanical-gold); }
-.prewedding-endnote { color: #bdc8ba; }
-.prewedding-endnote i { background: rgba(255, 249, 237, .2); }
+.prewedding-photo-caption {
+  border-color: rgba(255, 249, 237, 0.2);
+}
+.prewedding-photo img {
+  filter: saturate(0.86) sepia(0.03) contrast(1.03);
+}
+.prewedding-photo:hover img {
+  filter: saturate(1) sepia(0) contrast(1.02);
+}
+.prewedding-photo:focus-visible {
+  outline-color: var(--botanical-gold);
+}
+.prewedding-endnote {
+  color: #bdc8ba;
+}
+.prewedding-endnote i {
+  background: rgba(255, 249, 237, 0.2);
+}
 
-.prewedding-lightbox-backdrop { background: rgba(30, 45, 32, .97); }
+.prewedding-lightbox-backdrop {
+  background: rgba(30, 45, 32, 0.97);
+}
 .prewedding-lightbox-toolbar,
-.prewedding-lightbox-navigation { color: #d1d9ce; }
+.prewedding-lightbox-navigation {
+  color: #d1d9ce;
+}
 .prewedding-lightbox-toolbar i,
-.prewedding-lightbox-navigation button { color: #f1d398; }
-.prewedding-lightbox-navigation button:hover { color: var(--botanical-ink); background: var(--botanical-gold); }
-.prewedding-lightbox button:focus-visible { outline-color: var(--botanical-gold); }
+.prewedding-lightbox-navigation button {
+  color: #f1d398;
+}
+.prewedding-lightbox-navigation button:hover {
+  color: var(--botanical-ink);
+  background: var(--botanical-gold);
+}
+.prewedding-lightbox button:focus-visible {
+  outline-color: var(--botanical-gold);
+}
 
 .invitation-shell .folio-footer {
   color: #fff9ed;
   background:
-    radial-gradient(circle at 14% 12%, rgba(239, 209, 210, .25), transparent 28%),
+    radial-gradient(
+      circle at 14% 12%,
+      rgba(239, 209, 210, 0.25),
+      transparent 28%
+    ),
     var(--botanical-rose);
 }
 
-.folio-footer-curtain { background: var(--botanical-deep); }
+.folio-footer-curtain {
+  background: var(--botanical-deep);
+}
 .folio-footer-kicker,
-.folio-footer-note { color: #e9ddcd; }
-.folio-footer-rule { background: var(--botanical-gold); }
-.folio-footer-name { color: #fff9ed; }
+.folio-footer-note {
+  color: #e9ddcd;
+}
+.folio-footer-rule {
+  background: var(--botanical-gold);
+}
+.folio-footer-name {
+  color: #fff9ed;
+}
 .folio-footer-name em,
-.folio-footer-date { color: #f1d398; }
+.folio-footer-date {
+  color: #f1d398;
+}
 
 @media (max-width: 700px) {
   .couple-profile-copy,
   .couple-profile--groom .couple-profile-copy {
-    border-color: rgba(52, 74, 53, .22);
-    background: rgba(248, 241, 227, .96);
+    border-color: rgba(52, 74, 53, 0.22);
+    background: rgba(248, 241, 227, 0.96);
   }
 
   .couple-portrait,
-  .couple-profile--groom .couple-portrait { box-shadow: 10px 13px 0 rgba(185, 104, 120, .14); }
+  .couple-profile--groom .couple-portrait {
+    box-shadow: 10px 13px 0 rgba(185, 104, 120, 0.14);
+  }
 
-  .invitation-shell .journey-panel--wedding { background: var(--botanical-ivory); }
+  .invitation-shell .journey-panel--wedding {
+    background: var(--botanical-ivory);
+  }
 
   .invitation-shell .journey-wedding-card {
     background:
-      linear-gradient(rgba(248, 241, 227, .7), rgba(248, 241, 227, .85)),
+      linear-gradient(rgba(248, 241, 227, 0.7), rgba(248, 241, 227, 0.85)),
       url("/images/masjid-istiqlal-background.jpg") center / cover no-repeat;
     background-color: var(--botanical-ivory);
   }
 
   .invitation-shell .rsvp-form,
-  .invitation-shell .rsvp-success { box-shadow: 9px 11px 0 rgba(185, 104, 120, .13); }
+  .invitation-shell .rsvp-success {
+    box-shadow: 9px 11px 0 rgba(185, 104, 120, 0.13);
+  }
 }
