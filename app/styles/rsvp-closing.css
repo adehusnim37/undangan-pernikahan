@@ -30,7 +30,7 @@
   margin-top: 36px;
   border-top: 1px solid rgba(32, 35, 30, .25);
   color: #9b5948;
-  font: 500 9px "DM Mono", monospace;
+  font: 500 13px "DM Mono", monospace;
   letter-spacing: .12em;
   text-transform: uppercase;
 }
@@ -137,7 +137,7 @@
 .rsvp-choice small {
   margin-top: 8px;
   color: inherit;
-  font: 500 9px/1.5 "DM Mono", monospace;
+  font: 500 11px/1.5 "DM Mono", monospace;
   letter-spacing: .03em;
   opacity: .68;
 }

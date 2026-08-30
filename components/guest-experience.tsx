@@ -1428,7 +1428,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                 </div>
                 <div>
                   <dt>Resepsi</dt>
-                  <dd>11.00—13.00 WIB</dd>
+                  <dd>11.00-13.00 WIB</dd>
                 </div>
                 <div className="journey-wedding-place">
                   <dt>Lokasi</dt>

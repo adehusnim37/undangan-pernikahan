@@ -124,7 +124,10 @@
 .invitation-shell .journey-wedding-card {
   border-color: rgba(52, 74, 53, .22);
   color: var(--botanical-ink);
-  background: rgba(248, 241, 227, .95);
+  background:
+    linear-gradient(rgba(248, 241, 227, .7), rgba(248, 241, 227, .85)),
+    url("/images/masjid-istiqlal-background.jpg") center / cover no-repeat;
+  background-color: var(--botanical-ivory);
   box-shadow: 0 28px 70px rgba(25, 41, 27, .3);
 }
 
@@ -257,8 +260,14 @@
   .couple-portrait,
   .couple-profile--groom .couple-portrait { box-shadow: 10px 13px 0 rgba(185, 104, 120, .14); }
 
-  .invitation-shell .journey-panel--wedding,
-  .invitation-shell .journey-wedding-card { background: var(--botanical-ivory); }
+  .invitation-shell .journey-panel--wedding { background: var(--botanical-ivory); }
+
+  .invitation-shell .journey-wedding-card {
+    background:
+      linear-gradient(rgba(248, 241, 227, .7), rgba(248, 241, 227, .85)),
+      url("/images/masjid-istiqlal-background.jpg") center / cover no-repeat;
+    background-color: var(--botanical-ivory);
+  }
 
   .invitation-shell .rsvp-form,
   .invitation-shell .rsvp-success { box-shadow: 9px 11px 0 rgba(185, 104, 120, .13); }
