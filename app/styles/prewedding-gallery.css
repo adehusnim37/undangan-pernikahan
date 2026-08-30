@@ -332,9 +332,9 @@
   bottom: 12px;
   left: 12px;
   padding: 8px 10px;
-  color: #f5f1e8;
+  color: #f1b6c0;
   background: rgba(12, 14, 12, .72);
-  font: 500 8px "DM Mono", monospace;
+  font: 500 11px "DM Mono", monospace;
   letter-spacing: .1em;
   text-transform: uppercase;
 }
@@ -537,7 +537,7 @@
 .folio-footer-kicker,
 .folio-footer-date {
   color: #a8afa3;
-  font: 500 9px "DM Mono", monospace;
+  font: 500 14px "DM Mono", monospace;
   letter-spacing: .12em;
   text-transform: uppercase;
 }
@@ -556,7 +556,7 @@
 
 .folio-footer-name {
   width: 100%;
-  color: #f5f1e8;
+  color: #f4b3c2;
   font: 500 clamp(92px, 15.2vw, 230px)/.72 "Cormorant Garamond", serif;
   letter-spacing: -.075em;
   text-align: center;
@@ -685,7 +685,7 @@
 
   .folio-footer-kicker,
   .folio-footer-date {
-    font-size: 7px;
+    font-size: 14px;
     line-height: 1.55;
   }
 
@@ -712,7 +712,7 @@
 
   .folio-footer-note {
     max-width: 260px;
-    font-size: 11px;
+    font-size: 14px;
     line-height: 1.65;
   }
 
