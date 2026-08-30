@@ -36,7 +36,7 @@ Template full-stack untuk undangan web dengan link personal per tamu, dashboard 
    Posisi email dan password harus berpasangan. Password production minimal 15
    karakter dan tidak boleh mengandung koma karena koma dipakai sebagai pemisah.
 
-   Gunakan `APP_ENV=development` saat aplikasi diakses melalui HTTP. Untuk deployment production, ubah menjadi `APP_ENV=production` dan akses aplikasi hanya melalui HTTPS karena cookie admin akan memakai atribut `Secure`. `NODE_ENV` tetap dikelola oleh Next.js dan tidak dipakai untuk memilih protokol deployment. Isi `NEXT_PUBLIC_APP_URL` dengan URL yang akan dibagikan ke tamu, misalnya `http://localhost:3020` atau `https://nikah.mas-a.de`.
+   Gunakan `APP_ENV=development` saat aplikasi diakses melalui HTTP. Untuk deployment production, ubah menjadi `APP_ENV=production` dan akses aplikasi hanya melalui HTTPS karena cookie admin akan memakai atribut `Secure`. `NODE_ENV` tetap dikelola oleh Next.js dan tidak dipakai untuk memilih protokol deployment. Isi `NEXT_PUBLIC_APP_URL` dengan URL yang akan dibagikan ke tamu, misalnya `http://localhost:3020` atau `https://nikah.alvitade.com`.
 
 3. Pastikan PostgreSQL yang sudah tersedia dapat diakses melalui `DATABASE_URL`.
 
