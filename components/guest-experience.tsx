@@ -441,6 +441,32 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             );
           });
 
+          const schoolPhotoImages = journey.querySelectorAll<HTMLElement>(
+            ".journey-bento--school .journey-photo:not(.journey-school-mark) img",
+          );
+          schoolPhotoImages.forEach((image, index) => {
+            gsap.fromTo(
+              image,
+              {
+                scale: index === 0 ? 1.16 : 1.12,
+                xPercent: index === 0 ? -4 : 4,
+                yPercent: index === 0 ? 5 : -4,
+              },
+              {
+                scale: 1.03,
+                xPercent: index === 0 ? 3 : -3,
+                yPercent: index === 0 ? -5 : 5,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: ".journey-panel--school",
+                  start: "top 78%",
+                  end: "bottom 22%",
+                  scrub: 1.1,
+                },
+              },
+            );
+          });
+
           if (routePath) {
             const pathLength = routePath.getTotalLength();
             gsap.set(routePath, {

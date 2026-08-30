@@ -463,6 +463,9 @@
     width: 48%;
     height: 42%;
   }
+  .journey-bento--school .journey-photo:not(.journey-school-mark) img {
+    will-change: transform;
+  }
   .journey-school-mark {
     top: 1%;
     right: -2%;
