@@ -1238,6 +1238,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                   style={photoStyle("journey_school_mark")}
                   alt={`Foto tambahan ${couple.bride} dan ${couple.groom} semasa sekolah`}
                 />
+                <figcaption>Kelulusan SMA</figcaption>
               </figure>
               <figure className="journey-photo journey-photo--detail">
                 <img
@@ -1245,6 +1246,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                   style={photoStyle("journey_school_detail")}
                   alt="Suasana sekolah"
                 />
+                <figcaption>Foto Bersama XI MIPA 4</figcaption>
               </figure>
             </div>
           </article>
@@ -1279,6 +1281,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                   style={photoStyle("journey_campus_wide")}
                   alt={`Masa kuliah ${couple.bride} dan ${couple.groom} di Surabaya`}
                 />
+                <figcaption>Sumpah Profesi Apoteker Alvita</figcaption>
               </figure>
               <figure className="journey-photo journey-photo--small-a">
                 <img
@@ -1286,6 +1289,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                   style={photoStyle("journey_campus_small_a")}
                   alt="Kelulusan kuliah"
                 />
+                <figcaption>Sidang Akhir S1 Ade</figcaption>
               </figure>
               <figure className="journey-photo journey-photo--small-b">
                 <img
@@ -1293,6 +1297,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                   style={photoStyle("journey_campus_small_b")}
                   alt="Perjalanan selama kuliah"
                 />
+                <figcaption>Sidang Akhir S1 Alvita</figcaption>
               </figure>
             </div>
           </article>
@@ -1375,7 +1380,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                   style={photoStyle("journey_engagement_main")}
                   alt={`Lamaran ${couple.bride} dan ${couple.groom}`}
                 />
-                <figcaption>30 · 05 · 2026</figcaption>
+                <figcaption>WE ARE ENGAGED</figcaption>
               </figure>
               <figure className="journey-photo journey-photo--ring">
                 <img

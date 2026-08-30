@@ -105,7 +105,7 @@
 .journey-progress span { background: var(--botanical-gold); }
 .journey-panel--school { color: var(--botanical-ink); background: var(--botanical-sage-pale); }
 .journey-panel--campus { color: #fff9ed; background: var(--botanical-eucalyptus); }
-.journey-panel--distance { color: #fff9ed; background: #3f5b4c; }
+.journey-panel--distance { color: #bd7b85; background: #3f5b4c; }
 .journey-panel--engagement { color: #fff9ed; background: var(--botanical-rose); }
 .journey-study { border-color: rgba(255, 249, 237, .24); }
 .journey-study p,
