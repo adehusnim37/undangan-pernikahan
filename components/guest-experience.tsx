@@ -17,6 +17,7 @@ import {
   type InvitationMediaSlot,
 } from "@/lib/invitation-media";
 import { couple, coupleCaps } from "@/lib/couple";
+import { BackgroundMusic } from "@/components/background-music";
 
 type AccessState = "checking" | "allowed" | "denied";
 type Rsvp = {
@@ -42,27 +43,49 @@ function MaskedJourneyImage({
   alt,
 }: MaskedJourneyImageProps) {
   return (
-    <>
-      <svg
-        className="journey-mask-definitions"
-        width="0"
-        height="0"
-        aria-hidden="true"
-        focusable="false"
+    <svg
+      className="journey-masked-image"
+      width="100%"
+      height="100%"
+      role="img"
+      aria-label={alt}
+      focusable="false"
+    >
+      <defs>
+        <mask
+          id={maskId}
+          maskUnits="objectBoundingBox"
+          maskContentUnits="objectBoundingBox"
+          style={{ maskType: "alpha" }}
+        >
+          <rect
+            className="journey-mask-base"
+            width="1"
+            height="1"
+            fill="white"
+            opacity="1"
+          />
+          <g className="journey-mask-grid" />
+        </mask>
+      </defs>
+      <foreignObject
+        x="0"
+        y="0"
+        width="100%"
+        height="100%"
+        mask={`url(#${maskId})`}
       >
-        <defs>
-          <mask
-            id={maskId}
-            maskUnits="objectBoundingBox"
-            maskContentUnits="objectBoundingBox"
-          >
-            <rect width="1" height="1" fill="black" />
-            <g className="journey-mask-grid" />
-          </mask>
-        </defs>
-      </svg>
-      <img src={src} style={style} alt={alt} data-journey-mask={maskId} />
-    </>
+        <div className="journey-masked-image-content">
+          <img
+            src={src}
+            style={style}
+            alt=""
+            aria-hidden="true"
+            data-journey-mask={maskId}
+          />
+        </div>
+      </foreignObject>
+    </svg>
   );
 }
 
@@ -169,8 +192,9 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
         const maskId = image.dataset.journeyMask;
         const mask = maskId ? document.getElementById(maskId) : null;
         const grid = mask?.querySelector<SVGGElement>(".journey-mask-grid");
+        const base = mask?.querySelector<SVGRectElement>(".journey-mask-base");
         const trigger = image.closest<HTMLElement>(".journey-photo") ?? image;
-        if (!maskId || !grid) return;
+        if (!maskId || !grid || !base) return;
 
         grid.replaceChildren();
         const bounds = trigger.getBoundingClientRect();
@@ -215,15 +239,12 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
           orderedCells.push(...gsap.utils.shuffle(columnCells));
         }
 
-        const maskReference = `url("#${maskId}")`;
-        image.style.setProperty("mask-image", maskReference);
-        image.style.setProperty("-webkit-mask-image", maskReference);
-        image.style.setProperty("mask-repeat", "no-repeat");
-        image.style.setProperty("-webkit-mask-repeat", "no-repeat");
-        image.style.setProperty("mask-size", "100% 100%");
-        image.style.setProperty("-webkit-mask-size", "100% 100%");
+        // The mask is bound to a sibling SVG foreignObject. This keeps the
+        // fragment reference inside one SVG tree, which Safari iOS repaints
+        // reliably. The opaque base keeps the photo visible without JS.
+        base.setAttribute("opacity", "0");
 
-        gsap.to(orderedCells, {
+        const reveal = gsap.to(orderedCells, {
           attr: { opacity: 1 },
           duration: 1,
           ease: "power3.out",
@@ -241,17 +262,15 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                 start: mobileMask ? "top 90%" : "top 88%",
                 end: mobileMask ? "bottom 52%" : "top 18%",
                 scrub: mobileMask ? 0.7 : 1.1,
+                invalidateOnRefresh: true,
               },
         });
 
         return () => {
+          reveal.scrollTrigger?.kill();
+          reveal.kill();
+          base.setAttribute("opacity", "1");
           grid.replaceChildren();
-          image.style.removeProperty("mask-image");
-          image.style.removeProperty("-webkit-mask-image");
-          image.style.removeProperty("mask-repeat");
-          image.style.removeProperty("-webkit-mask-repeat");
-          image.style.removeProperty("mask-size");
-          image.style.removeProperty("-webkit-mask-size");
         };
       };
 
@@ -1306,6 +1325,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
 
   return (
     <main ref={invitationRef} className="invitation-shell">
+      <BackgroundMusic />
       <header className="folio-hero">
         <div className="folio-bar">
           <span>{coupleCaps.plus}</span>
@@ -1614,6 +1634,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                   style={photoStyle("journey_engagement_ring")}
                   alt="Cincin lamaran"
                 />
+                <figcaption>30•05•2026</figcaption>
               </figure>
             </div>
           </article>
@@ -1930,40 +1951,42 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                   TUTUP <i aria-hidden="true">×</i>
                 </button>
               </div>
-              <figure className="prewedding-lightbox-figure">
-                <img
-                  src={photo(activeItem.slot)}
-                  style={photoStyle(activeItem.slot)}
-                  alt={`Foto prewedding ${couple.bride} dan ${couple.groom} ${activePreweddingPhoto + 1}`}
-                />
-                <figcaption>{activeItem.caption}</figcaption>
-              </figure>
-              <div className="prewedding-lightbox-navigation">
-                <button
-                  type="button"
-                  aria-label="Foto sebelumnya"
-                  onClick={() =>
-                    setActivePreweddingPhoto(
-                      (activePreweddingPhoto -
-                        1 +
-                        preweddingMediaSlots.length) %
-                        preweddingMediaSlots.length,
-                    )
-                  }
-                >
-                  ←
-                </button>
-                <button
-                  type="button"
-                  aria-label="Foto berikutnya"
-                  onClick={() =>
-                    setActivePreweddingPhoto(
-                      (activePreweddingPhoto + 1) % preweddingMediaSlots.length,
-                    )
-                  }
-                >
-                  →
-                </button>
+              <div className="prewedding-lightbox-stage">
+                <figure className="prewedding-lightbox-figure">
+                  <img
+                    src={photo(activeItem.slot)}
+                    style={photoStyle(activeItem.slot)}
+                    alt={`Foto prewedding ${couple.bride} dan ${couple.groom} ${activePreweddingPhoto + 1}`}
+                  />
+                  <figcaption>{activeItem.caption}</figcaption>
+                </figure>
+                <div className="prewedding-lightbox-navigation">
+                  <button
+                    type="button"
+                    aria-label="Foto sebelumnya"
+                    onClick={() =>
+                      setActivePreweddingPhoto(
+                        (activePreweddingPhoto -
+                          1 +
+                          preweddingMediaSlots.length) %
+                          preweddingMediaSlots.length,
+                      )
+                    }
+                  >
+                    ←
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Foto berikutnya"
+                    onClick={() =>
+                      setActivePreweddingPhoto(
+                        (activePreweddingPhoto + 1) % preweddingMediaSlots.length,
+                      )
+                    }
+                  >
+                    →
+                  </button>
+                </div>
               </div>
             </div>
           );

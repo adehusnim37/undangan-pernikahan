@@ -226,15 +226,19 @@
 
 .invitation-shell .journey-panel--wedding,
 .invitation-shell .journey-panel--wedding.overscroll-panel {
+  --wedding-venue-overlay: linear-gradient(
+    155deg,
+    rgba(248, 241, 227, 0.92) 0%,
+    rgba(248, 241, 227, 0.72) 48%,
+    rgba(248, 241, 227, 0.9) 100%
+  );
+  --wedding-card-frame: rgba(52, 74, 53, 0.16);
   background: var(--botanical-sage-pale);
 }
 
 .invitation-shell .journey-wedding-card {
   border-color: rgba(52, 74, 53, 0.22);
   color: var(--botanical-ink);
-  background:
-    linear-gradient(rgba(248, 241, 227, 0.7), rgba(248, 241, 227, 0.85)),
-    url("/images/masjid-istiqlal-background.jpg") center / cover no-repeat;
   background-color: var(--botanical-ivory);
   box-shadow: 0 28px 70px rgba(25, 41, 27, 0.3);
 }
@@ -506,14 +510,6 @@
   .invitation-shell .journey-panel--wedding {
     background: var(--botanical-ivory);
   }
-
-  .invitation-shell .journey-wedding-card {
-    background:
-      linear-gradient(rgba(248, 241, 227, 0.7), rgba(248, 241, 227, 0.85)),
-      url("/images/masjid-istiqlal-background.jpg") center / cover no-repeat;
-    background-color: var(--botanical-ivory);
-  }
-
   .invitation-shell .rsvp-form,
   .invitation-shell .rsvp-success {
     box-shadow: 9px 11px 0 rgba(185, 104, 120, 0.13);

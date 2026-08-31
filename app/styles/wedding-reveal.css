@@ -1,5 +1,13 @@
 /* Wedding reveal — editorial event card with scannable details and a clear map action. */
 .invitation-shell .journey-panel--wedding {
+  --wedding-venue-image: url("/images/masjid-istiqlal-background.jpg");
+  --wedding-venue-overlay: linear-gradient(
+    155deg,
+    rgba(238, 231, 218, .9) 0%,
+    rgba(238, 231, 218, .7) 48%,
+    rgba(238, 231, 218, .88) 100%
+  );
+  --wedding-card-frame: rgba(32, 35, 30, .14);
   display: block;
   padding: 0;
   color: #20231e;
@@ -28,11 +36,19 @@
   border: 1px solid rgba(32, 35, 30, .18);
   color: #20231e;
   background:
-    linear-gradient(rgba(238, 231, 218, .68), rgba(238, 231, 218, .84)),
-    url("/images/masjid-istiqlal-background.jpg") center / cover no-repeat;
+    var(--wedding-venue-overlay),
+    var(--wedding-venue-image) 50% 58% / cover no-repeat;
   background-color: #eee7da;
   box-shadow: 0 28px 70px rgba(10, 12, 10, .28);
   backdrop-filter: blur(10px);
+}
+
+.invitation-shell .journey-wedding-card::after {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 1px solid var(--wedding-card-frame);
+  pointer-events: none;
 }
 
 .journey-wedding-meta {
@@ -182,12 +198,16 @@
     border: 0;
     border-top: 1px solid rgba(32, 35, 30, .18);
     background:
-      linear-gradient(rgba(238, 231, 218, .68), rgba(238, 231, 218, .84)),
-      url("/images/masjid-istiqlal-background.jpg") center / cover no-repeat;
+      var(--wedding-venue-overlay),
+      var(--wedding-venue-image) 50% 54% / cover no-repeat;
     background-color: #eee7da;
     box-shadow: 0 -20px 48px rgba(25, 41, 27, .14);
     backdrop-filter: none;
     transform: none;
+  }
+
+  .invitation-shell .journey-wedding-card::after {
+    inset: 8px;
   }
 
   .journey-wedding-meta {
