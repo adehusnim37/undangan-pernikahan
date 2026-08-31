@@ -29,16 +29,17 @@ export function openWhatsAppInvite(guest: { guest_name: string; token: string })
     "*Assalamualaikum Warahmatullahi Wabarakatuh*",
     "",
     "Dengan mengharap ridha dan rahmat Allah SWT, kami mengundang Bpk/Ibu/Sdr/i untuk hadir di acara pernikahan kami:",
-    "*Alvita Raniah Aisyah Putri & Ade Husni Mubarrok*",
+    "*Ade Husni Mubarrok & Alvita Raniah Aisyah Putri*",
     "",
     "Untuk informasi detail acara dan tempat, silahkan mengakses tautan berikut ini:",
     `*${appUrl}/invite/${guest.token}*`,
     "",
     "Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i dapat ikut hadir membersamai hari bahagia ini.",
+    "",
     "*Wassalamualaikum Warahmatullahi Wabarakatuh*",
     "",
     "Kami yang berbahagia,",
-    "Alvita & Ade",
+    "Ade & Alvita",
   ].join("\n");
 
   window.open(
