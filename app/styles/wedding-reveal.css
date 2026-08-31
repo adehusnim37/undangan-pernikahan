@@ -1,6 +1,6 @@
 /* Wedding reveal — editorial event card with scannable details and a clear map action. */
 .invitation-shell .journey-panel--wedding {
-  --wedding-venue-image: url("/images/masjid-istiqlal-background.jpg");
+  --wedding-venue-image: url("/images/masjid-istiqlal-background.webp");
   --wedding-venue-overlay: linear-gradient(
     155deg,
     rgba(238, 231, 218, .9) 0%,
