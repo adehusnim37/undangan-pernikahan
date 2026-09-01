@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db, query } from "@/lib/db";
-import { getInvitation } from "@/lib/invitations";
+import { getInvitation, isInvitationDeviceAllowed } from "@/lib/invitations";
 import { assertSameOrigin } from "@/lib/csrf";
 import { clientInfoFrom } from "@/lib/admin-security";
 import { consumeRateLimit } from "@/lib/rate-limit";
@@ -59,7 +59,7 @@ export async function POST(
   if (
     !invitation ||
     invitation.status !== "active" ||
-    invitation.device_id !== hash
+    !(await isInvitationDeviceAllowed(invitation.id, hash))
   )
     return NextResponse.json(
       { message: "Akses perlu diverifikasi ulang." },

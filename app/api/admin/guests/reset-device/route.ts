@@ -22,7 +22,11 @@ export async function POST(request: Request) {
   const body = await parseJson(request, resetDeviceBulkBodySchema);
   if (!body.success) return validationError(body.error);
 
-  const result = await query(
+  await query(
+    "DELETE FROM invitation_devices WHERE invitation_id = ANY($1::uuid[])",
+    [body.data.ids],
+  );
+  const reset = await query(
     `UPDATE invitations
      SET device_id = NULL, first_opened_at = NULL, updated_at = NOW()
      WHERE id = ANY($1::uuid[])
@@ -32,6 +36,6 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     ok: true,
-    resetCount: result.rowCount ?? result.rows.length,
+    resetCount: reset.rowCount ?? reset.rows.length,
   });
 }

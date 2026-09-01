@@ -1317,7 +1317,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
     return (
       <main className="access-screen access-screen-denied">
         <p className="eyebrow">PRIVATE ACCESS</p>
-        <h1>Undangan ini terikat pada perangkat lain.</h1>
+        <h1>Perangkat ini belum mendapat akses ke undangan.</h1>
         <p>{notice}</p>
         <small>Hubungi mempelai agar akses dapat diatur ulang.</small>
       </main>

@@ -6,10 +6,12 @@ Template full-stack untuk undangan web dengan link personal per tamu, dashboard 
 
 - Halaman undangan responsif di `/invite/[token]`.
 - Dashboard admin di `/admin` untuk membuat tamu, menyalin link, mencabut akses, dan me-reset perangkat.
+- Setiap link dapat diberi batas perangkat berbeda (1–100); perangkat yang sama dapat membuka ulang link tanpa memakai slot tambahan.
+- Data tamu mendukung tipe `Mama`, `Papa`, `Ibu`, `Ayah`, `Ade`, dan `Alvita`, serta kelompok seperti turunan, kerabat, keluarga, dan teman kerja.
 - API route Next.js untuk login admin, tamu, pemeriksaan akses, dan RSVP.
 - PostgreSQL eksternal untuk data undangan, akses, RSVP, dan pengaturan media.
 - Migrasi database otomatis saat backend mulai, lengkap dengan lock dan riwayat migrasi.
-- Pengikatan perangkat pada kunjungan pertama memakai ThumbmarkJS di browser. Admin dapat me-reset ikatan perangkat kapan pun.
+- Pengikatan perangkat pada kunjungan pertama memakai ThumbmarkJS di browser. Admin dapat me-reset seluruh perangkat yang terdaftar kapan pun.
 
 ## Menjalankan lokal
 

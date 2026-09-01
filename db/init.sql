@@ -4,13 +4,24 @@ CREATE TABLE IF NOT EXISTS invitations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   token TEXT UNIQUE NOT NULL,
   guest_name TEXT NOT NULL,
-  guest_group TEXT CHECK (guest_group IN ('keluarga', 'kantor', 'kerabat')),
+  guest_type TEXT CHECK (guest_type IN ('mama', 'papa', 'ibu', 'ayah', 'ade', 'alvita')),
+  guest_group TEXT CHECK (guest_group IN ('turunan', 'kerabat', 'keluarga', 'teman_kerja', 'kantor', 'teman', 'lainnya')),
   max_guests SMALLINT NOT NULL DEFAULT 1 CHECK (max_guests BETWEEN 1 AND 10),
+  max_devices SMALLINT NOT NULL DEFAULT 1 CHECK (max_devices BETWEEN 1 AND 100),
   status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'revoked')),
   device_id TEXT,
   first_opened_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS invitation_devices (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  invitation_id UUID NOT NULL REFERENCES invitations(id) ON DELETE CASCADE,
+  device_id TEXT NOT NULL,
+  first_opened_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  last_opened_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (invitation_id, device_id)
 );
 
 CREATE TABLE IF NOT EXISTS access_logs (
@@ -62,3 +73,4 @@ CREATE TABLE IF NOT EXISTS invitation_media (
 
 CREATE INDEX IF NOT EXISTS invitation_token_idx ON invitations(token);
 CREATE INDEX IF NOT EXISTS access_logs_invitation_idx ON access_logs(invitation_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS invitation_devices_invitation_idx ON invitation_devices(invitation_id);

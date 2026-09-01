@@ -1,10 +1,12 @@
 import { z } from "zod";
 import { toast } from "react-toastify";
+import { GUEST_GROUPS, GUEST_TYPES } from "@/lib/guest-options";
 
 const guestGroupSchema = z.union([
-  z.enum(["keluarga", "kantor", "kerabat"]),
+  z.enum(GUEST_GROUPS),
   z.literal(""),
 ]);
+const guestTypeSchema = z.union([z.enum(GUEST_TYPES), z.literal("")]);
 
 export const loginFormSchema = z.object({
   email: z.email("Masukkan alamat email yang valid."),
@@ -17,8 +19,10 @@ export const otpFormSchema = z.object({
 
 export const guestFormSchema = z.object({
   guestName: z.string().trim().min(1, "Nama tamu wajib diisi.").max(120, "Nama tamu maksimal 120 karakter."),
+  guestType: guestTypeSchema,
   guestGroup: guestGroupSchema,
   maxGuests: z.number().int().min(1, "Kuota minimal 1 orang.").max(10, "Kuota maksimal 10 orang."),
+  maxDevices: z.number().int().min(1, "Minimal 1 perangkat.").max(100, "Maksimal 100 perangkat."),
 });
 
 export const rsvpFormSchema = z.object({

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
-import { getInvitation, getrsvp } from "@/lib/invitations";
+import { claimInvitationDevice, getInvitation, getrsvp } from "@/lib/invitations";
 import { assertSameOrigin } from "@/lib/csrf";
 import { clientInfoFrom } from "@/lib/admin-security";
 import { consumeRateLimit } from "@/lib/rate-limit";
@@ -37,16 +37,7 @@ export async function POST(
       { status: 404 },
     );
 
-  let allowed = invitation.device_id === hash;
-  if (!invitation.device_id) {
-    const claimed = await query<{ id: string }>(
-      "UPDATE invitations SET device_id = $2,  first_opened_at = NOW(), updated_at = NOW() WHERE id = $1 AND device_id IS NULL RETURNING id",
-      [invitation.id, hash],
-    );
-    allowed =
-      claimed.rowCount === 1 ||
-      (await getInvitation(token))?.device_id === hash;
-  }
+  const allowed = await claimInvitationDevice(invitation.id, hash);
   await query(
     "INSERT INTO access_logs (invitation_id, device_id, allowed, reason) VALUES ($1, $2, $3, $4)",
     [
@@ -61,6 +52,6 @@ export async function POST(
     rsvp: allowed ? await getrsvp(invitation.id) : null,
     message: allowed
       ? "Undangan telah diverifikasi."
-      : "Link ini sudah dibuka dari perangkat lain.",
+      : `Batas ${invitation.max_devices} perangkat untuk link ini sudah tercapai.`,
   });
 }

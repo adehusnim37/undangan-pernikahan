@@ -4,6 +4,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { getApiErrorMessage, openWhatsAppInvite } from "@/lib/client-api";
 import { guestFormSchema, validateWithToast } from "@/lib/client-validation";
+import {
+  GUEST_GROUPS,
+  GUEST_GROUP_LABELS,
+  GUEST_TYPE_LABELS,
+  GUEST_TYPES,
+  MAX_INVITATION_DEVICES,
+} from "@/lib/guest-options";
 import { Search, Plus, Copy, RotateCcw, Edit2, Trash2, ShieldBan, ShieldCheck, LogOut, Images } from "lucide-react";
 import { MediaManagerDialog } from "@/components/media-manager-dialog";
 import { coupleCaps } from "@/lib/couple";
@@ -12,19 +19,37 @@ type Guest = {
   id: string;
   token: string;
   guest_name: string;
+  guest_type: string | null;
   guest_group: string | null;
   max_guests: number;
+  max_devices: number;
   status: "active" | "revoked";
-  device_id: string | null;
+  device_count: number;
   first_opened_at: string | null;
   attendance: "attending" | "declined" | null;
   guest_count: number | null;
   message: string | null;
 };
 
-const GUEST_GROUPS = ['keluarga', 'kantor', 'kerabat'] as const;
 type GuestGroup = (typeof GUEST_GROUPS)[number] | '';
-type EditForm = { guestName: string; guestGroup: GuestGroup; maxGuests: number };
+type GuestType = (typeof GUEST_TYPES)[number] | '';
+type EditForm = {
+  guestName: string;
+  guestType: GuestType;
+  guestGroup: GuestGroup;
+  maxGuests: number;
+  maxDevices: number;
+};
+
+const DEVICE_LIMIT_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 50, MAX_INVITATION_DEVICES] as const;
+
+function guestTypeLabel(value: string | null) {
+  return value ? GUEST_TYPE_LABELS[value as keyof typeof GUEST_TYPE_LABELS] ?? value : "Tanpa tipe";
+}
+
+function guestGroupLabel(value: string | null) {
+  return value ? GUEST_GROUP_LABELS[value as keyof typeof GUEST_GROUP_LABELS] ?? value : "Tanpa kelompok";
+}
 
 function WhatsAppIcon() {
   return (
@@ -42,10 +67,12 @@ function AddDialog({
   onAdded: (notice: string) => void;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const [form, setForm] = useState<{ guestName: string; guestGroup: GuestGroup; maxGuests: number }>({
+  const [form, setForm] = useState<EditForm>({
     guestName: "",
+    guestType: "",
     guestGroup: "",
     maxGuests: 1,
+    maxDevices: 1,
   });
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -99,6 +126,18 @@ function AddDialog({
             />
           </label>
           <label>
+            Tipe tamu (opsional)
+            <select
+              value={form.guestType}
+              onChange={(e) => setForm({ ...form, guestType: e.target.value as GuestType })}
+            >
+              <option value="">— pilih tipe —</option>
+              {GUEST_TYPES.map((type) => (
+                <option key={type} value={type}>{GUEST_TYPE_LABELS[type]}</option>
+              ))}
+            </select>
+          </label>
+          <label>
             Kelompok (opsional)
             <select
               value={form.guestGroup}
@@ -107,7 +146,7 @@ function AddDialog({
               <option value="">— pilih kelompok —</option>
               {GUEST_GROUPS.map((g) => (
                 <option key={g} value={g}>
-                  {g.charAt(0).toUpperCase() + g.slice(1)}
+                  {GUEST_GROUP_LABELS[g]}
                 </option>
               ))}
             </select>
@@ -126,6 +165,18 @@ function AddDialog({
                 </option>
               ))}
             </select>
+          </label>
+          <label>
+            Maksimal perangkat
+            <select
+              value={form.maxDevices}
+              onChange={(e) => setForm({ ...form, maxDevices: Number(e.target.value) })}
+            >
+              {DEVICE_LIMIT_OPTIONS.map((n) => (
+                <option key={n} value={n}>{n} perangkat</option>
+              ))}
+            </select>
+            <small>Link dapat dibuka dari perangkat berbeda sampai batas ini.</small>
           </label>
           {error && <p className="admin-notice">{error}</p>}
           <div className="edit-dialog-actions">
@@ -159,8 +210,10 @@ function EditDialog({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [form, setForm] = useState<EditForm>({
     guestName: guest.guest_name,
+    guestType: (guest.guest_type as GuestType) ?? "",
     guestGroup: (guest.guest_group as GuestGroup) ?? "",
     maxGuests: guest.max_guests,
+    maxDevices: guest.max_devices,
   });
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -214,6 +267,18 @@ function EditDialog({
             />
           </label>
           <label>
+            Tipe tamu (opsional)
+            <select
+              value={form.guestType}
+              onChange={(e) => setForm({ ...form, guestType: e.target.value as GuestType })}
+            >
+              <option value="">— pilih tipe —</option>
+              {GUEST_TYPES.map((type) => (
+                <option key={type} value={type}>{GUEST_TYPE_LABELS[type]}</option>
+              ))}
+            </select>
+          </label>
+          <label>
             Kelompok (opsional)
             <select
               value={form.guestGroup}
@@ -222,7 +287,7 @@ function EditDialog({
               <option value="">— pilih kelompok —</option>
               {GUEST_GROUPS.map((g) => (
                 <option key={g} value={g}>
-                  {g.charAt(0).toUpperCase() + g.slice(1)}
+                  {GUEST_GROUP_LABELS[g]}
                 </option>
               ))}
             </select>
@@ -242,6 +307,19 @@ function EditDialog({
                 </option>
               ))}
             </select>
+          </label>
+          <label>
+            Maksimal perangkat
+            <select
+              className="no-divider"
+              value={form.maxDevices}
+              onChange={(e) => setForm({ ...form, maxDevices: Number(e.target.value) })}
+            >
+              {DEVICE_LIMIT_OPTIONS.map((n) => (
+                <option key={n} value={n}>{n} perangkat</option>
+              ))}
+            </select>
+            <small>Perangkat yang sudah terdaftar tetap dapat membuka link ini.</small>
           </label>
           {error && <p className="admin-notice">{error}</p>}
           <div className="edit-dialog-actions">
@@ -398,6 +476,7 @@ export function AdminDashboard() {
   const [deleteGuest, setDeleteGuest] = useState<Guest | null>(null);
   const [showAddGuest, setShowAddGuest] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [typeFilter, setTypeFilter] = useState<GuestType | "all">("all");
   const [selectedGuestIds, setSelectedGuestIds] = useState<string[]>([]);
   const [resettingAccess, setResettingAccess] = useState(false);
   const [resetTargetIds, setResetTargetIds] = useState<string[] | null>(null);
@@ -438,13 +517,15 @@ export function AdminDashboard() {
   );
 
   const filteredGuests = useMemo(() => {
-    if (!searchQuery.trim()) return guests;
     const lowerQuery = searchQuery.toLowerCase();
     return guests.filter((g) => 
-      g.guest_name.toLowerCase().includes(lowerQuery) ||
-      (g.guest_group && g.guest_group.toLowerCase().includes(lowerQuery))
+      (typeFilter === "all" || g.guest_type === typeFilter) &&
+      (!lowerQuery ||
+        g.guest_name.toLowerCase().includes(lowerQuery) ||
+        (g.guest_type && g.guest_type.toLowerCase().includes(lowerQuery)) ||
+        (g.guest_group && g.guest_group.toLowerCase().includes(lowerQuery)))
     );
-  }, [guests, searchQuery]);
+  }, [guests, searchQuery, typeFilter]);
 
   const allFilteredSelected =
     filteredGuests.length > 0 &&
@@ -605,14 +686,25 @@ export function AdminDashboard() {
               </button>
             </div>
             
-            <div className="search-bar">
-              <Search size={18} className="search-icon" />
-              <input 
-                type="text" 
-                placeholder="Cari berdasarkan nama atau kelompok..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+            <div className="guest-filters">
+              <div className="search-bar">
+                <Search size={18} className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Cari nama, tipe, atau kelompok..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <label className="type-filter">
+                <span>Sortir tipe</span>
+                <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value as GuestType | "all")}>
+                  <option value="all">Semua tipe</option>
+                  {GUEST_TYPES.map((type) => (
+                    <option key={type} value={type}>{GUEST_TYPE_LABELS[type]}</option>
+                  ))}
+                </select>
+              </label>
             </div>
 
             {!loading && guests.length > 0 && filteredGuests.length > 0 && (
@@ -671,8 +763,7 @@ export function AdminDashboard() {
                   <div className="guest-name">
                     <b>{guest.guest_name}</b>
                     <span>
-                      {guest.guest_group || "Tanpa kelompok"} · {guest.max_guests}{" "}
-                      orang
+                      {guestTypeLabel(guest.guest_type)} · {guestGroupLabel(guest.guest_group)} · {guest.max_guests} orang
                     </span>
                   </div>
                 </div>
@@ -686,7 +777,7 @@ export function AdminDashboard() {
                       : guest.attendance === "declined"
                         ? "Tidak hadir"
                         : guest.first_opened_at
-                          ? "Sudah dibuka"
+                          ? `${guest.device_count}/${guest.max_devices} perangkat`
                           : "Belum dibuka"}
                   </span>
                 </div>

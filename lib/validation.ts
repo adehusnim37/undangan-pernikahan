@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { invitationMediaSlotValues } from "@/lib/invitation-media";
+import { GUEST_GROUPS, GUEST_TYPES, MAX_INVITATION_DEVICES } from "@/lib/guest-options";
 
 // Tokens are generated with crypto.randomBytes(24).toString("base64url").
 // Accept legacy tokens too, while keeping the URL segment to safe base64url chars.
@@ -16,13 +17,18 @@ export const guestIdParamsSchema = z
   .strict();
 
 const guestGroupSchema = z
-  .union([z.enum(["keluarga", "kantor", "kerabat"]), z.literal("")])
+  .union([z.enum(GUEST_GROUPS), z.literal("")])
+  .transform((value) => value || null);
+const guestTypeSchema = z
+  .union([z.enum(GUEST_TYPES), z.literal("")])
   .transform((value) => value || null);
 
 const guestFieldsSchema = z.object({
   guestName: z.string().trim().min(1, "Nama tamu wajib diisi.").max(120, "Nama tamu maksimal 120 karakter."),
+  guestType: guestTypeSchema,
   guestGroup: guestGroupSchema,
   maxGuests: z.number().int().min(1, "Kuota minimal 1 orang.").max(10, "Kuota maksimal 10 orang."),
+  maxDevices: z.number().int().min(1, "Minimal 1 perangkat.").max(MAX_INVITATION_DEVICES, `Maksimal ${MAX_INVITATION_DEVICES} perangkat.`),
 });
 
 export const adminLoginBodySchema = z
