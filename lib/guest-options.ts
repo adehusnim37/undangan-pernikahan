@@ -8,12 +8,9 @@ export const GUEST_TYPES = [
 ] as const;
 
 export const GUEST_GROUPS = [
-  "turunan",
-  "kerabat",
+  "kerabat_teman",
   "keluarga",
-  "teman_kerja",
   "kantor",
-  "teman",
   "lainnya",
 ] as const;
 
@@ -27,12 +24,9 @@ export const GUEST_TYPE_LABELS: Record<(typeof GUEST_TYPES)[number], string> = {
 };
 
 export const GUEST_GROUP_LABELS: Record<(typeof GUEST_GROUPS)[number], string> = {
-  turunan: "Turunan",
-  kerabat: "Kerabat",
+  kerabat_teman: "Kerabat/Teman",
   keluarga: "Keluarga",
-  teman_kerja: "Teman kerja",
   kantor: "Kantor",
-  teman: "Teman",
   lainnya: "Lainnya",
 };
 

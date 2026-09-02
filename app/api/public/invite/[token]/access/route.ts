@@ -52,6 +52,8 @@ export async function POST(
     rsvp: allowed ? await getrsvp(invitation.id) : null,
     message: allowed
       ? "Undangan telah diverifikasi."
-      : `Batas ${invitation.max_devices} perangkat untuk link ini sudah tercapai.`,
+      : invitation.max_devices !== null
+        ? `Batas ${invitation.max_devices} perangkat untuk link ini sudah tercapai.`
+        : "Batas perangkat untuk link ini sudah tercapai.",
   });
 }

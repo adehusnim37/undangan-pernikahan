@@ -23,12 +23,25 @@ const guestTypeSchema = z
   .union([z.enum(GUEST_TYPES), z.literal("")])
   .transform((value) => value || null);
 
+const maxGuestsSchema = z
+  .number()
+  .int()
+  .min(1, "Kuota minimal 1 orang.")
+  .max(10, "Kuota maksimal 10 orang.")
+  .nullable();
+const maxDevicesSchema = z
+  .number()
+  .int()
+  .min(1, "Minimal 1 perangkat.")
+  .max(MAX_INVITATION_DEVICES, `Maksimal ${MAX_INVITATION_DEVICES} perangkat.`)
+  .nullable();
+
 const guestFieldsSchema = z.object({
   guestName: z.string().trim().min(1, "Nama tamu wajib diisi.").max(120, "Nama tamu maksimal 120 karakter."),
   guestType: guestTypeSchema,
   guestGroup: guestGroupSchema,
-  maxGuests: z.number().int().min(1, "Kuota minimal 1 orang.").max(10, "Kuota maksimal 10 orang."),
-  maxDevices: z.number().int().min(1, "Minimal 1 perangkat.").max(MAX_INVITATION_DEVICES, `Maksimal ${MAX_INVITATION_DEVICES} perangkat.`),
+  maxGuests: maxGuestsSchema,
+  maxDevices: maxDevicesSchema,
 });
 
 export const adminLoginBodySchema = z

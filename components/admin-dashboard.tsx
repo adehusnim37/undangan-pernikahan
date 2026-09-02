@@ -21,8 +21,8 @@ type Guest = {
   guest_name: string;
   guest_type: string | null;
   guest_group: string | null;
-  max_guests: number;
-  max_devices: number;
+  max_guests: number | null;
+  max_devices: number | null;
   status: "active" | "revoked";
   device_count: number;
   first_opened_at: string | null;
@@ -37,11 +37,21 @@ type EditForm = {
   guestName: string;
   guestType: GuestType;
   guestGroup: GuestGroup;
-  maxGuests: number;
-  maxDevices: number;
+  maxGuests: number | null;
+  maxDevices: number | null;
 };
 
+const UNLIMITED = "unlimited" as const;
+const GUEST_QUOTA_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
 const DEVICE_LIMIT_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 50, MAX_INVITATION_DEVICES] as const;
+
+function selectValueFor(value: number | null) {
+  return value === null ? UNLIMITED : String(value);
+}
+
+function parseLimitSelection(raw: string) {
+  return raw === UNLIMITED ? null : Number(raw);
+}
 
 function guestTypeLabel(value: string | null) {
   return value ? GUEST_TYPE_LABELS[value as keyof typeof GUEST_TYPE_LABELS] ?? value : "Tanpa tipe";
@@ -154,27 +164,29 @@ function AddDialog({
           <label>
             Kuota tamu
             <select
-              value={form.maxGuests}
+              value={selectValueFor(form.maxGuests)}
               onChange={(e) =>
-                setForm({ ...form, maxGuests: Number(e.target.value) })
+                setForm({ ...form, maxGuests: parseLimitSelection(e.target.value) })
               }
             >
-              {[1, 2, 3, 4].map((n) => (
+              {GUEST_QUOTA_OPTIONS.map((n) => (
                 <option key={n} value={n}>
                   {n} orang
                 </option>
               ))}
+              <option value={UNLIMITED}>Tanpa batas</option>
             </select>
           </label>
           <label>
             Maksimal perangkat
             <select
-              value={form.maxDevices}
-              onChange={(e) => setForm({ ...form, maxDevices: Number(e.target.value) })}
+              value={selectValueFor(form.maxDevices)}
+              onChange={(e) => setForm({ ...form, maxDevices: parseLimitSelection(e.target.value) })}
             >
               {DEVICE_LIMIT_OPTIONS.map((n) => (
                 <option key={n} value={n}>{n} perangkat</option>
               ))}
+              <option value={UNLIMITED}>Tanpa batas</option>
             </select>
             <small>Link dapat dibuka dari perangkat berbeda sampai batas ini.</small>
           </label>
@@ -296,28 +308,30 @@ function EditDialog({
             Kuota tamu
             <select
               className="no-divider"
-              value={form.maxGuests}
+              value={selectValueFor(form.maxGuests)}
               onChange={(e) =>
-                setForm({ ...form, maxGuests: Number(e.target.value) })
+                setForm({ ...form, maxGuests: parseLimitSelection(e.target.value) })
               }
             >
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+              {GUEST_QUOTA_OPTIONS.map((n) => (
                 <option key={n} value={n}>
                   {n} orang
                 </option>
               ))}
+              <option value={UNLIMITED}>Tanpa batas</option>
             </select>
           </label>
           <label>
             Maksimal perangkat
             <select
               className="no-divider"
-              value={form.maxDevices}
-              onChange={(e) => setForm({ ...form, maxDevices: Number(e.target.value) })}
+              value={selectValueFor(form.maxDevices)}
+              onChange={(e) => setForm({ ...form, maxDevices: parseLimitSelection(e.target.value) })}
             >
               {DEVICE_LIMIT_OPTIONS.map((n) => (
                 <option key={n} value={n}>{n} perangkat</option>
               ))}
+              <option value={UNLIMITED}>Tanpa batas</option>
             </select>
             <small>Perangkat yang sudah terdaftar tetap dapat membuka link ini.</small>
           </label>
@@ -763,7 +777,7 @@ export function AdminDashboard() {
                   <div className="guest-name">
                     <b>{guest.guest_name}</b>
                     <span>
-                      {guestTypeLabel(guest.guest_type)} · {guestGroupLabel(guest.guest_group)} · {guest.max_guests} orang
+                      {guestTypeLabel(guest.guest_type)} · {guestGroupLabel(guest.guest_group)} · {guest.max_guests !== null ? `${guest.max_guests} orang` : "tanpa batas orang"}
                     </span>
                   </div>
                 </div>
@@ -777,7 +791,7 @@ export function AdminDashboard() {
                       : guest.attendance === "declined"
                         ? "Tidak hadir"
                         : guest.first_opened_at
-                          ? `${guest.device_count}/${guest.max_devices} perangkat`
+                          ? `${guest.device_count}/${guest.max_devices ?? "∞"} perangkat`
                           : "Belum dibuka"}
                   </span>
                 </div>

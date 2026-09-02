@@ -66,7 +66,7 @@ export async function POST(
       { status: 403 },
     );
 
-  if (guestCount > invitation.max_guests) {
+  if (invitation.max_guests !== null && guestCount > invitation.max_guests) {
     return NextResponse.json(
       { message: "Data konfirmasi tidak valid." },
       { status: 400 },

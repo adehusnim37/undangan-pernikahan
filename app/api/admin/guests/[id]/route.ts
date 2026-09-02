@@ -28,10 +28,9 @@ export async function PATCH(
   if (!body.success) return validationError(body.error);
   const action = body.data.action;
   if (action === "reset-device") {
-    await query(
-      "DELETE FROM invitation_devices WHERE invitation_id = $1",
-      [id],
-    );
+    await query("DELETE FROM invitation_devices WHERE invitation_id = $1", [
+      id,
+    ]);
     await query(
       "UPDATE invitations SET device_id = NULL, first_opened_at = NULL, updated_at = NOW() WHERE id = $1",
       [id],
@@ -42,7 +41,8 @@ export async function PATCH(
       [id],
     );
   } else if (action === "update-guest") {
-    const { guestName, guestType, guestGroup, maxGuests, maxDevices } = body.data;
+    const { guestName, guestType, guestGroup, maxGuests, maxDevices } =
+      body.data;
     await query(
       "UPDATE invitations SET guest_name = $2, guest_type = $3, guest_group = $4, max_guests = $5, max_devices = $6, updated_at = NOW() WHERE id = $1",
       [id, guestName, guestType, guestGroup, maxGuests, maxDevices],

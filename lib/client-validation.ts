@@ -21,8 +21,8 @@ export const guestFormSchema = z.object({
   guestName: z.string().trim().min(1, "Nama tamu wajib diisi.").max(120, "Nama tamu maksimal 120 karakter."),
   guestType: guestTypeSchema,
   guestGroup: guestGroupSchema,
-  maxGuests: z.number().int().min(1, "Kuota minimal 1 orang.").max(10, "Kuota maksimal 10 orang."),
-  maxDevices: z.number().int().min(1, "Minimal 1 perangkat.").max(100, "Maksimal 100 perangkat."),
+  maxGuests: z.number().int().min(1, "Kuota minimal 1 orang.").max(10, "Kuota maksimal 10 orang.").nullable(),
+  maxDevices: z.number().int().min(1, "Minimal 1 perangkat.").max(100, "Maksimal 100 perangkat.").nullable(),
 });
 
 export const rsvpFormSchema = z.object({

@@ -1800,7 +1800,11 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                   <div className="rsvp-guest-field">
                     <div>
                       <span className="rsvp-field-label">Jumlah tamu</span>
-                      <small>Maksimal {invitation.max_guests} orang</small>
+                      <small>
+                        {invitation.max_guests !== null
+                          ? `Maksimal ${invitation.max_guests} orang`
+                          : "Tanpa batas jumlah tamu"}
+                      </small>
                     </div>
                     <div className="rsvp-stepper" aria-label="Jumlah tamu">
                       <button
@@ -1818,10 +1822,15 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                         type="button"
                         onClick={() =>
                           setGuestCount((count) =>
-                            Math.min(invitation.max_guests, count + 1),
+                            invitation.max_guests !== null
+                              ? Math.min(invitation.max_guests, count + 1)
+                              : count + 1,
                           )
                         }
-                        disabled={guestCount >= invitation.max_guests}
+                        disabled={
+                          invitation.max_guests !== null &&
+                          guestCount >= invitation.max_guests
+                        }
                         aria-label="Tambah jumlah tamu"
                       >
                         +

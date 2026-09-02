@@ -8,8 +8,8 @@ export type Invitation = {
   guest_name: string;
   guest_type: string | null;
   guest_group: string | null;
-  max_guests: number;
-  max_devices: number;
+  max_guests: number | null;
+  max_devices: number | null;
   status: "active" | "revoked";
   first_opened_at: string | null;
   created_at: string;
@@ -41,7 +41,7 @@ export async function claimInvitationDevice(invitationId: string, deviceId: stri
   const client = await db.connect();
   try {
     await client.query("BEGIN");
-    const invitation = await client.query<{ max_devices: number }>(
+    const invitation = await client.query<{ max_devices: number | null }>(
       "SELECT max_devices FROM invitations WHERE id = $1 FOR UPDATE",
       [invitationId],
     );
@@ -62,13 +62,16 @@ export async function claimInvitationDevice(invitationId: string, deviceId: stri
         [existing.rows[0].id],
       );
     } else {
-      const deviceCount = await client.query<{ count: string }>(
-        "SELECT COUNT(*)::text AS count FROM invitation_devices WHERE invitation_id = $1",
-        [invitationId],
-      );
-      if (Number(deviceCount.rows[0]?.count ?? 0) >= invitation.rows[0].max_devices) {
-        await client.query("COMMIT");
-        return false;
+      const maxDevices = invitation.rows[0].max_devices;
+      if (maxDevices !== null) {
+        const deviceCount = await client.query<{ count: string }>(
+          "SELECT COUNT(*)::text AS count FROM invitation_devices WHERE invitation_id = $1",
+          [invitationId],
+        );
+        if (Number(deviceCount.rows[0]?.count ?? 0) >= maxDevices) {
+          await client.query("COMMIT");
+          return false;
+        }
       }
       await client.query(
         `INSERT INTO invitation_devices (invitation_id, device_id, first_opened_at, last_opened_at)
