@@ -18,6 +18,7 @@ import {
 } from "@/lib/invitation-media";
 import { couple, coupleCaps } from "@/lib/couple";
 import { BackgroundMusic } from "@/components/background-music";
+import { WeddingFilm } from "@/components/wedding-film";
 
 type AccessState = "checking" | "allowed" | "denied";
 type Rsvp = {
@@ -110,6 +111,8 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
   const [activePreweddingPhoto, setActivePreweddingPhoto] = useState<
     number | null
   >(null);
+  const [audioUnlocked, setAudioUnlocked] = useState(false);
+  const [isUsingVideoAudio, setIsUsingVideoAudio] = useState(false);
   const photo = (slot: InvitationMediaSlot) =>
     invitation.media?.[slot]?.url ?? invitationMediaBySlot[slot].defaultUrl;
   const photoStyle = (slot: InvitationMediaSlot) => {
@@ -139,6 +142,15 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
     );
     const refreshTimer = window.setTimeout(refreshScrollTriggers, 150);
     const context = gsap.context(() => {
+      const activePinnedChapters = new Set<ScrollTrigger>();
+      const syncPinnedChapter = (trigger: ScrollTrigger) => {
+        if (trigger.isActive) activePinnedChapters.add(trigger);
+        else activePinnedChapters.delete(trigger);
+        document.documentElement.classList.toggle(
+          "chapter-snap-paused",
+          activePinnedChapters.size > 0,
+        );
+      };
       const hero = root.querySelector<HTMLElement>(".folio-hero");
       const focusPhoto = root.querySelector<HTMLElement>(".folio-photo--focus");
       const title = root.querySelector<HTMLElement>(".folio-title");
@@ -148,6 +160,19 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
       const bar = root.querySelector<HTMLElement>(".folio-bar");
       const cue = root.querySelector<HTMLElement>(".folio-scroll");
       const storySection = root.querySelector<HTMLElement>(".folio-story");
+      const weddingFilm = root.querySelector<HTMLElement>(".wedding-film");
+      const weddingFilmStage = root.querySelector<HTMLElement>(
+        ".wedding-film-stage",
+      );
+      const weddingFilmCurtainLeft = root.querySelector<HTMLElement>(
+        ".wedding-film-curtain--left",
+      );
+      const weddingFilmCurtainRight = root.querySelector<HTMLElement>(
+        ".wedding-film-curtain--right",
+      );
+      const weddingFilmDetails = root.querySelectorAll<HTMLElement>(
+        ".wedding-film-meta, .wedding-film-scroll",
+      );
       const storyIntro = root.querySelector<HTMLElement>(".couple-intro");
       const storyWord = root.querySelector<HTMLElement>(".couple-word");
       const storyMeta = root.querySelector<HTMLElement>(".folio-story-meta");
@@ -311,6 +336,14 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
               pin: true,
               anticipatePin: 1,
               invalidateOnRefresh: true,
+              onToggle: syncPinnedChapter,
+              snap: {
+                snapTo: 1,
+                directional: true,
+                duration: { min: 0.2, max: 0.65 },
+                delay: 0.06,
+                ease: "power2.inOut",
+              },
             },
           });
           timeline
@@ -357,6 +390,69 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
         responsiveMotion.add("(max-width: 700px)", () =>
           createHeroTimeline(true),
         );
+      }
+
+      if (
+        weddingFilm &&
+        weddingFilmStage &&
+        weddingFilmCurtainLeft &&
+        weddingFilmCurtainRight &&
+        weddingFilmDetails.length
+      ) {
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: weddingFilm,
+              start: "top top",
+              end: "+=100%",
+              scrub: 0.8,
+              pin: true,
+              anticipatePin: 1,
+              invalidateOnRefresh: true,
+              onToggle: syncPinnedChapter,
+              snap: {
+                snapTo: 1,
+                directional: true,
+                duration: { min: 0.2, max: 0.58 },
+                delay: 0.06,
+                ease: "power2.inOut",
+              },
+            },
+          })
+          .fromTo(
+            weddingFilmStage,
+            { clipPath: "inset(10% 8% 10% 8% round 28px)" },
+            {
+              clipPath: "inset(0% 0% 0% 0% round 0px)",
+              duration: 1,
+              ease: "power3.inOut",
+            },
+            0,
+          )
+          .fromTo(
+            weddingFilmCurtainLeft,
+            { xPercent: 0 },
+            { xPercent: -101, duration: 0.82, ease: "power4.inOut" },
+            0.08,
+          )
+          .fromTo(
+            weddingFilmCurtainRight,
+            { xPercent: 0 },
+            { xPercent: 101, duration: 0.82, ease: "power4.inOut" },
+            0.08,
+          )
+          .fromTo(
+            weddingFilmDetails,
+            { opacity: 0, y: 16 },
+            {
+              opacity: 1,
+              y: 0,
+              stagger: 0.06,
+              duration: 0.32,
+              ease: "power2.out",
+            },
+            0.64,
+          );
       }
 
       if (storySection && storyIntro && storyMeta && storyProfiles.length) {
@@ -496,6 +592,14 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
               scrub: 1,
               anticipatePin: 1,
               invalidateOnRefresh: true,
+              onToggle: syncPinnedChapter,
+              snap: {
+                snapTo: 1 / (journeyPanels.length - 1),
+                directional: true,
+                duration: { min: 0.2, max: 0.6 },
+                delay: 0.06,
+                ease: "power2.inOut",
+              },
             },
           });
 
@@ -973,6 +1077,14 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
                 anticipatePin: 1,
                 invalidateOnRefresh: true,
                 onRefreshInit: syncPanelMetrics,
+                onToggle: syncPinnedChapter,
+                snap: {
+                  snapTo: 1,
+                  directional: true,
+                  duration: { min: 0.2, max: 0.6 },
+                  delay: 0.06,
+                  ease: "power2.inOut",
+                },
               },
             });
 
@@ -1121,6 +1233,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
     return () => {
       responsiveMotion.revert();
       context.revert();
+      document.documentElement.classList.remove("chapter-snap-paused");
       window.clearTimeout(refreshTimer);
       invitationImages.forEach((image) =>
         image.removeEventListener("load", refreshScrollTriggers),
@@ -1175,6 +1288,109 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [activePreweddingPhoto]);
+
+  useEffect(() => {
+    if (access !== "allowed" || audioUnlocked) return;
+
+    const unlockAudio = () => {
+      setAudioUnlocked(true);
+      window.removeEventListener("pointerdown", unlockAudio);
+      window.removeEventListener("keydown", unlockAudio);
+    };
+
+    window.addEventListener("pointerdown", unlockAudio);
+    window.addEventListener("keydown", unlockAudio);
+    return () => {
+      window.removeEventListener("pointerdown", unlockAudio);
+      window.removeEventListener("keydown", unlockAudio);
+    };
+  }, [access, audioUnlocked]);
+
+  useEffect(() => {
+    if (access !== "allowed") return;
+    document.documentElement.classList.add("invitation-chapters");
+    return () => {
+      document.documentElement.classList.remove("invitation-chapters");
+    };
+  }, [access]);
+
+  useEffect(() => {
+    if (
+      access !== "allowed" ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    )
+      return;
+
+    let snapTimer = 0;
+    let releaseTimer = 0;
+    let isSnapping = false;
+
+    const snapToNearestChapter = () => {
+      if (
+        isSnapping ||
+        document.documentElement.classList.contains("chapter-snap-paused")
+      )
+        return;
+
+      const root = invitationRef.current;
+      if (!root) return;
+      const chapters = Array.from(
+        root.querySelectorAll<HTMLElement>(".scroll-chapter"),
+      );
+      const visibleChapters = chapters
+        .map((chapter) => ({ chapter, rect: chapter.getBoundingClientRect() }))
+        .filter(({ rect }) => rect.bottom > 0 && rect.top < window.innerHeight);
+      if (!visibleChapters.length) return;
+
+      const viewportCenter = window.innerHeight / 2;
+      const nearest = visibleChapters.reduce((closest, candidate) => {
+        const closestDistance = Math.abs(
+          closest.rect.top + closest.rect.height / 2 - viewportCenter,
+        );
+        const candidateDistance = Math.abs(
+          candidate.rect.top + candidate.rect.height / 2 - viewportCenter,
+        );
+        return candidateDistance < closestDistance ? candidate : closest;
+      });
+
+      if (
+        nearest.rect.height > window.innerHeight * 1.12 &&
+        nearest.rect.top < -24 &&
+        nearest.rect.bottom > window.innerHeight + 24
+      )
+        return;
+
+      const alignCenter = nearest.chapter.classList.contains(
+        "scroll-chapter--center",
+      );
+      const targetY = Math.max(
+        0,
+        window.scrollY +
+          nearest.rect.top -
+          (alignCenter ? (window.innerHeight - nearest.rect.height) / 2 : 0),
+      );
+      if (Math.abs(window.scrollY - targetY) < 10) return;
+
+      isSnapping = true;
+      window.scrollTo({ top: targetY, behavior: "smooth" });
+      releaseTimer = window.setTimeout(() => {
+        isSnapping = false;
+      }, 720);
+    };
+
+    const scheduleSnap = () => {
+      if (isSnapping) return;
+      window.clearTimeout(snapTimer);
+      snapTimer = window.setTimeout(snapToNearestChapter, 160);
+    };
+
+    window.addEventListener("scroll", scheduleSnap, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", scheduleSnap);
+      window.clearTimeout(snapTimer);
+      window.clearTimeout(releaseTimer);
+    };
+  }, [access]);
 
   useEffect(() => {
     if (isLoadingThumbmark) return;
@@ -1325,8 +1541,8 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
 
   return (
     <main ref={invitationRef} className="invitation-shell">
-      <BackgroundMusic />
-      <header className="folio-hero">
+      <BackgroundMusic suspended={isUsingVideoAudio} />
+      <header className="folio-hero scroll-chapter">
         <div className="folio-bar">
           <span>{coupleCaps.plus}</span>
           <span>JKT · 17.09.26</span>
@@ -1364,6 +1580,11 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
         </div>
       </header>
 
+      <WeddingFilm
+        audioUnlocked={audioUnlocked}
+        onAudioStateChange={setIsUsingVideoAudio}
+      />
+
       <section className="folio-story" aria-labelledby="couple-title">
         <div className="couple-word" aria-hidden="true">
           restu
@@ -1372,7 +1593,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
           <span>Two Family · One Sacred Knot</span>
           <span>{coupleCaps.plus} / 2026</span>
         </div>
-        <header className="couple-intro">
+        <header className="couple-intro scroll-chapter scroll-chapter--center">
           <p className="eyebrow">DENGAN RESTU DAN SUKACITA</p>
           <h2 id="couple-title">
             <span>{couple.bride}</span>
@@ -1386,7 +1607,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
         </header>
 
         <div className="couple-list">
-          <article className="couple-profile couple-profile--bride">
+          <article className="couple-profile couple-profile--bride scroll-chapter scroll-chapter--center">
             <figure className="couple-portrait">
               <div className="couple-portrait-media">
                 <img
@@ -1414,7 +1635,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             <i />
           </div>
 
-          <article className="couple-profile couple-profile--groom">
+          <article className="couple-profile couple-profile--groom scroll-chapter scroll-chapter--center">
             <figure className="couple-portrait">
               <div className="couple-portrait-media">
                 <img
@@ -1444,12 +1665,15 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
         </div>
       </section>
 
-      <section className="journey-section" aria-labelledby="journey-title">
+      <section
+        className="journey-section scroll-chapter"
+        aria-labelledby="journey-title"
+      >
         <div className="journey-progress" aria-hidden="true">
           <span />
         </div>
         <div className="journey-track">
-          <article className="journey-panel journey-panel--school">
+          <article className="journey-panel journey-panel--school scroll-chapter">
             <div className="journey-copy">
               <p className="journey-year">2016</p>
               <p className="eyebrow">PERTEMUAN PERTAMA</p>
@@ -1490,7 +1714,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             </div>
           </article>
 
-          <article className="journey-panel journey-panel--campus">
+          <article className="journey-panel journey-panel--campus scroll-chapter">
             <div className="journey-copy">
               <p className="journey-year">2018-2023</p>
               <p className="eyebrow">BERTUMBUH BERSAMA</p>
@@ -1544,7 +1768,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             </div>
           </article>
 
-          <article className="journey-panel journey-panel--distance">
+          <article className="journey-panel journey-panel--distance scroll-chapter">
             <div className="journey-copy">
               <p className="journey-year">2024-2026</p>
               <p className="eyebrow">DUA KOTA</p>
@@ -1602,7 +1826,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             </div>
           </article>
 
-          <article className="journey-panel journey-panel--engagement">
+          <article className="journey-panel journey-panel--engagement scroll-chapter">
             <div className="journey-copy">
               <p className="journey-year">MEI 2026</p>
               <p className="eyebrow">SATU KEPUTUSAN</p>
@@ -1642,7 +1866,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
       </section>
 
       <div className="overscroll-sequence">
-        <article className="journey-panel journey-panel--wedding overscroll-panel">
+        <article className="journey-panel journey-panel--wedding overscroll-panel scroll-chapter">
           <div className="overscroll-panel-inner">
             <div className="journey-wedding-photo journey-photo">
               <MaskedJourneyImage
@@ -1696,7 +1920,10 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
           </div>
         </article>
 
-        <section id="rsvp" className="rsvp-section overscroll-panel">
+        <section
+          id="rsvp"
+          className="rsvp-section overscroll-panel scroll-chapter"
+        >
           <div className="overscroll-panel-inner">
             <div className="rsvp-heading">
               <p className="eyebrow">BALAS UNDANGAN</p>
@@ -1875,7 +2102,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
         </section>
 
         <section
-          className="prewedding-section overscroll-panel overscroll-panel--final"
+          className="prewedding-section overscroll-panel overscroll-panel--final scroll-chapter"
           aria-labelledby="prewedding-title"
         >
           <div className="overscroll-panel-inner">
@@ -2001,7 +2228,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
           );
         })()}
 
-      <footer className="folio-footer">
+      <footer className="folio-footer scroll-chapter">
         <div className="folio-footer-curtains" aria-hidden="true">
           <span className="folio-footer-curtain folio-footer-curtain--left" />
           <span className="folio-footer-curtain folio-footer-curtain--right" />

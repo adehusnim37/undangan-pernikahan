@@ -1,0 +1,122 @@
+.wedding-film {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  color: #f5f1e8;
+  background: #090a08;
+}
+
+.wedding-film-stage {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: 100svh;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  background: #090a08;
+  will-change: clip-path;
+}
+
+.wedding-film-video {
+  position: relative;
+  z-index: 1;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100svh;
+  display: block;
+}
+
+.wedding-film-meta,
+.wedding-film-scroll {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+  color: rgba(245, 241, 232, 0.72);
+  font: 500 10px/1.4 "DM Mono", monospace;
+  letter-spacing: 0.15em;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.wedding-film-meta {
+  top: 50%;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  writing-mode: vertical-rl;
+}
+
+.wedding-film-meta span {
+  color: #d9c8a5;
+}
+
+.wedding-film-meta strong {
+  font: inherit;
+}
+
+.wedding-film-meta--identity {
+  left: max(28px, calc((100vw - 56.25svh) / 4));
+  transform: translate(-50%, -50%) rotate(180deg);
+}
+
+.wedding-film-meta--date {
+  right: max(28px, calc((100vw - 56.25svh) / 4));
+  transform: translate(50%, -50%);
+}
+
+.wedding-film-scroll {
+  right: 26px;
+  bottom: 82px;
+}
+
+.wedding-film-curtain {
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  bottom: 0;
+  width: 50.1%;
+  background: #161815;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.wedding-film-curtain--left {
+  left: 0;
+}
+
+.wedding-film-curtain--right {
+  right: 0;
+}
+
+@media (max-width: 700px) {
+  .wedding-film-meta {
+    top: 24px;
+    writing-mode: horizontal-tb;
+  }
+
+  .wedding-film-meta--identity {
+    left: 18px;
+    transform: none;
+  }
+
+  .wedding-film-meta--date {
+    right: 18px;
+    transform: none;
+  }
+
+  .wedding-film-scroll {
+    right: auto;
+    bottom: 21px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wedding-film-curtain {
+    display: none;
+  }
+}

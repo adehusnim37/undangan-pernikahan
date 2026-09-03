@@ -5,6 +5,13 @@
   bottom: max(18px, env(safe-area-inset-bottom));
   width: 44px;
   height: 44px;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.background-music[data-suspended="true"] {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
 }
 
 .background-music iframe {

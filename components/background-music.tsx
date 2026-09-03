@@ -15,43 +15,57 @@ function sendPlayerCommand(frame: HTMLIFrameElement | null, command: string) {
   );
 }
 
-export function BackgroundMusic() {
+export function BackgroundMusic({
+  suspended = false,
+}: {
+  suspended?: boolean;
+}) {
   const frameRef = useRef<HTMLIFrameElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
 
   useEffect(() => {
-    if (!isPlaying) return;
-    const timer = window.setTimeout(
-      () => sendPlayerCommand(frameRef.current, "playVideo"),
-      240,
-    );
+    const timer = window.setTimeout(() => {
+      sendPlayerCommand(
+        frameRef.current,
+        isPlaying && !suspended ? "playVideo" : "pauseVideo",
+      );
+    }, 240);
     return () => window.clearTimeout(timer);
-  }, [isPlaying]);
+  }, [isPlaying, suspended]);
 
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying || suspended) return;
 
     const resumeWithSound = () => {
       sendPlayerCommand(frameRef.current, "unMute");
       sendPlayerCommand(frameRef.current, "playVideo");
+      window.removeEventListener("pointerdown", resumeWithSound);
+      window.removeEventListener("keydown", resumeWithSound);
     };
 
-    window.addEventListener("pointerdown", resumeWithSound, { once: true });
-    window.addEventListener("keydown", resumeWithSound, { once: true });
+    window.addEventListener("pointerdown", resumeWithSound);
+    window.addEventListener("keydown", resumeWithSound);
     return () => {
       window.removeEventListener("pointerdown", resumeWithSound);
       window.removeEventListener("keydown", resumeWithSound);
     };
-  }, [isPlaying]);
+  }, [isPlaying, suspended]);
 
   function toggleMusic() {
     const nextIsPlaying = !isPlaying;
     setIsPlaying(nextIsPlaying);
-    sendPlayerCommand(frameRef.current, nextIsPlaying ? "playVideo" : "pauseVideo");
+    sendPlayerCommand(
+      frameRef.current,
+      nextIsPlaying && !suspended ? "playVideo" : "pauseVideo",
+    );
   }
 
   return (
-    <div className="background-music" data-playing={isPlaying}>
+    <div
+      className="background-music"
+      data-playing={isPlaying}
+      data-suspended={suspended}
+    >
       <iframe
         ref={frameRef}
         src={embedUrl}
@@ -61,7 +75,8 @@ export function BackgroundMusic() {
         tabIndex={-1}
         loading="eager"
         onLoad={() => {
-          if (isPlaying) sendPlayerCommand(frameRef.current, "playVideo");
+          if (isPlaying && !suspended)
+            sendPlayerCommand(frameRef.current, "playVideo");
         }}
       />
       <button
