@@ -9,6 +9,7 @@ type WeddingFilmProps = {
 export function WeddingFilm({
   onAudioStateChange,
 }: WeddingFilmProps) {
+  const stageRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const isInViewRef = useRef(false);
   const audioUnlockedRef = useRef(false);
@@ -36,22 +37,25 @@ export function WeddingFilm({
   };
 
   useEffect(() => {
+    const stage = stageRef.current;
     const video = videoRef.current;
-    if (!video) return;
+    if (!stage || !video) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         const nextIsInView =
-          entry.isIntersecting && entry.intersectionRatio >= 0.4;
+          entry.isIntersecting && entry.intersectionRatio >= 0.15;
         isInViewRef.current = nextIsInView;
         setIsInView(nextIsInView);
         if (nextIsInView) playWhenVisible(video);
         else video.pause();
       },
-      { threshold: [0, 0.2, 0.4, 0.6, 1] },
+      { threshold: [0, 0.15, 0.4, 0.6, 1] },
     );
 
-    observer.observe(video);
+    // Observe the full-height stage rather than the video's decoded box. On
+    // iOS Safari the latter can remain tiny until its metadata is available.
+    observer.observe(stage);
     return () => observer.disconnect();
   }, []);
 
@@ -127,7 +131,7 @@ export function WeddingFilm({
       className="wedding-film"
       aria-label="Video Alvita dan Ade"
     >
-      <div className="wedding-film-stage">
+      <div ref={stageRef} className="wedding-film-stage">
         <video
           ref={videoRef}
           className="wedding-film-video"

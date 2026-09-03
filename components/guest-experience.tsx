@@ -381,18 +381,28 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
         weddingFilmCurtainRight &&
         weddingFilmDetails.length
       ) {
-        gsap
-          .timeline({
-            scrollTrigger: {
-              trigger: weddingFilm,
-              start: "top top",
-              end: "+=100%",
-              scrub: 0.8,
-              pin: true,
-              anticipatePin: 1,
-              invalidateOnRefresh: true,
-            },
-          })
+        const createWeddingFilmTimeline = (mobileFilm: boolean) => {
+          weddingFilm.classList.add("wedding-film--motion-ready");
+          const filmTimeline = gsap
+            .timeline({
+              scrollTrigger: mobileFilm
+                ? {
+                    trigger: weddingFilm,
+                    start: "top 94%",
+                    end: "top 8%",
+                    scrub: 0.65,
+                    invalidateOnRefresh: true,
+                  }
+                : {
+                    trigger: weddingFilm,
+                    start: "top top",
+                    end: "+=100%",
+                    scrub: 0.8,
+                    pin: true,
+                    anticipatePin: 1,
+                    invalidateOnRefresh: true,
+                  },
+            })
           .fromTo(
             weddingFilmStage,
             { clipPath: "inset(10% 8% 10% 8% round 28px)" },
@@ -427,6 +437,19 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             },
             0.64,
           );
+
+          return () => {
+            filmTimeline.kill();
+            weddingFilm.classList.remove("wedding-film--motion-ready");
+          };
+        };
+
+        responsiveMotion.add("(max-width: 700px)", () =>
+          createWeddingFilmTimeline(true),
+        );
+        responsiveMotion.add("(min-width: 701px)", () =>
+          createWeddingFilmTimeline(false),
+        );
       }
 
       if (storySection && storyIntro && storyMeta && storyProfiles.length) {

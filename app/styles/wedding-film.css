@@ -84,10 +84,16 @@
 
 .wedding-film-curtain--left {
   left: 0;
+  transform: translateX(-101%);
 }
 
 .wedding-film-curtain--right {
   right: 0;
+  transform: translateX(101%);
+}
+
+.wedding-film--motion-ready .wedding-film-curtain {
+  transform: translateX(0);
 }
 
 @media (max-width: 700px) {
