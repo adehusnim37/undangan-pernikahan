@@ -3,19 +3,37 @@
 import { useEffect, useRef, useState } from "react";
 
 type WeddingFilmProps = {
-  audioUnlocked: boolean;
   onAudioStateChange: (isUsingVideoAudio: boolean) => void;
 };
 
 export function WeddingFilm({
-  audioUnlocked,
   onAudioStateChange,
 }: WeddingFilmProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const isInViewRef = useRef(false);
+  const audioUnlockedRef = useRef(false);
   const [isInView, setIsInView] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [hasEnded, setHasEnded] = useState(false);
+
+  const playWhenVisible = (video: HTMLVideoElement) => {
+    if (video.ended) video.currentTime = 0;
+    setHasEnded(false);
+
+    const wantsSound = audioUnlockedRef.current;
+    video.muted = !wantsSound;
+    setIsMuted(video.muted);
+
+    void video.play().catch(() => {
+      if (!wantsSound) return;
+      // Unmuted autoplay can still be rejected by device-level policy.
+      // Keep autoplay working and retry sound on the next real gesture.
+      video.muted = true;
+      setIsMuted(true);
+      void video.play().catch(() => undefined);
+    });
+  };
 
   useEffect(() => {
     const video = videoRef.current;
@@ -23,7 +41,12 @@ export function WeddingFilm({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsInView(entry.isIntersecting && entry.intersectionRatio >= 0.4);
+        const nextIsInView =
+          entry.isIntersecting && entry.intersectionRatio >= 0.4;
+        isInViewRef.current = nextIsInView;
+        setIsInView(nextIsInView);
+        if (nextIsInView) playWhenVisible(video);
+        else video.pause();
       },
       { threshold: [0, 0.2, 0.4, 0.6, 1] },
     );
@@ -36,25 +59,57 @@ export function WeddingFilm({
     const video = videoRef.current;
     if (!video) return;
 
-    if (!isInView) {
-      video.pause();
-      return;
-    }
+    const removeGestureListeners = () => {
+      window.removeEventListener("pointerdown", unlockWithGesture);
+      window.removeEventListener("keydown", unlockWithGesture);
+      window.removeEventListener("touchstart", unlockWithGesture);
+    };
 
-    if (video.ended) video.currentTime = 0;
-    setHasEnded(false);
+    const unlockWithGesture = () => {
+      audioUnlockedRef.current = true;
+      video.muted = false;
+      setIsMuted(false);
 
-    video.muted = !audioUnlocked;
-    setIsMuted(video.muted);
+      if (isInViewRef.current) {
+        playWhenVisible(video);
+      } else {
+        // Bless this media element during a real user gesture without letting
+        // its audio leak while the film is still outside the viewport.
+        const previousVolume = video.volume;
+        video.volume = 0;
+        void video
+          .play()
+          .then(() => {
+            if (!isInViewRef.current) {
+              video.pause();
+              video.currentTime = 0;
+            }
+            video.volume = previousVolume;
+            video.muted = false;
+            setIsMuted(false);
+          })
+          .catch(() => {
+            video.volume = previousVolume;
+          });
+      }
 
-    void video.play().catch(() => {
-      // Browsers always permit muted inline autoplay. If sound is rejected,
-      // keep the film moving and let the guest enable it explicitly.
-      video.muted = true;
-      setIsMuted(true);
-      void video.play();
-    });
-  }, [audioUnlocked, isInView]);
+      removeGestureListeners();
+    };
+
+    const requestSoundOnScroll = () => {
+      audioUnlockedRef.current = true;
+      if (isInViewRef.current) playWhenVisible(video);
+    };
+
+    window.addEventListener("pointerdown", unlockWithGesture);
+    window.addEventListener("keydown", unlockWithGesture);
+    window.addEventListener("touchstart", unlockWithGesture, { passive: true });
+    window.addEventListener("wheel", requestSoundOnScroll, { passive: true });
+    return () => {
+      removeGestureListeners();
+      window.removeEventListener("wheel", requestSoundOnScroll);
+    };
+  }, []);
 
   useEffect(() => {
     onAudioStateChange(isInView && isPlaying && !isMuted && !hasEnded);
@@ -69,17 +124,21 @@ export function WeddingFilm({
 
   return (
     <section
-      className="wedding-film scroll-chapter"
+      className="wedding-film"
       aria-label="Video Alvita dan Ade"
     >
       <div className="wedding-film-stage">
         <video
           ref={videoRef}
           className="wedding-film-video"
+          autoPlay
           controls
           muted
           playsInline
-          preload="metadata"
+          preload="auto"
+          onCanPlay={(event) => {
+            if (isInViewRef.current) playWhenVisible(event.currentTarget);
+          }}
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
           onEnded={() => {
