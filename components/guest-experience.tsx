@@ -1120,6 +1120,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             stagger: 0.08,
             duration: 0.7,
             ease: "power3.out",
+            immediateRender: false,
             scrollTrigger: { trigger: prewedding, start: "top 78%" },
           },
         );
@@ -1133,6 +1134,7 @@ export function GuestExperience({ invitation }: { invitation: Invitation }) {
             stagger: 0.09,
             duration: 0.9,
             ease: "power3.out",
+            immediateRender: false,
             scrollTrigger: { trigger: ".prewedding-grid", start: "top 82%" },
           },
         );

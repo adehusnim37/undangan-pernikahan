@@ -586,7 +586,7 @@
 .folio-footer-name {
   width: 100%;
   color: #f4b3c2;
-  font: 500 clamp(92px, 15.2vw, 230px)/.72 "Cormorant Garamond", serif;
+  font: 500 clamp(92px, 13vw, 190px)/.72 "Cormorant Garamond", serif;
   letter-spacing: -.075em;
   text-align: center;
   white-space: nowrap;
