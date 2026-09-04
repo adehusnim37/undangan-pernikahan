@@ -1,20 +1,39 @@
-import Link from "next/link";
 import { couple } from "@/lib/couple";
+import { getInvitationMedia } from "@/lib/invitations";
+import { invitationMediaBySlot } from "@/lib/invitation-media";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const media = await getInvitationMedia();
+  const preweddingPhoto =
+    media.prewedding_1?.url ?? invitationMediaBySlot.prewedding_1.defaultUrl;
+
   return (
-    <main className="landing-shell">
-      <div className="moon" aria-hidden="true" />
-      <section className="landing-card">
-        <p className="eyebrow">TEMPLATE UNDANGAN PERSONAL</p>
-        <p className="script">A celebration under the moon</p>
-        <h1>{couple.bride} <span>&amp;</span> {couple.groom}</h1>
-        <p className="intro">Satu fondasi untuk undangan indah, daftar tamu yang tertata, dan RSVP yang mudah dipantau.</p>
-      </section>
-      <section className="how" id="cara-kerja">
-        <article><b>01</b><h2>Link personal</h2><p>Setiap tamu menerima token undangan sendiri.</p></article>
-        <article><b>02</b><h2>Akses perangkat</h2><p>Perangkat pertama dapat diikat sebagai pengaman tambahan.</p></article>
-        <article><b>03</b><h2>RSVP tersimpan</h2><p>Konfirmasi dan ucapan masuk ke PostgreSQL.</p></article>
+    <main className="home-page">
+      <section className="home-cover" aria-labelledby="home-title">
+        <span className="home-watermark" aria-hidden="true">A&amp;A</span>
+        <figure className="home-cover-decoration">
+          <img
+            src={preweddingPhoto}
+            alt={`Foto prewedding ${couple.groom} dan ${couple.bride}`}
+          />
+        </figure>
+        <header className="home-cover-header">
+          <span>UNDANGAN PERNIKAHAN</span>
+        </header>
+        <div className="home-cover-copy">
+          <p className="home-kicker">Dengan penuh syukur</p>
+          <h1 id="home-title">
+            <span>{couple.groom}</span>
+            <i>&amp;</i>
+            <span>{couple.bride}</span>
+          </h1>
+          <p className="home-intro">Kami mengundangmu untuk menjadi bagian dari hari bahagia kami.</p>
+        </div>
+        <footer className="home-cover-footer">
+          <span>Mohon doa restu dan kehadirannya.</span>
+        </footer>
       </section>
     </main>
   );

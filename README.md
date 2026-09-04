@@ -59,8 +59,9 @@ Template full-stack untuk undangan web dengan link personal per tamu, dashboard 
   dan terkunci setelah 5 kesalahan.
 - Pengiriman ulang memiliki jeda 60 detik dan maksimal 3 kiriman dalam 15 menit.
 - Kode disimpan sebagai HMAC, bukan plaintext, serta tidak ditulis ke log.
-- Sesi memakai token acak di cookie `HttpOnly`, `Secure`, `SameSite=Strict` dan
-  dapat dicabut di server saat logout. Batas absolut sesi 8 jam dan idle 1 jam.
+- Sesi memakai JWT bertanda tangan HS256 di cookie persisten `HttpOnly`,
+  `Secure`, `SameSite=Strict` dan dapat dicabut di server saat logout. Menutup
+  browser tidak menghapus sesi; batas absolut sesi 8 jam dan idle 1 jam.
 - Perubahan password admin atau `SESSION_SECRET` otomatis membatalkan sesi lama.
 - Semua endpoint mutasi menolak request tanpa `Origin` yang sama dengan
   `NEXT_PUBLIC_APP_URL` sebagai perlindungan CSRF tambahan.

@@ -1,0 +1,134 @@
+.home-page {
+  --home-paper: #f3efe5;
+  --home-forest: #0e2721;
+  --home-jade: #d7e5d7;
+  --home-sand: #e1d5bd;
+  --home-clay: #a24b38;
+  min-height: 100svh;
+  overflow: hidden;
+  color: var(--home-paper);
+  background: var(--home-forest);
+}
+
+.home-cover {
+  position: relative;
+  display: grid;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 84% 18%, rgba(225, 213, 189, .2) 0 10%, transparent 10.2%),
+    radial-gradient(circle at 10% 80%, rgba(115, 155, 136, .18) 0 13%, transparent 13.2%),
+    linear-gradient(120deg, var(--home-forest) 0%, #193b33 53%, var(--home-forest) 100%);
+}
+
+.home-cover-decoration {
+  position: absolute;
+  z-index: 0;
+  top: 16%;
+  right: 11%;
+  width: min(29vw, 390px);
+  height: 68%;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(215, 229, 215, .34);
+  background: rgba(215, 229, 215, .14);
+  box-shadow: 20px 20px 0 rgba(225, 213, 189, .06);
+  transform: rotate(6deg);
+}
+
+.home-cover-decoration::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(160deg, rgba(14, 39, 33, .08), rgba(14, 39, 33, .45));
+  pointer-events: none;
+}
+
+.home-cover-decoration img { width: 100%; height: 100%; display: block; object-fit: cover; filter: saturate(.78) contrast(.95); }
+
+.home-watermark {
+  position: absolute;
+  z-index: 0;
+  right: 8%;
+  bottom: 7%;
+  color: rgba(215, 229, 215, .08);
+  font: 500 clamp(150px, 26vw, 390px)/.7 "Cormorant Garamond", serif;
+  letter-spacing: -.12em;
+  transform: rotate(-7deg);
+}
+
+.home-cover::before {
+  position: absolute;
+  z-index: 3;
+  inset: 20px;
+  border: 1px solid rgba(215, 229, 215, .32);
+  content: "";
+  pointer-events: none;
+}
+
+.home-cover-header,
+.home-cover-footer {
+  position: absolute;
+  z-index: 4;
+  right: 44px;
+  left: 44px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  color: rgba(243, 239, 229, .72);
+  font: 500 10px/1.4 "DM Mono", monospace;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+
+.home-cover-header { top: 42px; align-items: center; }
+.home-cover-header > span:first-child { color: var(--home-paper); font-size: 15px; letter-spacing: -.12em; }
+.home-header-mark { margin: 0 4px; color: var(--home-sand); }
+.home-cover-header > span:nth-child(2) { color: var(--home-jade); font-size: 9px; }
+.home-cover-header > span:last-child { color: var(--home-sand); }
+
+.home-cover-copy { position: relative; z-index: 2; align-self: center; width: min(100% - 160px, 980px); margin: 60px auto 0; }
+.home-kicker { margin: 0 0 23px; color: var(--home-sand); font: italic 500 clamp(26px, 3.5vw, 45px)/1 "Cormorant Garamond", serif; }
+
+.home-cover h1 {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: fit-content;
+  margin: 0;
+  color: var(--home-paper);
+  font: 500 clamp(100px, 15vw, 214px)/.7 "Cormorant Garamond", serif;
+  letter-spacing: -.09em;
+}
+
+.home-cover h1 i {
+  z-index: 1;
+  margin: -2px 0 -5px clamp(65px, 7vw, 105px);
+  color: var(--home-sand);
+  font-size: .54em;
+  font-weight: 400;
+}
+
+.home-intro { max-width: 340px; margin: 43px 0 0; color: rgba(243, 239, 229, .78); font-size: 14px; line-height: 1.8; }
+
+.home-cover-footer { bottom: 42px; align-items: end; color: rgba(243, 239, 229, .62); font-size: 9px; letter-spacing: .08em; text-transform: none; }
+.home-recipient-note { display: inline-flex; align-items: center; gap: 10px; text-transform: uppercase; }
+.home-recipient-note i { display: grid; place-items: center; width: 27px; height: 27px; border: 1px solid rgba(215, 229, 215, .55); border-radius: 50%; color: var(--home-sand); font: normal 17px/1 "Cormorant Garamond", serif; }
+
+@media (max-width: 700px) {
+  .home-cover::before { inset: 12px; }
+  .home-cover-decoration { top: 21%; right: -8%; width: 75vw; height: 57%; transform: rotate(5deg); }
+  .home-watermark { right: -7%; bottom: 16%; font-size: 190px; }
+  .home-cover-header, .home-cover-footer { right: 28px; left: 28px; }
+  .home-cover-header { top: 29px; }
+  .home-cover-header > span:nth-child(2) { display: none; }
+  .home-cover-copy { width: calc(100% - 80px); margin-top: 55px; }
+  .home-cover h1 { font-size: clamp(88px, 25vw, 142px); }
+  .home-cover h1 i { margin-left: 51px; }
+  .home-kicker { font-size: 29px; }
+  .home-intro { margin-top: 38px; font-size: 13px; }
+  .home-cover-footer { bottom: 30px; }
+  .home-cover-footer > span:first-child { max-width: 145px; line-height: 1.5; }
+  .home-recipient-note { gap: 7px; font-size: 8px; letter-spacing: .04em; }
+}
